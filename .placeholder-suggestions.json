@@ -1,0 +1,50 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. Müller GmbH",
+    "rechtsform": "Wähle eine Rechtsform",
+    "branche": "Wähle eine Branche",
+    "beteiligungsquote": "z. B. 35",
+    "investiertes_kapital": "z. B. 500.000",
+    "aktueller_wert": "z. B. 750.000",
+    "investitionsdatum": "Wann erfolgte die Investition?",
+    "stadt": "z. B. München",
+    "land": "z. B. Deutschland",
+    "website": "z. B. www.beispiel.de",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Mustermann",
+    "ansprechpartner_email": "z. B. max@beispiel.de",
+    "cockpit_zusammenfassung": "Kurze Zusammenfassung des aktuellen Standes, Entwicklung und Highlights...",
+    "allgemeine_notizen": "Zusätzliche Informationen, Besonderheiten, offene Punkte..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "terminbezeichnung": "z. B. Jahresabschluss 2025",
+    "terminart": "Wähle eine Terminart",
+    "datum_uhrzeit": "Wann findet der Termin statt?",
+    "ort": "z. B. Berlin, hybrid oder Link",
+    "wiederholung": "Findet der Termin wiederholt statt?",
+    "erinnerung_tage": "z. B. 7",
+    "google_kalender": "Mit Google-Kalender synchronisieren?",
+    "terminstatus": "Wie ist der Status?",
+    "notizen_termin": "Agenda, Teilnehmer, Vorbereitung, Nachbereitung..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "dokumentenbezeichnung": "z. B. Jahresabschluss 2024",
+    "dokumententyp": "Wähle einen Dokumententyp",
+    "dokumentenbeschreibung": "Was ist Inhalt und Zweck des Dokuments?",
+    "dokumentendatum": "Wann wurde es erstellt?",
+    "dokumentenlink": "z. B. https://beispiel.de/dokument",
+    "bereitgestellt_von": "z. B. Geschäftsführer",
+    "notizen_dokument": "Validierung, Besonderheiten, Ablage..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "notiz_titel": "z. B. Strategische Ausrichtung",
+    "notiz_inhalt": "Was möchtest du festhalten? Beobachtungen, Ideen, Entscheidungen, Risiken...",
+    "notiz_datum": "Wann wurde die Notiz erstellt?",
+    "kategorie": "Wähle eine Kategorie",
+    "prioritaet": "Wie wichtig ist die Notiz?",
+    "schlagwoerter": "z. B. Wachstum, Finanzierung, Team"
+  }
+}

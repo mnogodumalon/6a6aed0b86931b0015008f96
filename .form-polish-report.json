@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 14,
+      "defaults_keys": ["investitionsdatum", "status"],
+      "computed_keys": [],
+      "reason": "Reine Stammdaten-Entity. Keine berechenbaren Felder: ein einzelnes Datum ohne Paar, kein Menge×Preis-Pattern, applookup ohne Preis-Target. Wertveränderung (investiertes_kapital vs. aktueller_wert) ist Stammdaten-Mutation, keine Formel."
+    },
+    "Termine": {
+      "placeholders_set": 10,
+      "defaults_keys": ["datum_uhrzeit", "erinnerung_tage", "google_kalender", "terminstatus"],
+      "computed_keys": [],
+      "reason": "Terminverwaltung mit Single-Datum (kein Paar für dateDiff), applookup auf Unternehmen ohne Preis-Target. Termin-Wiederholung ist Metadata, nicht berechenbar. Keine numerischen Größen außer Erinnerungs-Vorlauf."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": ["dokumentendatum"],
+      "computed_keys": [],
+      "reason": "Dokumentenverwaltung mit Metadata-Feldern (Typ, Datum, Link), applookup als reiner Kontext. Keine numerischen Größen und kein Preis-/Satz-Feld. Reine Dokumentenverwaltung ohne Berechnung."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": ["notiz_datum", "prioritaet"],
+      "computed_keys": [],
+      "reason": "Notizverwaltung mit Single-Datum (kein Paar), applookup als Kontext. Keine numerischen Felder außer in applookup-Target (dienen nur als Information, nicht als Berechnung). Reine Textdokumentation."
+    }
+  }
+}
