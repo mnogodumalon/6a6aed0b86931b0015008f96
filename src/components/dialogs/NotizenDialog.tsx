@@ -350,7 +350,7 @@ export function NotizenDialog({ open, onClose, onSubmit, defaultValues, recordId
         <Label htmlFor="unternehmen">Unternehmen <span className="text-destructive" aria-hidden="true">*</span></Label>
         <Combobox
           id="unternehmen"
-          placeholder="Welches Unternehmen?"
+          placeholder=""
           items={unternehmenListAll.map(r => ({
             id: r.record_id,
             label: String(r.fields.name ?? r.record_id),
@@ -372,7 +372,7 @@ export function NotizenDialog({ open, onClose, onSubmit, defaultValues, recordId
         <Label htmlFor="notiz_titel">Titel der Notiz <span className="text-destructive" aria-hidden="true">*</span></Label>
         <Input
           id="notiz_titel"
-          placeholder="z. B. Strategische Ausrichtung"
+          placeholder=""
           value={fields.notiz_titel ?? ''}
           onChange={e => setFields(f => ({ ...f, notiz_titel: e.target.value }))}
           required
@@ -387,7 +387,7 @@ export function NotizenDialog({ open, onClose, onSubmit, defaultValues, recordId
         <Label htmlFor="notiz_inhalt">Notizinhalt <span className="text-destructive" aria-hidden="true">*</span></Label>
         <Textarea
           id="notiz_inhalt"
-          placeholder="Was möchtest du festhalten? Beobachtungen, Ideen, Entscheidungen, Risiken..."
+          placeholder=""
           value={fields.notiz_inhalt ?? ''}
           onChange={e => setFields(f => ({ ...f, notiz_inhalt: e.target.value }))}
           rows={3}
@@ -402,7 +402,7 @@ export function NotizenDialog({ open, onClose, onSubmit, defaultValues, recordId
         <Label htmlFor="notiz_datum">Datum der Notiz <span className="text-destructive" aria-hidden="true">*</span></Label>
         <DatePicker
           id="notiz_datum"
-          placeholder="Wann wurde die Notiz erstellt?"
+          placeholder=""
           mode="date"
           value={fields.notiz_datum ?? null}
           onChange={v => setFields(f => ({ ...f, notiz_datum: v ?? undefined }))}
@@ -420,7 +420,7 @@ export function NotizenDialog({ open, onClose, onSubmit, defaultValues, recordId
           value={lookupKey(fields.kategorie) ?? ''}
           onValueChange={v => setFields(f => ({ ...f, kategorie: v === 'none' ? undefined : v as any }))}
         >
-          <SelectTrigger id="kategorie" className="max-sm:h-11"><SelectValue placeholder="Wähle eine Kategorie" /></SelectTrigger>
+          <SelectTrigger id="kategorie" className="max-sm:h-11"><SelectValue placeholder="" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="none">—</SelectItem>
             <SelectItem value="allgemein">Allgemein</SelectItem>
@@ -484,7 +484,7 @@ export function NotizenDialog({ open, onClose, onSubmit, defaultValues, recordId
         <Label htmlFor="schlagwoerter">Schlagwörter / Tags</Label>
         <Input
           id="schlagwoerter"
-          placeholder="z. B. Wachstum, Finanzierung, Team"
+          placeholder=""
           value={fields.schlagwoerter ?? ''}
           onChange={e => setFields(f => ({ ...f, schlagwoerter: e.target.value }))}
         />

@@ -314,7 +314,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
         <Label htmlFor="name">Unternehmensname <span className="text-destructive" aria-hidden="true">*</span></Label>
         <Input
           id="name"
-          placeholder="z. B. Müller GmbH"
+          placeholder=""
           value={fields.name ?? ''}
           onChange={e => setFields(f => ({ ...f, name: e.target.value }))}
           required
@@ -331,7 +331,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
           value={lookupKey(fields.rechtsform) ?? ''}
           onValueChange={v => setFields(f => ({ ...f, rechtsform: v === 'none' ? undefined : v as any }))}
         >
-          <SelectTrigger id="rechtsform" className="max-sm:h-11"><SelectValue placeholder="Wähle eine Rechtsform" /></SelectTrigger>
+          <SelectTrigger id="rechtsform" className="max-sm:h-11"><SelectValue placeholder="" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="none">—</SelectItem>
             <SelectItem value="gmbh">GmbH</SelectItem>
@@ -353,7 +353,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
           value={lookupKey(fields.branche) ?? ''}
           onValueChange={v => setFields(f => ({ ...f, branche: v === 'none' ? undefined : v as any }))}
         >
-          <SelectTrigger id="branche" className="max-sm:h-11"><SelectValue placeholder="Wähle eine Branche" /></SelectTrigger>
+          <SelectTrigger id="branche" className="max-sm:h-11"><SelectValue placeholder="" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="none">—</SelectItem>
             <SelectItem value="energie">Energie & Umwelt</SelectItem>
@@ -427,7 +427,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
           type="number"
           step="any"
           {...numberInputProps(formEnhancements, 'beteiligungsquote')}
-          placeholder="z. B. 35"
+          placeholder=""
           value={fields.beteiligungsquote !== undefined ? fields.beteiligungsquote : (computedValues['beteiligungsquote'] ?? '')}
           onChange={e => setFields(f => ({ ...f, beteiligungsquote: clampNumberValue(formEnhancements, 'beteiligungsquote', e.target.value) }))}
         />
@@ -441,7 +441,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
           type="number"
           step="any"
           {...numberInputProps(formEnhancements, 'investiertes_kapital')}
-          placeholder="z. B. 500.000"
+          placeholder=""
           value={fields.investiertes_kapital !== undefined ? fields.investiertes_kapital : (computedValues['investiertes_kapital'] ?? '')}
           onChange={e => setFields(f => ({ ...f, investiertes_kapital: clampNumberValue(formEnhancements, 'investiertes_kapital', e.target.value) }))}
         />
@@ -455,7 +455,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
           type="number"
           step="any"
           {...numberInputProps(formEnhancements, 'aktueller_wert')}
-          placeholder="z. B. 750.000"
+          placeholder=""
           value={fields.aktueller_wert !== undefined ? fields.aktueller_wert : (computedValues['aktueller_wert'] ?? '')}
           onChange={e => setFields(f => ({ ...f, aktueller_wert: clampNumberValue(formEnhancements, 'aktueller_wert', e.target.value) }))}
         />
@@ -466,7 +466,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
         <Label htmlFor="investitionsdatum">Investitionsdatum</Label>
         <DatePicker
           id="investitionsdatum"
-          placeholder="Wann erfolgte die Investition?"
+          placeholder=""
           mode="date"
           value={fields.investitionsdatum ?? null}
           onChange={v => setFields(f => ({ ...f, investitionsdatum: v ?? undefined }))}
@@ -478,7 +478,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
         <Label htmlFor="stadt">Stadt</Label>
         <Input
           id="stadt"
-          placeholder="z. B. München"
+          placeholder=""
           value={fields.stadt ?? ''}
           onChange={e => setFields(f => ({ ...f, stadt: e.target.value }))}
         />
@@ -489,7 +489,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
         <Label htmlFor="land">Land</Label>
         <Input
           id="land"
-          placeholder="z. B. Deutschland"
+          placeholder=""
           value={fields.land ?? ''}
           onChange={e => setFields(f => ({ ...f, land: e.target.value }))}
         />
@@ -510,7 +510,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
         <Label htmlFor="ansprechpartner_vorname">Vorname Ansprechpartner</Label>
         <Input
           id="ansprechpartner_vorname"
-          placeholder="z. B. Max"
+          placeholder=""
           value={fields.ansprechpartner_vorname ?? ''}
           onChange={e => setFields(f => ({ ...f, ansprechpartner_vorname: e.target.value }))}
         />
@@ -521,7 +521,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
         <Label htmlFor="ansprechpartner_nachname">Nachname Ansprechpartner</Label>
         <Input
           id="ansprechpartner_nachname"
-          placeholder="z. B. Mustermann"
+          placeholder=""
           value={fields.ansprechpartner_nachname ?? ''}
           onChange={e => setFields(f => ({ ...f, ansprechpartner_nachname: e.target.value }))}
         />
@@ -533,7 +533,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
         <Input
           id="ansprechpartner_email"
           type="email"
-          placeholder="z. B. max@beispiel.de"
+          placeholder=""
           value={fields.ansprechpartner_email ?? ''}
           onChange={e => setFields(f => ({ ...f, ansprechpartner_email: e.target.value }))}
         />
@@ -554,7 +554,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
         <Label htmlFor="cockpit_zusammenfassung">Cockpit-Zusammenfassung</Label>
         <Textarea
           id="cockpit_zusammenfassung"
-          placeholder="Kurze Zusammenfassung des aktuellen Standes, Entwicklung und Highlights..."
+          placeholder=""
           value={fields.cockpit_zusammenfassung ?? ''}
           onChange={e => setFields(f => ({ ...f, cockpit_zusammenfassung: e.target.value }))}
           rows={3}
@@ -566,7 +566,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
         <Label htmlFor="allgemeine_notizen">Allgemeine Notizen</Label>
         <Textarea
           id="allgemeine_notizen"
-          placeholder="Zusätzliche Informationen, Besonderheiten, offene Punkte..."
+          placeholder=""
           value={fields.allgemeine_notizen ?? ''}
           onChange={e => setFields(f => ({ ...f, allgemeine_notizen: e.target.value }))}
           rows={3}

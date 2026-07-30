@@ -352,7 +352,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
         <Label htmlFor="unternehmen">Unternehmen <span className="text-destructive" aria-hidden="true">*</span></Label>
         <Combobox
           id="unternehmen"
-          placeholder="Welches Unternehmen?"
+          placeholder=""
           items={unternehmenListAll.map(r => ({
             id: r.record_id,
             label: String(r.fields.name ?? r.record_id),
@@ -374,7 +374,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
         <Label htmlFor="terminbezeichnung">Terminbezeichnung <span className="text-destructive" aria-hidden="true">*</span></Label>
         <Input
           id="terminbezeichnung"
-          placeholder="z. B. Jahresabschluss 2025"
+          placeholder=""
           value={fields.terminbezeichnung ?? ''}
           onChange={e => setFields(f => ({ ...f, terminbezeichnung: e.target.value }))}
           required
@@ -391,7 +391,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
           value={lookupKey(fields.terminart) ?? ''}
           onValueChange={v => setFields(f => ({ ...f, terminart: v === 'none' ? undefined : v as any }))}
         >
-          <SelectTrigger id="terminart" className="max-sm:h-11"><SelectValue placeholder="Wähle eine Terminart" /></SelectTrigger>
+          <SelectTrigger id="terminart" className="max-sm:h-11"><SelectValue placeholder="" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="none">—</SelectItem>
             <SelectItem value="gremiensitzung">Gremiensitzung</SelectItem>
@@ -412,7 +412,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
         <Label htmlFor="datum_uhrzeit">Datum & Uhrzeit <span className="text-destructive" aria-hidden="true">*</span></Label>
         <DatePicker
           id="datum_uhrzeit"
-          placeholder="Wann findet der Termin statt?"
+          placeholder=""
           mode="datetime"
           value={fields.datum_uhrzeit ?? null}
           onChange={v => setFields(f => ({ ...f, datum_uhrzeit: v ?? undefined }))}
@@ -428,7 +428,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
         <Label htmlFor="ort">Ort / Videolink</Label>
         <Input
           id="ort"
-          placeholder="z. B. Berlin, hybrid oder Link"
+          placeholder=""
           value={fields.ort ?? ''}
           onChange={e => setFields(f => ({ ...f, ort: e.target.value }))}
         />
@@ -514,7 +514,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
           type="number"
           step="any"
           {...numberInputProps(formEnhancements, 'erinnerung_tage')}
-          placeholder="z. B. 7"
+          placeholder=""
           value={fields.erinnerung_tage !== undefined ? fields.erinnerung_tage : (computedValues['erinnerung_tage'] ?? '')}
           onChange={e => setFields(f => ({ ...f, erinnerung_tage: clampNumberValue(formEnhancements, 'erinnerung_tage', e.target.value) }))}
         />
@@ -584,7 +584,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
         <Label htmlFor="notizen_termin">Notizen zum Termin</Label>
         <Textarea
           id="notizen_termin"
-          placeholder="Agenda, Teilnehmer, Vorbereitung, Nachbereitung..."
+          placeholder=""
           value={fields.notizen_termin ?? ''}
           onChange={e => setFields(f => ({ ...f, notizen_termin: e.target.value }))}
           rows={3}

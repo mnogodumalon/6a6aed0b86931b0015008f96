@@ -358,7 +358,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
         <Label htmlFor="unternehmen">Unternehmen <span className="text-destructive" aria-hidden="true">*</span></Label>
         <Combobox
           id="unternehmen"
-          placeholder="Welches Unternehmen?"
+          placeholder=""
           items={unternehmenListAll.map(r => ({
             id: r.record_id,
             label: String(r.fields.name ?? r.record_id),
@@ -380,7 +380,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
         <Label htmlFor="dokumentenbezeichnung">Dokumentenbezeichnung <span className="text-destructive" aria-hidden="true">*</span></Label>
         <Input
           id="dokumentenbezeichnung"
-          placeholder="z. B. Jahresabschluss 2024"
+          placeholder=""
           value={fields.dokumentenbezeichnung ?? ''}
           onChange={e => setFields(f => ({ ...f, dokumentenbezeichnung: e.target.value }))}
           required
@@ -397,7 +397,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
           value={lookupKey(fields.dokumententyp) ?? ''}
           onValueChange={v => setFields(f => ({ ...f, dokumententyp: v === 'none' ? undefined : v as any }))}
         >
-          <SelectTrigger id="dokumententyp" className="max-sm:h-11"><SelectValue placeholder="Wähle einen Dokumententyp" /></SelectTrigger>
+          <SelectTrigger id="dokumententyp" className="max-sm:h-11"><SelectValue placeholder="" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="none">—</SelectItem>
             <SelectItem value="gesellschaftsvertrag">Gesellschaftsvertrag</SelectItem>
@@ -416,7 +416,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
         <Label htmlFor="dokumentenbeschreibung">Beschreibung</Label>
         <Textarea
           id="dokumentenbeschreibung"
-          placeholder="Was ist Inhalt und Zweck des Dokuments?"
+          placeholder=""
           value={fields.dokumentenbeschreibung ?? ''}
           onChange={e => setFields(f => ({ ...f, dokumentenbeschreibung: e.target.value }))}
           rows={3}
@@ -428,7 +428,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
         <Label htmlFor="dokumentendatum">Datum des Dokuments</Label>
         <DatePicker
           id="dokumentendatum"
-          placeholder="Wann wurde es erstellt?"
+          placeholder=""
           mode="date"
           value={fields.dokumentendatum ?? null}
           onChange={v => setFields(f => ({ ...f, dokumentendatum: v ?? undefined }))}
@@ -520,7 +520,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
         <Label htmlFor="bereitgestellt_von">Bereitgestellt von</Label>
         <Input
           id="bereitgestellt_von"
-          placeholder="z. B. Geschäftsführer"
+          placeholder=""
           value={fields.bereitgestellt_von ?? ''}
           onChange={e => setFields(f => ({ ...f, bereitgestellt_von: e.target.value }))}
         />
@@ -531,7 +531,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
         <Label htmlFor="notizen_dokument">Notizen zum Dokument</Label>
         <Textarea
           id="notizen_dokument"
-          placeholder="Validierung, Besonderheiten, Ablage..."
+          placeholder=""
           value={fields.notizen_dokument ?? ''}
           onChange={e => setFields(f => ({ ...f, notizen_dokument: e.target.value }))}
           rows={3}

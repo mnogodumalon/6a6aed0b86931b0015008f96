@@ -13,6 +13,12 @@
 // The docblock is checked too: app/services/intent_context.py derives
 // _agent_context/intents.json from it, which is how a LATER agent run finds a
 // flow worth reusing. Without it a flow is invisible to future runs as well.
+//
+// And the UTC day-shift trap is checked here as well, because nothing else
+// can: the same rule is gate 1 of check-dashboard.mjs, but that script reads
+// ONE file (src/pages/DashboardOverview.tsx). A flow step that writes a date
+// field with toISOString() was therefore outside every gate — even a run that
+// executes all of them.
 
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -65,9 +71,27 @@ if (pages.length > 0) {
     if (dialogImport) {
       errors.push(`${file}: imports the generic dialog '${dialogImport[1]}' — a wizard step uses its own small form (the generic dialogs stay on the CRUD pages)`);
     }
+
+    // 4. UTC day-shift trap — same rule as gate 1 of check-dashboard.mjs, which
+    //    only ever sees DashboardOverview.tsx. A wizard step writes date fields
+    //    DIRECTLY via the service, so this is exactly where the shift lands.
+    //    The offending lines are quoted VERBATIM (untrimmed) so the fix is a
+    //    direct Edit with that exact string — no re-Read to locate them.
+    if (src.includes('toISOString')) {
+      const lines = src.split('\n');
+      const hits = [];
+      for (let i = 0; i < lines.length && hits.length < 6; i++) {
+        if (lines[i].includes('toISOString')) hits.push(`    line ${i + 1}: ${lines[i]}`);
+      }
+      errors.push(
+        `${file}: toISOString() found — it is UTC, so the day flips at the wrong hour and the record lands on the neighbouring date. ` +
+        `Write date fields with date-fns format(): a date/date field → format(d, 'yyyy-MM-dd'), a date/datetimeminute field → format(d, "yyyy-MM-dd'T'HH:mm").` +
+        (hits.length ? '\n' + hits.join('\n') : ''),
+      );
+    }
   }
 
-  // 4. Every route needs a registry entry, or the flow is invisible in the
+  // 5. Every route needs a registry entry, or the flow is invisible in the
   //    sidebar even though its URL works.
   for (const path of routePaths) {
     if (!registryPaths.has(path)) {
@@ -75,7 +99,7 @@ if (pages.length > 0) {
     }
   }
 
-  // 5. …and the other way round: a registry entry without a route is a dead
+  // 6. …and the other way round: a registry entry without a route is a dead
   //    sidebar link.
   for (const path of registryPaths) {
     if (!routePaths.has(path)) {

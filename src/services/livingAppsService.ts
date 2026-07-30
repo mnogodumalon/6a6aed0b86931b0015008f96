@@ -75,7 +75,7 @@ export interface CallApiOptions {
   silent?: boolean;
 }
 
-/** What create / update resolve to. Same `record_id` the read helpers
+/** What create* and update* resolve to. Same `record_id` the read helpers
  *  expose, so the whole family behaves alike — the raw REST answer only
  *  carries `id`, and code that guessed (e.g. Object.keys(res)[0]) built
  *  `/records/id` and got a 400 on the next write. */

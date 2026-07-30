@@ -2,6 +2,7 @@ import { useState, useMemo, type ReactNode } from 'react';
 import { IconSearch, IconChevronRight, IconPlus } from '@tabler/icons-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { getStatusColor } from '@/components/blocks/StatusBadge';
 
 interface SelectItem {
   id: string;
@@ -26,23 +27,6 @@ interface EntitySelectStepProps {
   /** Optional: render the mini-form panel alongside the list. */
   createDialog?: ReactNode;
 }
-
-const STATUS_COLORS: Record<string, string> = {
-  in_planung: 'bg-blue-100 text-blue-700',
-  einladungen_versendet: 'bg-purple-100 text-purple-700',
-  bestaetigt: 'bg-green-100 text-green-700',
-  abgeschlossen: 'bg-slate-100 text-slate-600',
-  abgesagt: 'bg-red-100 text-red-700',
-  aktiv: 'bg-green-100 text-green-700',
-  pausiert: 'bg-yellow-100 text-yellow-700',
-  ausstehend: 'bg-gray-100 text-gray-600',
-  zugesagt: 'bg-green-100 text-green-700',
-  offen: 'bg-amber-100 text-amber-700',
-  bezahlt: 'bg-green-100 text-green-700',
-  angefragt: 'bg-blue-100 text-blue-700',
-  gebucht: 'bg-emerald-100 text-emerald-700',
-  storniert: 'bg-red-100 text-red-700',
-};
 
 export function EntitySelectStep({
   items,
@@ -119,9 +103,11 @@ export function EntitySelectStep({
                     {item.title}
                   </span>
                   {item.status && (
-                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${
-                      STATUS_COLORS[item.status.key] ?? 'bg-muted text-muted-foreground'
-                    }`}>
+                    // Colours come from StatusBadge's single table (getStatusColor)
+                    // so a status looks the same here as on its badge. Its classes
+                    // include a border-* colour, which stays inert without a
+                    // `border` width utility — this pill deliberately has none.
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${getStatusColor(item.status.key)}`}>
                       {item.status.label}
                     </span>
                   )}

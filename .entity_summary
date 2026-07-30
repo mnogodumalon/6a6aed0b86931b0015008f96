@@ -1,7 +1,0 @@
-- Unternehmen (unternehmen): name[string/text], rechtsform[lookup/select], branche[lookup/select], status[lookup/radio], beteiligungsquote[number], investiertes_kapital[number], aktueller_wert[number], investitionsdatum[date/date], stadt[string/text], land[string/text], website[string/url], ansprechpartner_vorname[string/text], ansprechpartner_nachname[string/text], ansprechpartner_email[string/email], ansprechpartner_telefon[string/tel], cockpit_zusammenfassung[string/textarea], allgemeine_notizen[string/textarea]
-- Termine (termine): unternehmen[applookup/select], terminbezeichnung[string/text], terminart[lookup/select], datum_uhrzeit[date/datetimeminute], ort[string/text], wiederholung[lookup/select], erinnerung_tage[number], google_kalender[bool], terminstatus[lookup/radio], notizen_termin[string/textarea]
-  → unternehmen links to app_id 6a6aece61fcbb67ed9aeb827
-- Dokumente (dokumente): unternehmen[applookup/select], dokumentenbezeichnung[string/text], dokumententyp[lookup/select], dokumentenbeschreibung[string/textarea], dokumentendatum[date/date], dokumentenlink[string/url], datei_upload[file], bereitgestellt_von[string/text], notizen_dokument[string/textarea]
-  → unternehmen links to app_id 6a6aece61fcbb67ed9aeb827
-- Notizen (notizen): unternehmen[applookup/select], notiz_titel[string/text], notiz_inhalt[string/textarea], notiz_datum[date/date], kategorie[lookup/select], prioritaet[lookup/radio], schlagwoerter[string/text]
-  → unternehmen links to app_id 6a6aece61fcbb67ed9aeb827

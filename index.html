@@ -29,6 +29,23 @@
     </script>
   </head>
   <body>
+    <!-- Without JS the SPA never mounts and #root stays empty — a blank white
+         page with no explanation. Matters most for public pages, which
+         strangers open from a shared link or QR code. Styles are inline on
+         purpose: they must hold even if the CSS bundle has not loaded. -->
+    <noscript>
+      <div style="max-width: 32rem; margin: 4rem auto; padding: 0 1.5rem; text-align: center; font-family: ui-sans-serif, system-ui, sans-serif; line-height: 1.6; color: #374151;">
+        <h1 style="font-size: 1.25rem; font-weight: 600; margin: 0 0 0.75rem;">
+          Diese Seite benötigt JavaScript
+        </h1>
+        <p style="margin: 0 0 1.5rem;">
+          Bitte aktiviere JavaScript in deinem Browser und lade die Seite neu.
+        </p>
+        <p lang="en" style="margin: 0; font-size: 0.875rem; color: #6b7280;">
+          This page needs JavaScript. Please enable it in your browser and reload.
+        </p>
+      </div>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
