@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "pages": [
+    {
+      "slug": "dokument-einreichen",
+      "component": "DokumentEinreichen",
+      "title": "Dokument einreichen",
+      "endpoints": [
+        {
+          "entity": "unternehmen",
+          "op": "list",
+          "fields": ["name", "rechtsform"],
+          "scope": "r.v_status == 'aktiv'",
+          "scope_description": "zeigt nur aktive Portfoliounternehmen",
+          "max_records": 200
+        },
+        {
+          "entity": "dokumente",
+          "op": "create",
+          "fields": [
+            "unternehmen",
+            "dokumentenbezeichnung",
+            "dokumententyp",
+            "dokumentenbeschreibung",
+            "dokumentendatum",
+            "dokumentenlink",
+            "bereitgestellt_von"
+          ]
+        }
+      ]
+    }
+  ]
+}
