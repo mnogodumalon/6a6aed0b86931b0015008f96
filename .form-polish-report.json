@@ -1,0 +1,32 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 15,
+      "defaults_keys": ["status", "investitionsdatum"],
+      "computed_keys": [],
+      "numberFields_keys": ["beteiligungsquote"],
+      "reason": "Reine Stammdaten-Entity mit finanziellen Metriken (Quote, Kapital, Wert). Keine Beziehungen zwischen Numerikfeldern (keine Multiplikationen oder Additionen), keine Datumspaarungen. Status-Default sinnvoll (Aktiv), Investitionsdatum als Erfassungsdatum."
+    },
+    "Termine": {
+      "placeholders_set": 9,
+      "defaults_keys": ["datum_uhrzeit", "terminart", "terminstatus", "erinnerung_tage"],
+      "computed_keys": [],
+      "numberFields_keys": [],
+      "reason": "Termin-Entity mit applookup auf Unternehmen. Ein Datum-Feld (kein Datumspaar für Dauern), keine Preisfelder, keine berechenbaren Größen. Defaults für Datum (today+withTime), Terminart und Status sinnvoll; Erinnerung auf 3 Tage."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": ["dokumentendatum", "dokumententyp"],
+      "computed_keys": [],
+      "numberFields_keys": [],
+      "reason": "Dokument-Stammdaten mit applookup auf Unternehmen. Kein Numerikfeld, keine berechenbaren Größen. Dokumentendatum auf today, Dokumententyp auf erste Option."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": ["notiz_datum", "kategorie", "prioritaet"],
+      "computed_keys": [],
+      "numberFields_keys": [],
+      "reason": "Notizen-Entity mit applookup auf Unternehmen. Reine Textfelder und Kategorien, keine Numerikfelder. Datum auf today, Kategorie und Priorität auf Mittelwerte."
+    }
+  }
+}

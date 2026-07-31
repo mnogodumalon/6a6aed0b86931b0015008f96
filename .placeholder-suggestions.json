@@ -1,0 +1,50 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. TechVenture GmbH",
+    "rechtsform": "Rechtsform auswählen",
+    "branche": "Branche auswählen",
+    "beteiligungsquote": "z. B. 25",
+    "investiertes_kapital": "z. B. 500000",
+    "aktueller_wert": "z. B. 1200000",
+    "investitionsdatum": "Wann wurde investiert?",
+    "stadt": "z. B. Berlin",
+    "land": "z. B. Deutschland",
+    "website": "z. B. www.example.com",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Müller",
+    "ansprechpartner_email": "z. B. max@example.com",
+    "cockpit_zusammenfassung": "Kurzer Überblick über die Beteiligung und aktuelle Situation...",
+    "allgemeine_notizen": "Wichtige Notizen und Besonderheiten..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "terminbezeichnung": "z. B. Strategiemeeting Q4",
+    "terminart": "Terminart auswählen",
+    "datum_uhrzeit": "Wann findet der Termin statt?",
+    "ort": "z. B. Berlin, Konferenzraum 3",
+    "wiederholung": "Wiederholungsmuster wählen",
+    "erinnerung_tage": "z. B. 3",
+    "google_kalender": "In Google-Kalender synchronisieren?",
+    "terminstatus": "Aktuellen Status auswählen",
+    "notizen_termin": "Agendapunkte, Ergebnisse, Maßnahmen..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen?",
+    "dokumentenbezeichnung": "z. B. Jahresabschluss 2025",
+    "dokumententyp": "Dokumententyp auswählen",
+    "dokumentenbeschreibung": "Kurze Beschreibung oder Zusammenfassung des Dokuments...",
+    "dokumentendatum": "Datum des Dokuments",
+    "dokumentenlink": "z. B. https://documents.example.com/doc123",
+    "bereitgestellt_von": "z. B. Geschäftsführer, Steuerberater",
+    "notizen_dokument": "Relevante Hinweise, Lagerort, Zugriff..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen gehört die Notiz?",
+    "notiz_titel": "z. B. Produktlaunch geplant",
+    "notiz_inhalt": "Detaillierte Notiz, Beobachtungen, Erkenntnisse, nächste Schritte...",
+    "notiz_datum": "Datum dieser Notiz",
+    "kategorie": "Kategorie auswählen",
+    "prioritaet": "Prioritätsstufe auswählen",
+    "schlagwoerter": "z. B. Launch, Produkt, Q3"
+  }
+}
