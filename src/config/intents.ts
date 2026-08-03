@@ -20,6 +20,7 @@
 import type { ComponentType } from 'react';
 
 // <custom:intent-imports>
+import { IconBuildingPlus, IconPresentationAnalytics } from '@tabler/icons-react';
 // </custom:intent-imports>
 
 export interface IntentLink {
@@ -35,6 +36,8 @@ export interface IntentLink {
 
 export const INTENTS: IntentLink[] = [
   // <custom:intents>
+  { path: '/intents/neues-unternehmen', label: 'Unternehmen aufnehmen', icon: IconBuildingPlus, description: 'Neues Portfolio-Unternehmen in 4 Schritten aufnehmen' },
+  { path: '/intents/review-meeting', label: 'Review-Meeting', icon: IconPresentationAnalytics, description: 'Review-Meeting für Portfoliounternehmen vorbereiten' },
   // </custom:intents>
 ];
 
@@ -45,4 +48,4 @@ export const INTENTS: IntentLink[] = [
  * purpose — a scaffold update resets it to false (self-healing if Phase 2
  * never ran).
  */
-export const INTENTS_PENDING = true;
+export const INTENTS_PENDING = false;
