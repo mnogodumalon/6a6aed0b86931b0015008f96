@@ -1,0 +1,43 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 15,
+      "defaults_keys": [
+        "status",
+        "investitionsdatum"
+      ],
+      "computed_keys": [
+        "_gewinn_verlust"
+      ],
+      "reason": "Finanzielle Beteiligung mit Kapital (investiertes_kapital) und Bewertung (aktueller_wert) — virtuelle Kennzahl für Gewinn/Verlust als Aggregat. Keine Multiplikationen oder Zeitmessungen sinnvoll."
+    },
+    "Termine": {
+      "placeholders_set": 10,
+      "defaults_keys": [
+        "datum_uhrzeit",
+        "terminstatus",
+        "erinnerung_tage"
+      ],
+      "computed_keys": [],
+      "reason": "Reine Scheduling-Daten: ein Zeitfeld (kein Bereich), Klassifikationen (lookup), Erinnerungstage. Keine Multiplika­tionen oder Summen — keine Berechnung möglich."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": [
+        "dokumentendatum"
+      ],
+      "computed_keys": [],
+      "reason": "Reine Metadaten zu Dokumenten (Titel, Typ, Datum, Link). Keine numerischen oder zeitlichen Paare — keine Berechnung sinnvoll."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": [
+        "notiz_datum",
+        "kategorie",
+        "prioritaet"
+      ],
+      "computed_keys": [],
+      "reason": "Dokumentations-Entity: Titel, Inhalt, Datum, Kategorie, Priorität. Keine numerischen Felder und kein zeitlicher Zusammenhang — keine computed-Einträge nötig."
+    }
+  }
+}

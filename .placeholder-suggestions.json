@@ -1,0 +1,51 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name":                      "z. B. TechCorp GmbH",
+    "rechtsform":                "z. B. GmbH, AG, KG",
+    "branche":                   "z. B. Technologie & Software",
+    "beteiligungsquote":         "z. B. 25",
+    "investiertes_kapital":      "z. B. 500000",
+    "aktueller_wert":            "z. B. 750000",
+    "investitionsdatum":         "Wann wurde investiert?",
+    "stadt":                     "z. B. Berlin, München",
+    "land":                       "z. B. Deutschland",
+    "website":                    "z. B. www.techcorp.de",
+    "ansprechpartner_vorname":   "z. B. Max",
+    "ansprechpartner_nachname":  "z. B. Mustermann",
+    "ansprechpartner_email":     "z. B. max@techcorp.de",
+    "ansprechpartner_telefon":   "z. B. +49 30 123456",
+    "cockpit_zusammenfassung":   "Wichtigste Kennzahlen und Status...",
+    "allgemeine_notizen":        "Wichtige Notizen zur Beteiligung..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen":        "Unternehmen wählen",
+    "terminbezeichnung":  "z. B. Q3 Gremiensitzung",
+    "terminart":          "z. B. Gremiensitzung, Beiratssitzung",
+    "datum_uhrzeit":      "Wann findet der Termin statt?",
+    "ort":                "z. B. Berlin, Videokonferenz",
+    "wiederholung":       "z. B. Einmalig, Monatlich",
+    "erinnerung_tage":    "z. B. 1, 3, 7",
+    "google_kalender":    "In Google-Kalender synchronisieren?",
+    "terminstatus":       "z. B. Geplant, Stattgefunden",
+    "notizen_termin":     "Agenda, Ergebnisse, offene Punkte..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen":                 "Unternehmen wählen",
+    "dokumentenbezeichnung":       "z. B. Jahresabschluss 2025",
+    "dokumententyp":               "z. B. Jahresabschluss, Protokoll",
+    "dokumentenbeschreibung":      "Inhalt, Thema, wichtige Punkte...",
+    "dokumentendatum":             "Datum des Dokuments",
+    "dokumentenlink":              "z. B. https://beispiel.de/dokument",
+    "bereitgestellt_von":          "z. B. Max Mustermann",
+    "notizen_dokument":            "Anmerkungen, Fundstellen..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen":      "Unternehmen wählen",
+    "notiz_titel":      "z. B. Expansion geplant",
+    "notiz_inhalt":     "Gedanken, Beobachtungen, Erkenntnisse...",
+    "notiz_datum":      "Wann wurde die Notiz erstellt?",
+    "kategorie":        "z. B. Strategie, Finanzen, Risiken",
+    "prioritaet":       "z. B. Hoch, Mittel, Niedrig",
+    "schlagwoerter":    "z. B. growth, market-entry, risk-mitigation"
+  }
+}
