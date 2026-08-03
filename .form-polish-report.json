@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 15,
+      "defaults_keys": ["investitionsdatum", "beteiligungsquote"],
+      "computed_keys": [],
+      "reason": "Reine Stammdaten-Entity ohne berechenbare Größen — keine Applookup-Ketten, keine Preisfelder, keine Datums-Paare für Dauer-Berechnungen. Alle Number-Felder (Beteiligungsquote, Kapital, Wert) sind Eingabegrößen, die manuell erfasst werden. Defaults nur für offensichtliche Startwerte (Investitionsdatum=heute, Beteiligungsquote=0)."
+    },
+    "Termine": {
+      "placeholders_set": 10,
+      "defaults_keys": ["datum_uhrzeit", "erinnerung_tage", "wiederholung", "terminstatus"],
+      "computed_keys": [],
+      "reason": "Reine Verwaltungs-Entity für Termine — keine Preisfelder im applookup-Target (Unternehmen), keine berechenbaren Größen. Das einzige Number-Feld (erinnerung_tage) ist ein manueller Input (Vorlaufzeit). Das Datum ist ein Single-Field (datetimeminute), kein Datumsbereich — keine Dauer zu berechnen. Defaults für Status und Wiederholung verbessern die Erfassung-Geschwindigkeit."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": ["dokumentendatum"],
+      "computed_keys": [],
+      "reason": "Reine Metadaten-Verwaltung für Dokumente — keine Number-Felder, keine berechenbaren Größen. Applookup auf Unternehmen hat keine Preis-Spalten. Das Dokumentendatum wird manuell gesetzt, nicht berechnet. Keine Aggregationen nötig."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": ["notiz_datum", "prioritaet"],
+      "computed_keys": [],
+      "reason": "Reine Text-/Metadaten-Entity — keine Number-Felder außer dem applookup ohne Preis-Target. Das Notiz-Datum wird manuell erfasst (kein Bereich/Dauer). Keine Posten, keine Aggregationen, keine Preis-Berechnungen. Defaults für Datum (heute) und Priorität (mittel) erleichtern die Erfassung."
+    }
+  }
+}

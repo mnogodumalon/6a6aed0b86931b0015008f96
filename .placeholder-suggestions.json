@@ -1,0 +1,51 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. Acme GmbH",
+    "rechtsform": "Rechtsform wählen",
+    "branche": "Branche wählen",
+    "beteiligungsquote": "z. B. 25",
+    "investiertes_kapital": "z. B. 250.000",
+    "aktueller_wert": "z. B. 500.000",
+    "investitionsdatum": "Wann investiert?",
+    "stadt": "z. B. Berlin",
+    "land": "z. B. Deutschland",
+    "website": "z. B. acme.de",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Müller",
+    "ansprechpartner_email": "max@acme.de",
+    "ansprechpartner_telefon": "+49 30 123456",
+    "cockpit_zusammenfassung": "Geschäftsmodell, Besonderheiten, Highlights...",
+    "allgemeine_notizen": "Sonstige Infos, Historie, Kontakte..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "terminbezeichnung": "z. B. Q3 Bilanzmeeting",
+    "terminart": "Terminart wählen",
+    "datum_uhrzeit": "Wann startet der Termin?",
+    "ort": "z. B. Büro, Videolink...",
+    "wiederholung": "Wiederkehrend?",
+    "erinnerung_tage": "z. B. 7",
+    "google_kalender": "Synchronisieren?",
+    "terminstatus": "Geplant, stattgefunden,...",
+    "notizen_termin": "Agenda, Teilnehmer, Ergebnisse..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen?",
+    "dokumentenbezeichnung": "z. B. Jahresabschluss 2025",
+    "dokumententyp": "Dokumenttyp wählen",
+    "dokumentenbeschreibung": "Inhalt, Kontext, Besonderheiten...",
+    "dokumentendatum": "Wann erstellt?",
+    "dokumentenlink": "z. B. drive.google.com/...",
+    "bereitgestellt_von": "z. B. Hr. Schmidt",
+    "notizen_dokument": "Quelle, Version, Anmerkungen..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "notiz_titel": "z. B. Expansion nach Österreich",
+    "notiz_inhalt": "Ideen, Diskussionspunkte, Erkenntnisse...",
+    "notiz_datum": "Wann notiert?",
+    "kategorie": "Kategorie wählen",
+    "prioritaet": "Priorität setzen",
+    "schlagwoerter": "z. B. expansion, 2026, risk"
+  }
+}
