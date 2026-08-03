@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 14,
+      "defaults_keys": ["status"],
+      "computed_keys": [],
+      "reason": "Reine Stammdaten eines Investitionsobjekts — keine Berechnung, Datenpaare oder Preis-Logik. Status-Default (aktiv) ist die einzige sinnvolle Vorbelegung."
+    },
+    "Termine": {
+      "placeholders_set": 10,
+      "defaults_keys": ["datum_uhrzeit", "erinnerung_tage", "terminstatus"],
+      "computed_keys": [],
+      "reason": "Event-Verwaltungsform ohne Berechnungslogik. Keine applookup-Produkte oder Multiplikationen mit lokalen Feldern. Datum, Erinnerungstage und Status werden vorbelegung, alles andere sind Metadata-Einträge."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": ["dokumentendatum"],
+      "computed_keys": [],
+      "reason": "Dokumenten-Metadaten-Form ohne numerische Berechnungen. Einziger Default ist das Erfassungsdatum (heute). Keine Preis- oder Betrags-Felder vorhanden."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": ["notiz_datum", "prioritaet"],
+      "computed_keys": [],
+      "reason": "Note-Tracking-Formular ohne Zahlenlogik oder Aggregate. Datum (heute) und Priorität (mittel) sind nachvollziehbare Defaults, alle anderen Felder sind Inhalt-Erfassung."
+    }
+  }
+}

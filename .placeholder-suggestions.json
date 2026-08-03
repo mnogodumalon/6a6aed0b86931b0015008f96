@@ -1,0 +1,50 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. TechStart GmbH",
+    "rechtsform": "Rechtsform wählen",
+    "branche": "Branche wählen",
+    "beteiligungsquote": "z. B. 25,5",
+    "investiertes_kapital": "z. B. 100000",
+    "aktueller_wert": "z. B. 250000",
+    "investitionsdatum": "Wann wurde investiert?",
+    "stadt": "z. B. Berlin",
+    "land": "z. B. Deutschland",
+    "website": "z. B. www.unternehmen.de",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Müller",
+    "ansprechpartner_email": "max@unternehmen.de",
+    "cockpit_zusammenfassung": "Kurze Übersicht für das Cockpit",
+    "allgemeine_notizen": "Bemerkungen, Historie, besondere Punkte..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "terminbezeichnung": "z. B. Gesellschafterversammlung Q3",
+    "terminart": "Terminart wählen",
+    "datum_uhrzeit": "Wann findet der Termin statt?",
+    "ort": "z. B. Berlin, Videolink oder Raum",
+    "wiederholung": "Wiederkehrend?",
+    "erinnerung_tage": "z. B. 2",
+    "google_kalender": "Synchronisieren",
+    "terminstatus": "Status wählen",
+    "notizen_termin": "Notizen, Agenda, Ergebnisse..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen?",
+    "dokumentenbezeichnung": "z. B. Jahresabschluss 2025",
+    "dokumententyp": "Dokumententyp wählen",
+    "dokumentenbeschreibung": "Kurze Beschreibung, Inhalt, Besonderheiten...",
+    "dokumentendatum": "Wann wurde es erstellt?",
+    "dokumentenlink": "z. B. https://example.com/doc",
+    "bereitgestellt_von": "z. B. Geschäftsführer",
+    "notizen_dokument": "Anmerkungen, Relevanz, nächste Schritte..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen?",
+    "notiz_titel": "z. B. Gründer-Interview",
+    "notiz_inhalt": "Beobachtungen, Gedanken, Erkenntnisse, Risiken, Chancen...",
+    "notiz_datum": "Wann verfasst?",
+    "kategorie": "Kategorie wählen",
+    "prioritaet": "Wichtigkeit?",
+    "schlagwoerter": "z. B. Wachstum, Technologie"
+  }
+}
