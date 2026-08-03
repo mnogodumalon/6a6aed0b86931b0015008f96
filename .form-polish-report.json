@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 15,
+      "defaults_keys": ["status", "investitionsdatum"],
+      "computed_keys": ["_gewinn_verlust"],
+      "reason": "Finanzielle Stammdaten mit automatischer Gewinn-/Verlustberechnung (aktueller_wert - investiertes_kapital). Keine weiteren Abhängigkeiten zwischen Feldern."
+    },
+    "Termine": {
+      "placeholders_set": 8,
+      "defaults_keys": ["datum_uhrzeit", "wiederholung", "erinnerung_tage", "terminstatus"],
+      "computed_keys": [],
+      "reason": "Reine Terminverwaltung ohne Datumspaar (nur ein Termin-Zeitpunkt). Keine Kostenberechnung oder Mengenabhängigkeiten. Status und Erinnerung sind prozessuale, nicht berechenbare Felder."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": ["dokumentendatum"],
+      "computed_keys": [],
+      "reason": "Reine Dokumentenverwaltung. Keine Number-Felder (außer versteckte in Unternehmen-Lookup), keine berechenbaren Beziehungen. Datum ist Verwaltungsfeld, keine Durationen."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": ["notiz_datum", "prioritaet"],
+      "computed_keys": [],
+      "reason": "Reine Notizverwaltung mit Kategorisierung und Priorisierung. Keine Mengen, Preise oder zeitlichen Abhängigkeiten — nur verwaltete Metadaten."
+    }
+  }
+}

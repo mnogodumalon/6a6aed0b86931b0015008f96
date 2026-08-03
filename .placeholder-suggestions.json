@@ -1,0 +1,46 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. Acme GmbH",
+    "rechtsform": "Wähle eine Rechtsform",
+    "branche": "z. B. Technologie & Software",
+    "beteiligungsquote": "z. B. 25",
+    "investiertes_kapital": "z. B. 500000",
+    "aktueller_wert": "z. B. 750000",
+    "investitionsdatum": "Wann wurde investiert?",
+    "stadt": "z. B. Berlin",
+    "land": "z. B. Deutschland",
+    "website": "z. B. https://acme.de",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Müller",
+    "ansprechpartner_email": "z. B. max@acme.de",
+    "cockpit_zusammenfassung": "Kurze Übersicht für das Dashboard...",
+    "allgemeine_notizen": "Besonderheiten, Entwicklungen, Beobachtungen..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "terminbezeichnung": "z. B. Strategiemeeting Q3",
+    "terminart": "Wähle eine Terminart",
+    "datum_uhrzeit": "Wann findet der Termin statt?",
+    "ort": "z. B. Berlin / Videokonferenz",
+    "erinnerung_tage": "z. B. 3",
+    "notizen_termin": "Agenda, Themen, Ergebnisse..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen?",
+    "dokumentenbezeichnung": "z. B. Jahresabschluss 2025",
+    "dokumententyp": "Wähle einen Dokumententyp",
+    "dokumentenbeschreibung": "Quelle, Relevanz, Besonderheiten...",
+    "dokumentendatum": "Wann entstand das Dokument?",
+    "dokumentenlink": "z. B. https://acme.de/dokumente",
+    "bereitgestellt_von": "z. B. Hr. Schmidt, CFO",
+    "notizen_dokument": "Auffälligkeiten, Kontext, Verweise..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen?",
+    "notiz_titel": "z. B. Expansion in DE geplant",
+    "notiz_inhalt": "Hintergrund, Details, nächste Schritte...",
+    "notiz_datum": "Wann wurde die Notiz erstellt?",
+    "kategorie": "Wähle eine Kategorie",
+    "schlagwoerter": "z. B. expansion, q2-2025, risiko"
+  }
+}
