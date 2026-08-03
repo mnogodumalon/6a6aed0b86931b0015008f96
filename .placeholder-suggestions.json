@@ -1,0 +1,50 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. TechCorp GmbH",
+    "rechtsform": "Rechtsform wählen",
+    "branche": "Branche wählen",
+    "beteiligungsquote": "z. B. 15",
+    "investiertes_kapital": "z. B. 500000",
+    "aktueller_wert": "z. B. 750000",
+    "investitionsdatum": "Wann investiert?",
+    "stadt": "z. B. Berlin",
+    "land": "z. B. Deutschland",
+    "website": "https://example.com",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Müller",
+    "ansprechpartner_email": "max@example.com",
+    "cockpit_zusammenfassung": "Stärken, Schwächen, Chancen, Risiken...",
+    "allgemeine_notizen": "Wichtige Punkte, Besonderheiten..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "terminbezeichnung": "z. B. Q2-Aufsichtsrat",
+    "terminart": "Terminart wählen",
+    "datum_uhrzeit": "Wann ist der Termin?",
+    "ort": "z. B. Konferenzraum A oder Zoom-Link",
+    "wiederholung": "Wiederholen?",
+    "erinnerung_tage": "z. B. 7",
+    "google_kalender": "Kalender synchronisieren?",
+    "terminstatus": "Status wählen",
+    "notizen_termin": "Agenda, Teilnehmer, Themen..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "dokumentenbezeichnung": "z. B. Jahresbericht 2025",
+    "dokumententyp": "Dokumenttyp wählen",
+    "dokumentenbeschreibung": "Worum geht es in diesem Dokument?",
+    "dokumentendatum": "Wann wurde das Dokument erstellt?",
+    "dokumentenlink": "https://example.com/dokument.pdf",
+    "bereitgestellt_von": "z. B. John Doe",
+    "notizen_dokument": "Besonderheiten, Relevanz, Zusammenfassung..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen?",
+    "notiz_titel": "z. B. Kursmöglichkeit erkannt",
+    "notiz_inhalt": "Detaillierte Gedanken, Ideen, Beobachtungen...",
+    "notiz_datum": "Wann erfasst?",
+    "kategorie": "Kategorie wählen",
+    "prioritaet": "Priorität wählen",
+    "schlagwoerter": "z. B. tech, startup, investment"
+  }
+}

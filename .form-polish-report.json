@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 14,
+      "defaults_keys": ["status"],
+      "computed_keys": [],
+      "reason": "Reine Stammdaten (Rechtsform, Branche, Kapital, Beteiligungsquote) — keine berechenbaren Aggregationen oder temporalen Abstände; kein Datumspaar, keine applookup-Kette zu Preis-Feldern"
+    },
+    "Termine": {
+      "placeholders_set": 9,
+      "defaults_keys": ["datum_uhrzeit", "terminstatus", "erinnerung_tage"],
+      "computed_keys": [],
+      "reason": "Einzeldatum-Entity ohne Datumspaar, ohne berechenbare Feldkombinationen; applookup auf Unternehmen hat keine relevanten Preis-/Kosten-Felder (nur beteiligungsquote, investiertes_kapital, aktueller_wert — ungeeignet für Terminpreise)"
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": ["dokumentendatum"],
+      "computed_keys": [],
+      "reason": "Dokumentenverwaltung mit Metadaten — kein Datumspaar, keine numerischen Felder (außer indirekten Kosten im target Unternehmen); rein textlastig"
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": ["notiz_datum", "kategorie", "prioritaet"],
+      "computed_keys": [],
+      "reason": "Notiz-Entity ohne numerische Felder, ohne Datumspaar, ohne applookup-Produkte; reine Erfassung von Text und Tags"
+    }
+  }
+}
