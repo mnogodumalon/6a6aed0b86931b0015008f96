@@ -1,0 +1,50 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. TechSolutions GmbH",
+    "rechtsform": "Rechtsform wählen",
+    "branche": "Branche wählen",
+    "beteiligungsquote": "z. B. 25",
+    "investiertes_kapital": "z. B. 100000",
+    "aktueller_wert": "z. B. 250000",
+    "investitionsdatum": "Wann wurde investiert?",
+    "stadt": "z. B. Berlin",
+    "land": "z. B. Deutschland",
+    "website": "z. B. www.techsolutions.de",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Müller",
+    "ansprechpartner_email": "kontakt@example.de",
+    "cockpit_zusammenfassung": "Kurze Übersicht der Beteiligung — Highlights, Status, nächste Meilensteine...",
+    "allgemeine_notizen": "Zusätzliche Informationen, Besonderheiten..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "terminbezeichnung": "z. B. Q4 Boardmeeting",
+    "terminart": "Art des Termins wählen",
+    "datum_uhrzeit": "Datum und Uhrzeit?",
+    "ort": "z. B. Berlin oder Videolink",
+    "wiederholung": "Wiederholt sich dieser Termin?",
+    "erinnerung_tage": "z. B. 3",
+    "google_kalender": "Mit Google-Kalender synchronisieren?",
+    "terminstatus": "Status des Termins wählen",
+    "notizen_termin": "Agenda, Teilnehmer, besondere Hinweise..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen gehört dieses Dokument?",
+    "dokumentenbezeichnung": "z. B. Jahresabschluss 2025",
+    "dokumententyp": "Dokumenttyp wählen",
+    "dokumentenbeschreibung": "Worum geht es in diesem Dokument? Version, Relevanz, Besonderheiten...",
+    "dokumentendatum": "Wann wurde das Dokument erstellt?",
+    "dokumentenlink": "z. B. https://example.de/dokument",
+    "bereitgestellt_von": "z. B. Max Müller",
+    "notizen_dokument": "Wichtige Hinweise, Zugang, Lagerort..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen?",
+    "notiz_titel": "z. B. Diskussion neue Märkte",
+    "notiz_inhalt": "Wichtige Punkte, Erkenntnisse, Entscheidungen, Aktionspunkte...",
+    "notiz_datum": "Wann wurde diese Notiz erstellt?",
+    "kategorie": "Kategorie der Notiz wählen",
+    "prioritaet": "Priorität setzen",
+    "schlagwoerter": "z. B. expansion, Q4, strategisch"
+  }
+}

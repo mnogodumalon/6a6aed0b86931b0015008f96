@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 15,
+      "defaults_keys": ["status"],
+      "computed_keys": [],
+      "reason": "Reine Stammdaten mit Beteiligungsmetadaten — keine Beziehungen zu berechnen. Die drei Zahlenspalten (Quote, investiertes Kapital, Wert) sind unabhängig; ein Produkt oder eine Aggregation ist nicht sinnvoll. Status hat einen klaren Anfangs-Wert (Aktiv)."
+    },
+    "Termine": {
+      "placeholders_set": 10,
+      "defaults_keys": ["datum_uhrzeit", "erinnerung_tage", "terminstatus"],
+      "computed_keys": [],
+      "reason": "Eventmanagementsystem mit einzelnem Datum-Feld (keine Start/End-Paarung, kein Dauer-Compute nötig). Applookup auf Unternehmen hat keine Preis-Ziele. Erinnerung ist ein einfacher Vorauswahlwert, Terminstatus ein klarer Anfangs-Status (Geplant)."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": ["dokumentendatum"],
+      "computed_keys": [],
+      "reason": "Dokumentenarchiv mit Erfassungs-Datum (heute) als einziger Default. Keine Berechnungen möglich — Dokumenttyp, Beschreibung und Kontakt sind freie Textfelder ohne numerische Aggregation."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": ["notiz_datum"],
+      "computed_keys": [],
+      "reason": "Notizenverwaltung mit Erfassungs-Datum (heute) als einziger sinnvoller Default. Kategorie und Priorität sind optional. Keine Berechnung — alle Felder sind Text, Kategorien, Tags."
+    }
+  }
+}
