@@ -1,0 +1,50 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. TechStart AG",
+    "rechtsform": "Wähle die Rechtsform",
+    "branche": "Wähle eine Branche",
+    "beteiligungsquote": "z. B. 25",
+    "investiertes_kapital": "z. B. 500000",
+    "aktueller_wert": "z. B. 1200000",
+    "investitionsdatum": "Wann erfolgte die Investition?",
+    "stadt": "z. B. Berlin",
+    "land": "z. B. Deutschland",
+    "website": "z. B. www.example.com",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Mustermann",
+    "ansprechpartner_email": "z. B. max@example.com",
+    "cockpit_zusammenfassung": "Geplante oder erreichte Meilensteine, Hauptkennzahlen, Entwicklung...",
+    "allgemeine_notizen": "Besonderheiten, Risiken, Chancen, sonstige Hinweise..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "terminbezeichnung": "z. B. Q2-Beiratssitzung",
+    "terminart": "Wähle die Terminart",
+    "datum_uhrzeit": "Wann findet der Termin statt?",
+    "ort": "z. B. Berlin oder Videokonferenz-Link",
+    "wiederholung": "Einmalig oder regelmäßig?",
+    "erinnerung_tage": "z. B. 3",
+    "google_kalender": "Aktivieren für Synchronisation",
+    "terminstatus": "Geplant, Stattgefunden oder Abgesagt?",
+    "notizen_termin": "Tagesordnung, Ergebnisse, Maßnahmen..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "dokumentenbezeichnung": "z. B. Jahresabschluss 2025",
+    "dokumententyp": "Wähle den Dokumententyp",
+    "dokumentenbeschreibung": "Zusammenfassung, Inhalt, Besonderheiten...",
+    "dokumentendatum": "Wann ist das Dokument datiert?",
+    "dokumentenlink": "z. B. https://example.com/doc.pdf",
+    "bereitgestellt_von": "z. B. Hr. Schmidt",
+    "notizen_dokument": "Bewertung, Relevanz, Archivierungshinweise..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "notiz_titel": "z. B. Expansionspläne diskutiert",
+    "notiz_inhalt": "Aussagen, Vereinbarungen, Nachdenkenswürdiges, Ideen...",
+    "notiz_datum": "Wann wurde die Notiz erstellt?",
+    "kategorie": "Wähle eine Kategorie",
+    "prioritaet": "Wie wichtig ist diese Notiz?",
+    "schlagwoerter": "z. B. Expansion, Märkte, Konkurrenz"
+  }
+}

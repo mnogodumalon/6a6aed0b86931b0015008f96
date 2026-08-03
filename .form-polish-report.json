@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 15,
+      "defaults_keys": ["investitionsdatum", "status"],
+      "computed_keys": [],
+      "reason": "Reine Stammdaten-Entity für Beteiligungspositionen ohne zeitliche oder berechenbare Abhängigkeiten. Number-Felder (Beteiligungsquote, Kapital, Wert) sind statische Kennzahlen ohne arithmetische Beziehungen untereinander."
+    },
+    "Termine": {
+      "placeholders_set": 10,
+      "defaults_keys": ["datum_uhrzeit", "terminstatus", "erinnerung_tage"],
+      "computed_keys": [],
+      "reason": "Terminplanungs-Entity mit applookup auf Unternehmen (ohne Preis-Target-Felder). Einziges Date-Feld ist 'datum_uhrzeit' ohne Folgedatum-Pair; keine dateDiff-Berechnungen, keine Mengen-Produkte oder Preis-Abhängigkeiten nötig."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": ["dokumentendatum"],
+      "computed_keys": [],
+      "reason": "Dokumentenverwaltungs-Entity mit applookup auf Unternehmen (ohne Preis-Target-Felder). Nur Klassifizierung, Datum als einzelnes erfassungsdatum, Link und Beschreibung — keine berechenbaren Felder vorhanden."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": ["notiz_datum"],
+      "computed_keys": [],
+      "reason": "Notizenverwaltungs-Entity mit applookup auf Unternehmen (ohne Preis-Target-Felder). Reine Text-, Kategorie- und Datierungsfelder; keine Berechnungen, keine Geldwerte, keine Zeitpaare."
+    }
+  }
+}
