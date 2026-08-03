@@ -18,6 +18,8 @@ import DokumenteDetailPage from '@/pages/DokumenteDetailPage';
 import NotizenPage from '@/pages/NotizenPage';
 import NotizenDetailPage from '@/pages/NotizenDetailPage';
 // <custom:imports>
+const PortfolioAufnahmePage = lazy(() => import('@/pages/intents/PortfolioAufnahmePage'));
+const MeetingAbschlussPage = lazy(() => import('@/pages/intents/MeetingAbschlussPage'));
 // </custom:imports>
 
 // Lazy: public pages live outside <Layout> and only load on /#/public/:slug —
@@ -45,6 +47,8 @@ export default function App() {
                 <Route path="admin" element={<AdminPage />} />
                 <Route path="verwaltung/oeffentliche-seiten" element={<PublicPagesAdmin />} />
                 {/* <custom:routes> */}
+                <Route path="intents/portfolio-aufnahme" element={<Suspense fallback={null}><PortfolioAufnahmePage /></Suspense>} />
+                <Route path="intents/meeting-abschluss" element={<Suspense fallback={null}><MeetingAbschlussPage /></Suspense>} />
                 {/* </custom:routes> */}
               </Route>
             </Routes>
