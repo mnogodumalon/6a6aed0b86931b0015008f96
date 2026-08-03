@@ -1,0 +1,51 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. TechVision GmbH",
+    "rechtsform": "Rechtsform wählen",
+    "branche": "Branche des Unternehmens",
+    "beteiligungsquote": "z. B. 25 (in %)",
+    "investiertes_kapital": "z. B. 500000 (in EUR)",
+    "aktueller_wert": "z. B. 1200000 (in EUR)",
+    "investitionsdatum": "Wann wurde investiert?",
+    "stadt": "z. B. Berlin",
+    "land": "z. B. Deutschland",
+    "website": "z. B. https://www.beispiel.de",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Müller",
+    "ansprechpartner_email": "kontakt@beispiel.de",
+    "ansprechpartner_telefon": "z. B. +49 30 12345678",
+    "cockpit_zusammenfassung": "Kurzübersicht für die Cockpit-Ansicht",
+    "allgemeine_notizen": "Besonderheiten, Kontext, Hintergrund…"
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen betrifft das?",
+    "terminbezeichnung": "z. B. Jahresabschluss-Meeting",
+    "terminart": "Art des Termins wählen",
+    "datum_uhrzeit": "Wann findet es statt?",
+    "ort": "z. B. Berlin oder Zoom-Link",
+    "wiederholung": "Wiederholung auswählen",
+    "erinnerung_tage": "z. B. 7 (Tage vorher)",
+    "google_kalender": "Synchronisierung aktivieren?",
+    "terminstatus": "Status des Termins",
+    "notizen_termin": "Agenda, Vorbereitung, Ergebnisse…"
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "dokumentenbezeichnung": "z. B. Jahresabschluss 2025",
+    "dokumententyp": "Dokumenttyp auswählen",
+    "dokumentenbeschreibung": "Inhalt, Kontext, Besonderheiten…",
+    "dokumentendatum": "Wann wurde es erstellt?",
+    "dokumentenlink": "z. B. https://cloud.beispiel.de/doc",
+    "bereitgestellt_von": "z. B. Hr. Müller",
+    "notizen_dokument": "Relevante Hinweise, Besonderheiten…"
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "notiz_titel": "z. B. Risikoanalyse durchführen",
+    "notiz_inhalt": "Was sollte man über diesen Punkt wissen?",
+    "notiz_datum": "Datum der Notiz",
+    "kategorie": "Kategorie auswählen",
+    "prioritaet": "Priorität einstellen",
+    "schlagwoerter": "z. B. dringend, ausstehend, kontakt"
+  }
+}

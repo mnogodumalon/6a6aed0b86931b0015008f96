@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 15,
+      "defaults_keys": ["investitionsdatum", "status"],
+      "computed_keys": [],
+      "reason": "Reine Stammdaten-Entity ohne berechenbare Felder. Beteiligungsquote (%), investiertes_kapital (EUR) und aktueller_wert (EUR) sind unabhängige Größen ohne mathematische Beziehung zueinander oder zu anderen Feldern."
+    },
+    "Termine": {
+      "placeholders_set": 10,
+      "defaults_keys": ["datum_uhrzeit", "erinnerung_tage", "terminstatus", "wiederholung"],
+      "computed_keys": [],
+      "reason": "Termin-Management-Entity ohne Berechnung. Applookup auf Unternehmen existiert, aber target_numeric_fields (beteiligungsquote, investiertes_kapital, aktueller_wert) sind nur Informations-Kontext und nicht in Rechenformeln verwertbar. erinnerung_tage ist manueller Input (typisch 3–7 Tage), kein computed-Kandidat."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": ["dokumentendatum"],
+      "computed_keys": [],
+      "reason": "Dokumenten-Metadaten-Entity ohne numerische oder berechenbare Felder. Applookup auf Unternehmen dient nur der Kontextualisierung; keine Preis-, Kosten- oder Mengen-Logik."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": ["notiz_datum"],
+      "computed_keys": [],
+      "reason": "Notizen-Entity für Textinhalte ohne numerische oder zeitbasierte Berechnungen. Applookup zu Unternehmen ist reine Kontextbeziehung; nichts berechenbar aus Kombinationen von Feldern."
+    }
+  }
+}
