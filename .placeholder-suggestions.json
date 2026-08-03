@@ -1,0 +1,50 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. TechVentures GmbH",
+    "rechtsform": "Wähle die Rechtsform",
+    "branche": "Wähle die Branche",
+    "beteiligungsquote": "z. B. 35",
+    "investiertes_kapital": "z. B. 500.000",
+    "aktueller_wert": "z. B. 1.200.000",
+    "investitionsdatum": "Wann wurde investiert?",
+    "stadt": "z. B. Berlin",
+    "land": "z. B. Deutschland",
+    "website": "z. B. https://example.com",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Müller",
+    "ansprechpartner_email": "z. B. max@example.com",
+    "cockpit_zusammenfassung": "Kurze Übersicht über die Beteiligung, aktuelle Lage und relevante KPIs...",
+    "allgemeine_notizen": "Weitere Anmerkungen, besondere Ereignisse, Ausstiegsszenarien..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "terminbezeichnung": "z. B. Q3 Board Meeting",
+    "terminart": "Wähle die Terminart",
+    "datum_uhrzeit": "Wann findet der Termin statt?",
+    "ort": "z. B. Berlin oder Zoom-Link",
+    "wiederholung": "Wiederholt sich der Termin?",
+    "erinnerung_tage": "z. B. 3",
+    "google_kalender": "Mit Google-Kalender synchronisieren?",
+    "terminstatus": "Wähle den Status",
+    "notizen_termin": "Agenda, Teilnehmerliste, Nachbesprechung..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen?",
+    "dokumentenbezeichnung": "z. B. Geschäftsbericht 2025",
+    "dokumententyp": "Wähle den Dokumenttyp",
+    "dokumentenbeschreibung": "Kurze Zusammenfassung des Inhalts, Relevanz, Besonderheiten...",
+    "dokumentendatum": "Wann wurde das Dokument erstellt?",
+    "dokumentenlink": "z. B. https://example.com/bericht.pdf",
+    "bereitgestellt_von": "z. B. Jan Schmidt",
+    "notizen_dokument": "Wichtige Erkenntnisse, Handlungsbedarfe, Verweise..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen?",
+    "notiz_titel": "z. B. Expansionspläne für 2026",
+    "notiz_inhalt": "Detaillierte Notiz: Hintergrund, Beobachtungen, Implikationen, nächste Schritte...",
+    "notiz_datum": "Wann wurde die Notiz erstellt?",
+    "kategorie": "Wähle eine Kategorie",
+    "prioritaet": "Wähle die Priorität",
+    "schlagwoerter": "z. B. Wachstum, Markt, Risiko"
+  }
+}

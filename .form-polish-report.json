@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 14,
+      "defaults_keys": ["investitionsdatum", "status"],
+      "computed_keys": [],
+      "reason": "Reine Stammdaten ohne zeitliche oder mathematische Abhängigkeiten. Beteiligungsquote ist unabhängig von Kapitalwert und Quote. Keine computed-Formeln nötig."
+    },
+    "Termine": {
+      "placeholders_set": 10,
+      "defaults_keys": ["datum_uhrzeit", "erinnerung_tage", "terminart", "terminstatus", "google_kalender"],
+      "computed_keys": [],
+      "reason": "Entity für Terminverwaltung mit applookup auf Unternehmen (reine Referenz). Keine Preise oder Mengen, kein dateDiff-Paar mit Aggregat-Berechnung. Erinnerung_tage ist simple Eingabe, nicht berechenbar."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": ["dokumentendatum"],
+      "computed_keys": [],
+      "reason": "Reine Dokumentenverwaltung. dokumentendatum ist Single-Datum ohne Partner-Feld (kein Bereich, kein dateDiff). Keine Finanzberechnung, keine Quantifizierbaren Felder."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": ["notiz_datum", "kategorie", "prioritaet"],
+      "computed_keys": [],
+      "reason": "Notizen-Entity ohne Finanzfelder, Zeiten oder Multiplikationen. notiz_datum ist Single-Datum. applookup auf Unternehmen dient nur zur Kontextualisierung, nicht zur Kostenberechnung."
+    }
+  }
+}
