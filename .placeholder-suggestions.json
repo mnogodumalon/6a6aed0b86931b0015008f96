@@ -1,0 +1,50 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. TechCorp AG",
+    "rechtsform": "Wähle die Rechtsform",
+    "branche": "z. B. Technologie, Finanzen",
+    "beteiligungsquote": "z. B. 25",
+    "investiertes_kapital": "z. B. 500.000",
+    "aktueller_wert": "z. B. 1.200.000",
+    "investitionsdatum": "Wann erfolgte die Investition?",
+    "stadt": "z. B. Berlin",
+    "land": "z. B. Deutschland",
+    "website": "z. B. www.techcorp.de",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Müller",
+    "ansprechpartner_email": "z. B. max.mueller@techcorp.de",
+    "cockpit_zusammenfassung": "Kurze Übersicht der Beteiligung, Key-Metriken, Status...",
+    "allgemeine_notizen": "Besondere Entwicklungen, Meilensteine, Bedenken..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "terminbezeichnung": "z. B. Q3 Vorstandssitzung",
+    "terminart": "z. B. Gremiensitzung, Strategiemeeting",
+    "datum_uhrzeit": "Wann findet der Termin statt?",
+    "ort": "z. B. Konferenzsaal, Videolink",
+    "wiederholung": "z. B. Monatlich, Quartalsweise",
+    "erinnerung_tage": "z. B. 5",
+    "google_kalender": "Kalender synchronisieren",
+    "terminstatus": "z. B. Geplant, Stattgefunden",
+    "notizen_termin": "Agenda, Ergebnisse, Follow-ups..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "dokumentenbezeichnung": "z. B. Jahresabschluss 2025",
+    "dokumententyp": "z. B. Jahresabschluss, Protokoll",
+    "dokumentenbeschreibung": "Inhalt, Relevanz, Besonderheiten...",
+    "dokumentendatum": "Wann wurde das Dokument erstellt?",
+    "dokumentenlink": "z. B. https://example.com/dokument.pdf",
+    "bereitgestellt_von": "z. B. Geschäftsführer Schulze",
+    "notizen_dokument": "Zugänglichkeit, Sicherheitsstufe, Versionsinfo..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "notiz_titel": "z. B. Expansion geplant",
+    "notiz_inhalt": "Was ist zu beachten? Gedanken, Erkenntnisse, Empfehlungen...",
+    "notiz_datum": "Wann wurde die Notiz erstellt?",
+    "kategorie": "z. B. Finanzen, Strategie",
+    "prioritaet": "z. B. Hoch, Mittel, Niedrig",
+    "schlagwoerter": "z. B. M&A, IPO, Expansion"
+  }
+}

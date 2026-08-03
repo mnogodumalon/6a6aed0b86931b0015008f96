@@ -1,0 +1,39 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 14,
+      "defaults_keys": [
+        "investitionsdatum"
+      ],
+      "computed_keys": [],
+      "reason": "Reine Stammdaten-Entity mit Text-, Lookup- und Nummernfeldern ohne Abhängigkeiten. Keine Multiplikationen, keine Datumsdifferenzen, keine Lookup-Ketten zu Preis-Zielen. Nur ein sinnvoller Default: Investitionsdatum auf heute."
+    },
+    "Termine": {
+      "placeholders_set": 10,
+      "defaults_keys": [
+        "datum_uhrzeit",
+        "erinnerung_tage",
+        "terminstatus"
+      ],
+      "computed_keys": [],
+      "reason": "Termine-Entity mit applookup auf Unternehmen. Der Haupttermin ist ein einzelnes datetimeminute-Feld (kein Datumspaar). Das erinnerung_tage-Feld bekommt einen praktischen Default von 5 Tagen; terminstatus erhält den initalen Status 'geplant'. Keine Berechnungen sinnvoll, da keine Mengen/Preise/Dauern berechnet werden."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": [
+        "dokumentendatum"
+      ],
+      "computed_keys": [],
+      "reason": "Dokumente-Entity mit applookup auf Unternehmen. Dies ist eine reine Dokumentenverwaltungs-Entity mit Text-, URL- und Datumfeldern. Keine numerischen Berechnungen sinnvoll. Ein Default für dokumentendatum auf heute als Erfassungsdatum."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": [
+        "notiz_datum",
+        "prioritaet"
+      ],
+      "computed_keys": [],
+      "reason": "Notizen-Entity mit applookup auf Unternehmen. Dies ist eine Wissensmanagement-Entity mit reiner Texterfassung. Ein Default für notiz_datum auf heute; prioritaet erhält einen neutralen Default 'mittel'. Keine Berechnungen, da keine numerischen Abhängigkeiten bestehen."
+    }
+  }
+}
