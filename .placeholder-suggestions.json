@@ -1,0 +1,50 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. TechVision GmbH",
+    "rechtsform": "Wähle die Rechtsform",
+    "branche": "z. B. Technologie, Beratung",
+    "beteiligungsquote": "z. B. 25",
+    "investiertes_kapital": "z. B. 500000",
+    "aktueller_wert": "z. B. 1200000",
+    "investitionsdatum": "Wann wurde investiert?",
+    "stadt": "z. B. Berlin",
+    "land": "z. B. Deutschland",
+    "website": "z. B. https://beispiel.de",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Müller",
+    "ansprechpartner_email": "z. B. max@beispiel.de",
+    "cockpit_zusammenfassung": "Kurze Zusammenfassung des Unternehmens, Entwicklung, Status...",
+    "allgemeine_notizen": "Besonderheiten, Marktsituation, Team-Änderungen..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "terminbezeichnung": "z. B. Q3-Jahresabschluss",
+    "terminart": "Art des Termins wählen",
+    "datum_uhrzeit": "Wann und um wie viel Uhr?",
+    "ort": "z. B. Berlin oder Zoom-Link",
+    "wiederholung": "Einmalig oder regelmäßig?",
+    "erinnerung_tage": "z. B. 7",
+    "google_kalender": "Zu Google-Kalender hinzufügen?",
+    "terminstatus": "Status des Termins",
+    "notizen_termin": "Agenda, Teilnehmer, Vorbereitungen..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen?",
+    "dokumentenbezeichnung": "z. B. Jahresabschluss 2025",
+    "dokumententyp": "Dokumenttyp wählen",
+    "dokumentenbeschreibung": "Was enthält das Dokument? Wichtige Punkte...",
+    "dokumentendatum": "Wann wurde es erstellt?",
+    "dokumentenlink": "z. B. https://drive.google.com/…",
+    "bereitgestellt_von": "z. B. Geschäftsführer Schmidt",
+    "notizen_dokument": "Wo ist es gespeichert? Zugang, Kontakte..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Für welches Unternehmen?",
+    "notiz_titel": "z. B. Gespräch mit Board",
+    "notiz_inhalt": "Was wurde besprochen? Ergebnisse, nächste Schritte, Entscheidungen...",
+    "notiz_datum": "Wann war das?",
+    "kategorie": "Kategorie auswählen",
+    "prioritaet": "Wie wichtig?",
+    "schlagwoerter": "z. B. expansion, risiko, q3"
+  }
+}

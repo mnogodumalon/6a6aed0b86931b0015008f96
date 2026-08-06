@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 15,
+      "defaults_keys": ["status", "investitionsdatum"],
+      "computed_keys": [],
+      "reason": "Reine Stammdaten-Entity ohne Berechnung. Drei Number-Felder (Beteiligungsquote, Investiertes Kapital, Aktueller Wert) sind unabhängige Erfassungswerte ohne mathematische Beziehung zueinander. Kein Datumspaar für Dauern, keine Applookup mit Preis-Targets."
+    },
+    "Termine": {
+      "placeholders_set": 10,
+      "defaults_keys": ["datum_uhrzeit", "terminart", "terminstatus", "wiederholung", "google_kalender"],
+      "computed_keys": [],
+      "reason": "Termine-Verwaltungs-Entity ohne Berechnungen. Applookup auf Unternehmen hat keine Preis-Targets. Erinnerung_tage ist unabhängiges Feld ohne Beziehung zu anderen. Kein Datumspaar für Dauer-Berechnung."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": ["dokumentendatum", "dokumententyp"],
+      "computed_keys": [],
+      "reason": "Reine Dokumentenverwaltungs-Entity. Applookup auf Unternehmen ohne Preis-Targets. Dokumentendatum ist einzelnes Feld ohne Folgedatum. Keine Number-Felder, keine Berechnungszusammenhänge erkennbar."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": ["notiz_datum", "kategorie", "prioritaet"],
+      "computed_keys": [],
+      "reason": "Notiz-Verwaltungs-Entity zu Unternehmen ohne Berechnungen. Applookup hat keine numerischen oder preis-relevanten Target-Felder im Kontext. Notiz_datum ist einzelnes Feld. Keine Number-Felder außer implizit."
+    }
+  }
+}
