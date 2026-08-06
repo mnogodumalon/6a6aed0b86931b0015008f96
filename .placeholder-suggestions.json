@@ -1,0 +1,51 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. Acme GmbH",
+    "rechtsform": "Rechtsform wählen",
+    "branche": "Aus 8 Branchen wählen",
+    "beteiligungsquote": "z. B. 25",
+    "investiertes_kapital": "z. B. 500.000",
+    "aktueller_wert": "z. B. 1.200.000",
+    "investitionsdatum": "Wann wurde investiert?",
+    "stadt": "z. B. München",
+    "land": "z. B. Deutschland",
+    "website": "z. B. https://acme.de",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Mustermann",
+    "ansprechpartner_email": "z. B. max@acme.de",
+    "ansprechpartner_telefon": "z. B. +49 89 123456",
+    "cockpit_zusammenfassung": "Kurze Übersicht des Investitionsstandes und Entwicklungsprognose...",
+    "allgemeine_notizen": "Interne Notizen, Besonderheiten, Kontextinformationen..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "terminbezeichnung": "z. B. Q3 Strategie-Review",
+    "terminart": "Terminart wählen",
+    "datum_uhrzeit": "Wann findet der Termin statt?",
+    "ort": "z. B. Berlin, Video-Call oder Adresse",
+    "wiederholung": "Wie oft wiederholen?",
+    "erinnerung_tage": "z. B. 7",
+    "google_kalender": "Aktivieren oder deaktivieren",
+    "terminstatus": "Status wählen",
+    "notizen_termin": "Agenda, Teilnehmer, Ergebnisse, nächste Schritte..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen gehört das Dokument?",
+    "dokumentenbezeichnung": "z. B. Jahresabschluss 2024",
+    "dokumententyp": "Dokumenttyp wählen",
+    "dokumentenbeschreibung": "Worum geht es? Inhalt, Besonderheiten, relevante Abschnitte...",
+    "dokumentendatum": "Wann wurde das Dokument erstellt?",
+    "dokumentenlink": "z. B. https://example.com/file.pdf",
+    "bereitgestellt_von": "z. B. Geschäftsführung",
+    "notizen_dokument": "Wo ist das Original? Wer hat es eingereicht? Weiteres..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen gehört die Notiz?",
+    "notiz_titel": "z. B. Exit-Strategie klären",
+    "notiz_inhalt": "Die vollständige Notiz — Kontext, Erkenntnisse, offene Fragen, nächste Schritte...",
+    "notiz_datum": "Wann wurde die Notiz erstellt?",
+    "kategorie": "Kategorie wählen",
+    "prioritaet": "Wie wichtig ist das?",
+    "schlagwoerter": "z. B. Exit, Bewertung, Q3 2024"
+  }
+}

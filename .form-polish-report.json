@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 15,
+      "defaults_keys": ["investitionsdatum", "status"],
+      "computed_keys": [],
+      "reason": "Reine Stammdaten für Investment-Verwaltung. Beteiligungsquote, investiertes Kapital und aktueller Wert sind inhaltlich unabhängig und nicht berechenbar (Gewinn = aktueller_wert - investiertes_kapital ist Geschäftsentscheidung pro Record, kein automatisches Computed). Keine applookup mit Preis-Targets."
+    },
+    "Termine": {
+      "placeholders_set": 9,
+      "defaults_keys": ["datum_uhrzeit", "wiederholung", "terminstatus", "erinnerung_tage"],
+      "computed_keys": [],
+      "reason": "Termin-Verwaltung mit Date/Time, Lookups und Erinnerungstage. Applookup auf Unternehmen hat keine Preis-Felder. Keine berechenbaren Felder — nur reine Datenverwaltung. Erinnerung_tage mit max:365 für sinnvolle Obergrenzen."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": ["dokumentendatum"],
+      "computed_keys": [],
+      "reason": "Reine Dokument-Metadaten (Bezeichnung, Typ, Datum, Link, Bereitgesteller, Notizen). Kein numerisches Feld, keine Berechnungen möglich. Applookup auf Unternehmen ohne Preis-Targets."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": ["notiz_datum", "kategorie"],
+      "computed_keys": [],
+      "reason": "Notiz-Management mit Metadaten (Titel, Inhalt, Datum, Kategorie, Priorität, Tags). Kein numerisches Feld, keine Berechnungen. Applookup auf Unternehmen ohne Preis-Targets."
+    }
+  }
+}
