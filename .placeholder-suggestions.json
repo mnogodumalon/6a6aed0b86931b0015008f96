@@ -1,0 +1,50 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. TechVision GmbH",
+    "rechtsform": "Rechtsform wählen",
+    "branche": "Branche wählen",
+    "beteiligungsquote": "z. B. 25",
+    "investiertes_kapital": "z. B. 500000",
+    "aktueller_wert": "z. B. 1200000",
+    "investitionsdatum": "Wann wurde investiert?",
+    "stadt": "z. B. Berlin",
+    "land": "z. B. Deutschland",
+    "website": "z. B. www.example.com",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Müller",
+    "ansprechpartner_email": "z. B. max@example.com",
+    "cockpit_zusammenfassung": "Kurze Übersicht der Beteiligung, Besonderheiten...",
+    "allgemeine_notizen": "Interne Notizen, Beobachtungen, Handlungspunkte..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "terminbezeichnung": "z. B. Jahresabschluss 2026",
+    "terminart": "Terminart wählen",
+    "datum_uhrzeit": "Wann findet der Termin statt?",
+    "ort": "z. B. Berlin oder Meet-Link",
+    "wiederholung": "Wiederholung wählen",
+    "erinnerung_tage": "z. B. 7",
+    "google_kalender": "Synchronisieren aktivieren",
+    "terminstatus": "Status wählen",
+    "notizen_termin": "Agenda, Ergebnisse, To-dos..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "dokumentenbezeichnung": "z. B. Jahresabschluss 2025",
+    "dokumententyp": "Dokumenttyp wählen",
+    "dokumentenbeschreibung": "Kurze Beschreibung des Inhalts...",
+    "dokumentendatum": "Datum des Dokuments",
+    "dokumentenlink": "z. B. https://example.com/doc",
+    "bereitgestellt_von": "z. B. Geschäftsführer",
+    "notizen_dokument": "Besonderheiten, Auffälligkeiten..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "notiz_titel": "z. B. Strategiemeeting Insights",
+    "notiz_inhalt": "Notiztext, Gedanken, Erkenntnisse, Fragen...",
+    "notiz_datum": "Wann wurde die Notiz erfasst?",
+    "kategorie": "Kategorie wählen",
+    "prioritaet": "Priorität wählen",
+    "schlagwoerter": "z. B. Expansion, Risiko, Chancen"
+  }
+}
