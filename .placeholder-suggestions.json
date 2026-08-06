@@ -1,0 +1,51 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. TechCorp GmbH",
+    "rechtsform": "Wähle eine Rechtsform",
+    "branche": "Wähle eine Branche",
+    "beteiligungsquote": "z. B. 25",
+    "investiertes_kapital": "z. B. 500000",
+    "aktueller_wert": "z. B. 750000",
+    "investitionsdatum": "Wann wurde investiert?",
+    "stadt": "z. B. Berlin",
+    "land": "z. B. Deutschland",
+    "website": "z. B. https://techcorp.de",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Müller",
+    "ansprechpartner_email": "z. B. max.mueller@techcorp.de",
+    "ansprechpartner_telefon": "z. B. +49 30 123456",
+    "cockpit_zusammenfassung": "Kurze Übersicht des Unternehmens, Status und Besonderheiten...",
+    "allgemeine_notizen": "Ergänzende Informationen, Beobachtungen, nächste Schritte..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "terminbezeichnung": "z. B. Q3 Bilanzbesprechung",
+    "terminart": "Wähle die Terminart",
+    "datum_uhrzeit": "Wann findet der Termin statt?",
+    "ort": "z. B. Videokonferenz oder Berlin",
+    "wiederholung": "Wähle die Häufigkeit",
+    "erinnerung_tage": "z. B. 7",
+    "google_kalender": "Synchronisierung aktivieren?",
+    "terminstatus": "Wähle den Status",
+    "notizen_termin": "Tagesordnung, Teilnehmer, Ergebnisse..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen?",
+    "dokumentenbezeichnung": "z. B. Jahresabschluss 2025",
+    "dokumententyp": "Wähle den Dokumenttyp",
+    "dokumentenbeschreibung": "Inhalt, Besonderheiten, Relevanz des Dokuments...",
+    "dokumentendatum": "Wann wurde das Dokument erstellt?",
+    "dokumentenlink": "z. B. https://example.com/dokument.pdf",
+    "bereitgestellt_von": "z. B. Geschäftsführer",
+    "notizen_dokument": "Anmerkungen, Zugriffsbeschränkungen, Archivierung..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen?",
+    "notiz_titel": "z. B. Neue Investitionsmöglichkeit",
+    "notiz_inhalt": "Detaillierte Notiz mit Beobachtungen, Ideen, Erkenntnissen, Handlungsschritten...",
+    "notiz_datum": "Wann wurde die Notiz erstellt?",
+    "kategorie": "Wähle eine Kategorie",
+    "prioritaet": "Wähle die Priorität",
+    "schlagwoerter": "z. B. Expansion, Q3, Risiken"
+  }
+}
