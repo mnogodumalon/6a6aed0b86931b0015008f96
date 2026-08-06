@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 15,
+      "defaults_keys": ["status", "investitionsdatum"],
+      "computed_keys": [],
+      "reason": "Reine Stammdaten ohne Preisbeziehungen oder Datums-Paare. Keine berechenbaren Felder."
+    },
+    "Termine": {
+      "placeholders_set": 10,
+      "defaults_keys": ["datum_uhrzeit", "terminart", "erinnerung_tage", "google_kalender", "terminstatus"],
+      "computed_keys": [],
+      "reason": "Termin-Management Entity. Einzelnes Datumsfeld (kein Pair), keine Preise, keine Berechnung möglich."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": ["dokumentendatum", "dokumententyp"],
+      "computed_keys": [],
+      "reason": "Dokumentenverwaltung ohne Preise oder Zeitspannen-Berechnung. Master-Daten Entity."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": ["notiz_datum", "kategorie", "prioritaet"],
+      "computed_keys": [],
+      "reason": "Notizen-Entity ohne numerische oder Preis-Felder. Keine berechenbaren Größen."
+    }
+  }
+}

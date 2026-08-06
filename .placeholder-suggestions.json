@@ -1,0 +1,51 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. TechVenture GmbH",
+    "rechtsform": "Wähle eine Rechtsform",
+    "branche": "Wähle eine Branche",
+    "beteiligungsquote": "z. B. 25",
+    "investiertes_kapital": "z. B. 250000",
+    "aktueller_wert": "z. B. 500000",
+    "investitionsdatum": "Wann wurde investiert?",
+    "stadt": "z. B. Berlin",
+    "land": "z. B. Deutschland",
+    "website": "z. B. https://www.unternehmen.de",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Müller",
+    "ansprechpartner_email": "z. B. max.mueller@unternehmen.de",
+    "ansprechpartner_telefon": "z. B. +49 30 12345678",
+    "cockpit_zusammenfassung": "Kurze Übersicht der Beteiligung, aktuelle Strategie...",
+    "allgemeine_notizen": "Besondere Punkte, Vereinbarungen, Beobachtungen..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "terminbezeichnung": "z. B. Aufsichtsratssitzung Q3",
+    "terminart": "Wähle eine Terminart",
+    "datum_uhrzeit": "Wann ist der Termin?",
+    "ort": "z. B. Berlin oder Zoom-Link",
+    "wiederholung": "Wähle Wiederholungsmuster",
+    "erinnerung_tage": "z. B. 7",
+    "google_kalender": "Mit Google-Kalender synchronisieren",
+    "terminstatus": "Wähle Status des Termins",
+    "notizen_termin": "Agenda, Teilnehmer, Ergebnisse..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen?",
+    "dokumentenbezeichnung": "z. B. Jahresabschluss 2025",
+    "dokumententyp": "Wähle einen Dokumenttyp",
+    "dokumentenbeschreibung": "Inhalt, Besonderheiten, Quelle...",
+    "dokumentendatum": "Datum des Dokuments",
+    "dokumentenlink": "z. B. https://drive.google.com/...",
+    "bereitgestellt_von": "z. B. Geschäftsführer",
+    "notizen_dokument": "Relevante Hinweise, Kontext, Geheimhaltung..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Zu welchem Unternehmen?",
+    "notiz_titel": "z. B. Expansion in Skandinavien geplant",
+    "notiz_inhalt": "Gedanken, Beobachtungen, Diskussionspunkte...",
+    "notiz_datum": "Wann wurde das notiert?",
+    "kategorie": "Wähle eine Kategorie",
+    "prioritaet": "Wie wichtig ist diese Notiz?",
+    "schlagwoerter": "z. B. Wachstum, Strategie, Risk"
+  }
+}
