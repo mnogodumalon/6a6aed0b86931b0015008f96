@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 16,
+      "defaults_keys": ["investitionsdatum", "status"],
+      "computed_keys": [],
+      "reason": "Reine Stammdaten: Unternehmensprofile mit Metadaten, keine berechenbaren Größen. Beteiligungsquote ist Eingabe, nicht Produkt. Keine Datumspaare, keine applookup-Preis-Ketten."
+    },
+    "Termine": {
+      "placeholders_set": 10,
+      "defaults_keys": ["datum_uhrzeit", "terminstatus", "erinnerung_tage"],
+      "computed_keys": [],
+      "reason": "Event-Metadaten für Kalender: Zeitstempel, Ort, Wiederholung, Status. Kein Datumspaar (nur Startdatum), keine Kosten oder Mengen. dateDiff nicht anwendbar."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": ["dokumentendatum"],
+      "computed_keys": [],
+      "reason": "Dokumenten-Verwaltung: Referenzen und Metadaten pro Unternehmen. Einzelnes Dokumentendatum (kein Bereich), keine Preisfelder, keine Mengen."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": ["notiz_datum", "kategorie", "prioritaet"],
+      "computed_keys": [],
+      "reason": "Notiz-Erfassung: Titel, Inhalt, Datum, Kategorien. Reine Textdaten, keine numerischen oder zeitlichen Berechnungen notwendig."
+    }
+  }
+}
