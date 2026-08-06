@@ -1,0 +1,50 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. TechVision GmbH",
+    "rechtsform": "Wähle eine Rechtsform",
+    "branche": "Wähle eine Branche",
+    "beteiligungsquote": "z. B. 25",
+    "investiertes_kapital": "z. B. 500000",
+    "aktueller_wert": "z. B. 1200000",
+    "investitionsdatum": "Wann wurde investiert?",
+    "stadt": "z. B. Berlin",
+    "land": "z. B. Deutschland",
+    "website": "z. B. https://example.com",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Müller",
+    "ansprechpartner_email": "z. B. max@example.com",
+    "cockpit_zusammenfassung": "Kurze Übersicht: Status, Ziele, Risiken...",
+    "allgemeine_notizen": "Besonderheiten, Historie, wichtige Punkte..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "terminbezeichnung": "z. B. Q3 Jahresabschluss",
+    "terminart": "Wähle eine Terminart",
+    "datum_uhrzeit": "Wann findet der Termin statt?",
+    "ort": "z. B. Berlin oder Zoom-Link",
+    "wiederholung": "Wähle Wiederholungsmuster",
+    "erinnerung_tage": "z. B. 3",
+    "google_kalender": "Soll synchronisiert werden?",
+    "terminstatus": "Wähle den aktuellen Status",
+    "notizen_termin": "Agenda, Teilnehmer, Ergebnisse..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "dokumentenbezeichnung": "z. B. Jahresabschluss 2025",
+    "dokumententyp": "Wähle einen Dokumententyp",
+    "dokumentenbeschreibung": "Inhalt, Relevanz, Besonderheiten...",
+    "dokumentendatum": "Wann war das Dokument aktuell?",
+    "dokumentenlink": "z. B. https://cloud.example.com/...",
+    "bereitgestellt_von": "z. B. Hr. Schmidt",
+    "notizen_dokument": "Zusätzliche Anmerkungen, Kontext..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "notiz_titel": "z. B. Q3 Strategie überarbeitet",
+    "notiz_inhalt": "Gedanken, Beobachtungen, Ergebnisse...",
+    "notiz_datum": "Wann wurde die Notiz erstellt?",
+    "kategorie": "Wähle eine Kategorie",
+    "prioritaet": "Wähle eine Priorität",
+    "schlagwoerter": "z. B. strategie, riskomanagement"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 15,
+      "defaults_keys": ["status"],
+      "computed_keys": [],
+      "reason": "Reine Stammdaten zur Beteiligungsverwaltung. Keine berechenbaren Felder — Beteiligungsquote und Wert sind manuelle Eingaben ohne arithmetische Abhängigkeiten."
+    },
+    "Termine": {
+      "placeholders_set": 10,
+      "defaults_keys": ["datum_uhrzeit", "terminstatus", "wiederholung", "erinnerung_tage"],
+      "computed_keys": [],
+      "reason": "Termin- und Event-Management ohne Preiskomponenten oder Dauer-Multiplikationen. Applookup auf Unternehmen hat nur Beteiligungsdaten, keine monetären Ziele."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": ["dokumentendatum"],
+      "computed_keys": [],
+      "reason": "Dokumentenmanagementsystem mit Metadaten und Verknüpfung zu Unternehmen. Keine numerischen Berechnungen — reine Verwaltung und Klassifizierung."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": ["notiz_datum", "prioritaet"],
+      "computed_keys": [],
+      "reason": "Notizenverwaltung mit Kategorisierung und Tagging. Keine berechneten Felder — applookup dient nur zur Kontextualisierung der Notiz auf eine Beteiligung."
+    }
+  }
+}
