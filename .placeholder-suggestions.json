@@ -1,0 +1,50 @@
+{
+  "UnternehmenDialog.tsx": {
+    "name": "z. B. Tech Solutions GmbH",
+    "rechtsform": "Wähle die Rechtsform",
+    "branche": "Wähle die Branche",
+    "beteiligungsquote": "z. B. 15",
+    "investiertes_kapital": "z. B. 500000",
+    "aktueller_wert": "z. B. 750000",
+    "investitionsdatum": "Wann wurde investiert?",
+    "stadt": "z. B. Berlin",
+    "land": "z. B. Deutschland",
+    "website": "z. B. https://example.com",
+    "ansprechpartner_vorname": "z. B. Max",
+    "ansprechpartner_nachname": "z. B. Müller",
+    "ansprechpartner_email": "z. B. max@example.com",
+    "cockpit_zusammenfassung": "Kurze Übersicht der Beteiligung, Kernzahlen, Entwicklung...",
+    "allgemeine_notizen": "Weitere Anmerkungen zur Beteiligung, Besonderheiten, Risiken..."
+  },
+  "TermineDialog.tsx": {
+    "unternehmen": "Welches Unternehmen betroffen?",
+    "terminbezeichnung": "z. B. Board-Meeting Q3",
+    "terminart": "Wähle die Terminart",
+    "datum_uhrzeit": "Wann findet der Termin statt?",
+    "ort": "z. B. Berlin, Zoom-Link oder Adresse",
+    "wiederholung": "Wähle Wiederholungsmuster",
+    "erinnerung_tage": "z. B. 3",
+    "google_kalender": "Mit Google-Kalender synchronisieren?",
+    "terminstatus": "Ist der Termin geplant?",
+    "notizen_termin": "Agenda, Teilnehmer, Gesprächsergebnisse..."
+  },
+  "DokumenteDialog.tsx": {
+    "unternehmen": "Welches Unternehmen?",
+    "dokumentenbezeichnung": "z. B. Jahresabschluss 2025",
+    "dokumententyp": "Wähle den Dokumenttyp",
+    "dokumentenbeschreibung": "Worum geht es in dem Dokument? Besonderheiten, Relevanz...",
+    "dokumentendatum": "Wann wurde das Dokument erstellt?",
+    "dokumentenlink": "z. B. https://drive.google.com/...",
+    "bereitgestellt_von": "z. B. Hr. Schmidt, Geschäftsführung",
+    "notizen_dokument": "Besonderheiten, zu beachten, Follow-up..."
+  },
+  "NotizenDialog.tsx": {
+    "unternehmen": "Welches Unternehmen betrifft die Notiz?",
+    "notiz_titel": "z. B. Expansion in Frankreich geplant",
+    "notiz_inhalt": "Ausführliche Notiz mit Gedanken, Ergebnissen, nächsten Schritten, Kontakt-Info...",
+    "notiz_datum": "Wann wurde die Notiz erstellt?",
+    "kategorie": "Wähle eine Kategorie",
+    "prioritaet": "Wie dringend ist das Thema?",
+    "schlagwoerter": "z. B. Expansion, Frankreich, Q4"
+  }
+}

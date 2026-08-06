@@ -1,0 +1,29 @@
+{
+  "entities": {
+    "Unternehmen": {
+      "placeholders_set": 14,
+      "defaults_keys": ["investitionsdatum", "beteiligungsquote", "status"],
+      "computed_keys": [],
+      "numberFields": ["beteiligungsquote"],
+      "reason": "Reine Stammdaten-Entity für Unternehmensverwaltung. Keine berechenbaren Felder vorhanden. Beteiligungsquote hat 0-100%-Obergrenze. Wert und Quote sind nominell und nicht aus anderen Feldern ableitbar (würde Rendite-% und Marktwert-Index erfordern)."
+    },
+    "Termine": {
+      "placeholders_set": 10,
+      "defaults_keys": ["datum_uhrzeit", "erinnerung_tage", "terminart", "terminstatus", "wiederholung"],
+      "computed_keys": [],
+      "reason": "Termin-Verwaltung mit applookup auf Unternehmen. Keine Preis-Zielfelder, keine Datumspaare für Differenzen. Erinnerung ist manuelle Eingabe (Tage im Voraus). Keine Berechnungen erforderlich."
+    },
+    "Dokumente": {
+      "placeholders_set": 8,
+      "defaults_keys": ["dokumentendatum"],
+      "computed_keys": [],
+      "reason": "Reine Dokumenten-Verwaltung mit applookup-Kontext (Unternehmen). Keine numerischen Felder, keine Preis-Daten, keine berechenbaren Abhängigkeiten. Datum wird auf Erfassungstag vorbelegt."
+    },
+    "Notizen": {
+      "placeholders_set": 7,
+      "defaults_keys": ["notiz_datum", "kategorie", "prioritaet"],
+      "computed_keys": [],
+      "reason": "Notizen-Verwaltung mit freien Textinhalten. Kein applookup mit Preis-Target. Keine numerischen Felder, keine berechenbaren Größen. Kategorie und Priorität haben sinnvolle Standardwerte (Allgemein / Mittel)."
+    }
+  }
+}
