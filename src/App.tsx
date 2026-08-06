@@ -18,6 +18,8 @@ import DokumenteDetailPage from '@/pages/DokumenteDetailPage';
 import NotizenPage from '@/pages/NotizenPage';
 import NotizenDetailPage from '@/pages/NotizenDetailPage';
 // <custom:imports>
+const GesellschafterversammlungPage = lazy(() => import('@/pages/intents/GesellschafterversammlungPage'));
+const BeteiligungAbschliessenPage = lazy(() => import('@/pages/intents/BeteiligungAbschliessenPage'));
 // </custom:imports>
 
 // Lazy: public pages live outside <Layout> and only load on /#/public/:slug —
@@ -45,6 +47,8 @@ export default function App() {
                 <Route path="admin" element={<AdminPage />} />
                 <Route path="verwaltung/oeffentliche-seiten" element={<PublicPagesAdmin />} />
                 {/* <custom:routes> */}
+                <Route path="intents/gesellschafterversammlung" element={<Suspense fallback={null}><GesellschafterversammlungPage /></Suspense>} />
+                <Route path="intents/beteiligung-abschliessen" element={<Suspense fallback={null}><BeteiligungAbschliessenPage /></Suspense>} />
                 {/* </custom:routes> */}
               </Route>
             </Routes>
