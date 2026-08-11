@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useActions } from '@/context/ActionsContext';
+import { t, localeTag } from '@/i18n';
 
 const APPGROUP_ID = '6a6aed0b86931b0015008f96';
 const UPDATE_ENDPOINT = '/claude/build/update';
@@ -45,7 +46,7 @@ function formatDeployedAt(iso: string): string {
   if (!iso) return '';
   try {
     const d = new Date(iso);
-    return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleDateString(localeTag(), { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   } catch { return iso.slice(0, 16); }
 }
 
@@ -78,11 +79,11 @@ function rollbackId(d: Deployment): string {
 function deploymentMeta(source: string | undefined): { icon: typeof IconArrowBackUp; colorClass: string; bgClass: string; label: string } {
   switch (source) {
     case 'initial':
-      return { icon: IconSparkles, colorClass: 'text-blue-500', bgClass: 'bg-blue-500/5', label: 'Erstversion' };
+      return { icon: IconSparkles, colorClass: 'text-blue-500', bgClass: 'bg-blue-500/5', label: t('vc_label_initial') };
     case 'update':
-      return { icon: IconRefresh, colorClass: 'text-emerald-500', bgClass: 'bg-emerald-500/5', label: 'Scaffold-Update' };
+      return { icon: IconRefresh, colorClass: 'text-emerald-500', bgClass: 'bg-emerald-500/5', label: t('vc_label_update') };
     case 'agent':
-      return { icon: IconMessageCircle, colorClass: 'text-violet-500', bgClass: 'bg-violet-500/5', label: 'KI-Änderung' };
+      return { icon: IconMessageCircle, colorClass: 'text-violet-500', bgClass: 'bg-violet-500/5', label: t('vc_label_agent') };
     default:
       return { icon: IconArrowBackUp, colorClass: 'text-muted-foreground', bgClass: '', label: '' };
   }
@@ -132,7 +133,7 @@ function ConfirmPrompt({ open, title, description, confirmLabel, onCancel, onCon
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={onCancel}>Abbrechen</Button>
+          <Button variant="outline" onClick={onCancel}>{t('cancel')}</Button>
           <Button variant={destructive ? 'destructive' : 'default'} onClick={onConfirm}>
             {confirmLabel}
           </Button>
@@ -258,7 +259,7 @@ export function VersionCheck() {
       const expectedCodebase = receipt.codebase;
       const verified = await waitForVersion(v => v.codebase === expectedCodebase);
       if (!verified) {
-        setStatusMessage('Version konnte nicht bestätigt werden. Bitte Seite neu laden.');
+        setStatusMessage(t('update_verify_timeout'));
         setStatus('error');
         return;
       }
@@ -309,7 +310,7 @@ export function VersionCheck() {
       });
 
       if (!verified) {
-        setStatusMessage('Version konnte nicht bestätigt werden. Bitte Seite neu laden.');
+        setStatusMessage(t('update_verify_timeout'));
         setStatus('error');
         setRollbackTarget(null);
         return;
@@ -324,10 +325,10 @@ export function VersionCheck() {
 
   if (status === 'updating' || status === 'verifying' || status === 'rolling_back') {
     const label = status === 'updating'
-      ? 'Aktualisiert…'
+      ? t('updating')
       : status === 'verifying'
-        ? 'Version wird bestätigt…'
-        : 'Wird zurückgesetzt…';
+        ? t('update_verifying')
+        : t('rolling_back');
     const Icon = status === 'rolling_back' ? IconHistory : IconRefresh;
     return (
       <div className="flex items-center gap-2 px-4 py-2 text-xs text-muted-foreground">
@@ -363,7 +364,7 @@ export function VersionCheck() {
           className="flex items-center gap-2 mx-3 mt-1 px-3 py-1.5 w-[calc(100%-1.5rem)] rounded-lg text-xs font-medium text-[#2563eb] bg-secondary border border-[#bfdbfe] hover:bg-[#dbeafe] transition-colors"
         >
           <IconRefresh size={13} className="shrink-0" />
-          <span>Update verfügbar: v{latestVersion}</span>
+          <span>{t('update_available')} v{latestVersion}</span>
         </button>
       )}
 
@@ -396,18 +397,18 @@ export function VersionCheck() {
               className="flex items-center gap-2 w-full px-3 py-2 text-xs font-medium text-[#2563eb] bg-secondary/50 hover:bg-secondary border-b border-sidebar-border transition-colors"
             >
               <IconRefresh size={13} className="shrink-0" />
-              <span>Update verfügbar: v{latestVersion}</span>
+              <span>{t('update_available')} v{latestVersion}</span>
             </button>
           )}
 
           {loadingDeployments ? (
             <div className="flex items-center justify-center gap-2 px-3 py-3 text-xs text-muted-foreground">
               <IconLoader size={13} className="animate-spin" />
-              <span>Lade Versionen...</span>
+              <span>{t('vc_loading_versions')}</span>
             </div>
           ) : deployments.length === 0 ? (
             <div className="px-3 py-3 text-xs text-muted-foreground text-center">
-              Keine früheren Versionen
+              {t('vc_no_previous_versions')}
             </div>
 
           /* ── Ebene 2: Version list for selected branch ── */
@@ -419,7 +420,7 @@ export function VersionCheck() {
                 className="flex items-center gap-1.5 w-full px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground border-b border-sidebar-border transition-colors"
               >
                 <IconArrowLeft size={13} className="shrink-0" />
-                {selectedBranch === 'main' ? 'Hauptlinie' : 'Alternative Richtung'}
+                {selectedBranch === 'main' ? t('vc_label_main_branch') : t('vc_label_alternate_direction')}
               </button>
 
               {/* Version entries */}
@@ -475,7 +476,7 @@ export function VersionCheck() {
                 className="w-full px-3 py-3 text-left hover:bg-sidebar-accent/20 transition-colors border-b border-sidebar-border"
               >
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-xs font-semibold text-foreground">Hauptlinie</span>
+                  <span className="text-xs font-semibold text-foreground">{t('vc_label_main_branch')}</span>
                   <div className="flex items-center gap-1.5">
                     {liveBranch === 'main' && (
                       <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-primary/15 text-primary font-semibold uppercase tracking-wider">live</span>
@@ -496,7 +497,7 @@ export function VersionCheck() {
                   {mainDeps.length > 8 && <span className="text-[9px] text-muted-foreground ml-1">+{mainDeps.length - 8}</span>}
                 </div>
                 <span className="text-[10px] text-muted-foreground">
-                  {mainDeps.length} {mainDeps.length === 1 ? 'Version' : 'Versionen'}
+                  {mainDeps.length} {mainDeps.length === 1 ? t('vc_version_singular') : t('vc_version_plural')}
                 </span>
               </button>}
 
@@ -514,7 +515,7 @@ export function VersionCheck() {
                       >
                         <div className="flex items-center justify-between mb-1.5">
                           <span className="text-xs font-medium text-foreground">
-                            Alternative Richtung{altKeys.length > 1 ? ` ${idx + 1}` : ''}
+                            {t('vc_label_alternate_direction')}{altKeys.length > 1 ? ` ${idx + 1}` : ''}
                           </span>
                           <div className="flex items-center gap-1.5">
                             {hasLive && (
@@ -536,7 +537,7 @@ export function VersionCheck() {
                           {deps.length > 8 && <span className="text-[9px] text-muted-foreground ml-1">+{deps.length - 8}</span>}
                         </div>
                         <span className="text-[10px] text-muted-foreground">
-                          {deps.length} {deps.length === 1 ? 'Version' : 'Versionen'}
+                          {deps.length} {deps.length === 1 ? t('vc_version_singular') : t('vc_version_plural')}
                         </span>
                       </button>
                     );
@@ -554,7 +555,7 @@ export function VersionCheck() {
                 className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 <IconFlask size={14} className="shrink-0" />
-                <span>Klar Lab</span>
+                <span>{t('edit_dashboard')}</span>
               </a>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -563,7 +564,7 @@ export function VersionCheck() {
                   onChange={e => setDevMode(e.target.checked)}
                   className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
                 />
-                <span className="text-xs text-foreground">Entwickler</span>
+                <span className="text-xs text-foreground">{t('developer')}</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -572,7 +573,7 @@ export function VersionCheck() {
                   onChange={e => setBetaMode(e.target.checked)}
                   className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
                 />
-                <span className="text-xs text-foreground">Beta Features</span>
+                <span className="text-xs text-foreground">{t('beta_features')}</span>
               </label>
             </div>
           )}
@@ -582,24 +583,24 @@ export function VersionCheck() {
 
       {status === 'error' && (
         <div className="mx-3 mt-1 px-3 py-1.5 text-xs text-destructive bg-destructive/10 rounded-lg">
-          {statusMessage || 'Fehler aufgetreten'}
+          {statusMessage || t('vc_error_text')}
         </div>
       )}
 
       <ConfirmPrompt
         open={updateDialogOpen}
-        title="Update installieren?"
-        description="Die Anwendung wird auf die neueste Version aktualisiert. Das dauert einige Minuten."
-        confirmLabel="Aktualisieren"
+        title={t('update_confirm_title')}
+        description={t('update_confirm_desc')}
+        confirmLabel={t('update_confirm_action')}
         onCancel={() => setUpdateDialogOpen(false)}
         onConfirm={performUpdate}
       />
 
       <ConfirmPrompt
         open={rollbackDialog !== null}
-        title="Version zurücksetzen?"
-        description="Die Anwendung wird auf die ausgewählte Version zurückgesetzt."
-        confirmLabel="Zurücksetzen"
+        title={t('rollback_confirm_title')}
+        description={t('rollback_confirm_desc')}
+        confirmLabel={t('rollback_confirm_action')}
         destructive
         onCancel={() => setRollbackDialog(null)}
         onConfirm={() => rollbackDialog && performRollback(rollbackDialog)}

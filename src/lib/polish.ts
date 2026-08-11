@@ -23,6 +23,7 @@
 import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { toast } from 'sonner';
+import { t } from '@/i18n';
 
 export function useClock(ms = 60_000): Date {
   const [d, setD] = useState(() => new Date());
@@ -35,7 +36,7 @@ export function useClock(ms = 60_000): Date {
 
 export function gruss(d: Date): string {
   const h = d.getHours();
-  return h < 11 ? 'Guten Morgen!' : h < 18 ? 'Guten Tag!' : 'Guten Abend!';
+  return h < 11 ? t('polish_greeting_morning') : h < 18 ? t('polish_greeting_day') : t('polish_greeting_evening');
 }
 
 export function namen(xs: string[], max = 2): string {
@@ -53,7 +54,7 @@ export function undoToast(msg: string, undo?: () => void): void {
   toast.success(
     msg,
     undo
-      ? { action: { label: 'Rückgängig', onClick: undo }, duration: 6000 }
+      ? { action: { label: t('polish_undo'), onClick: undo }, duration: 6000 }
       : { duration: 6000 },
   );
 }

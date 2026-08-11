@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { IconAlertCircle, IconTool, IconRefresh, IconCheck } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
+import { t } from '@/i18n';
 
 /**
  * DashboardStates — pre-generated loading/error surfaces for DashboardOverview.
@@ -41,7 +42,7 @@ export function DashboardError({ error, onRetry }: { error: Error; onRetry: () =
 
   const handleRepair = async () => {
     setRepairing(true);
-    setRepairStatus('Reparatur wird gestartet...');
+    setRepairStatus(t('repair_starting'));
     setRepairFailed(false);
 
     const errorContext = JSON.stringify({
@@ -104,11 +105,11 @@ export function DashboardError({ error, onRetry }: { error: Error; onRetry: () =
           <IconCheck size={22} className="text-green-500" />
         </div>
         <div className="text-center">
-          <h3 className="font-semibold text-foreground mb-1">Dashboard repariert</h3>
-          <p className="text-sm text-muted-foreground max-w-xs">Das Problem wurde behoben. Bitte laden Sie die Seite neu.</p>
+          <h3 className="font-semibold text-foreground mb-1">{t('repair_done_title')}</h3>
+          <p className="text-sm text-muted-foreground max-w-xs">{t('repair_done_desc')}</p>
         </div>
         <Button size="sm" onClick={() => window.location.reload()}>
-          <IconRefresh size={14} className="mr-1" />Neu laden
+          <IconRefresh size={14} className="mr-1" />{t('repair_reload')}
         </Button>
       </div>
     );
@@ -120,21 +121,21 @@ export function DashboardError({ error, onRetry }: { error: Error; onRetry: () =
         <IconAlertCircle size={22} className="text-destructive" />
       </div>
       <div className="text-center">
-        <h3 className="font-semibold text-foreground mb-1">Fehler beim Laden</h3>
+        <h3 className="font-semibold text-foreground mb-1">{t('load_error_title')}</h3>
         <p className="text-sm text-muted-foreground max-w-xs">
           {repairing ? repairStatus : error.message}
         </p>
       </div>
       <div className="flex gap-2">
-        <Button variant="outline" size="sm" onClick={onRetry} disabled={repairing}>Erneut versuchen</Button>
+        <Button variant="outline" size="sm" onClick={onRetry} disabled={repairing}>{t('retry')}</Button>
         <Button size="sm" onClick={handleRepair} disabled={repairing}>
           {repairing
             ? <span className="inline-block w-3.5 h-3.5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin mr-1" />
             : <IconTool size={14} className="mr-1" />}
-          {repairing ? 'Reparatur läuft...' : 'Dashboard reparieren'}
+          {repairing ? t('repair_running') : t('repair_text')}
         </Button>
       </div>
-      {repairFailed && <p className="text-sm text-destructive">Automatische Reparatur fehlgeschlagen. Bitte kontaktieren Sie den Support.</p>}
+      {repairFailed && <p className="text-sm text-destructive">{t('repair_failed')}</p>}
     </div>
   );
 }

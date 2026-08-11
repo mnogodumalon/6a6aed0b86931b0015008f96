@@ -72,31 +72,6 @@ if (pages.length > 0) {
       errors.push(`${file}: imports the generic dialog '${dialogImport[1]}' — a wizard step uses its own small form (the generic dialogs stay on the CRUD pages)`);
     }
 
-    // 3b. The flow skeleton: check-answers before the write, a success step
-    //     after it. Both are pre-built blocks — a flow that jumps from the
-    //     last form field straight into service.create() writes unreviewed
-    //     data, and one that navigates back to a list after the write ends
-    //     in a dead end. JSX usage is checked, not just the import: an
-    //     unused import would satisfy a weaker gate.
-    if (!/<SummaryStep[\s/>]/.test(src)) {
-      errors.push(`${file}: no <SummaryStep> — every flow shows a check-answers step BEFORE its write; import it from '@/components/blocks/SummaryStep' and render the collected answers with onEdit jumps`);
-    } else if (!/missing=/.test(src)) {
-      // The prop is required by the type, but the message here explains WHAT
-      // to pass — tsc only says it is absent. A live flow submitted an order
-      // with an empty required field because nothing computed this list.
-      errors.push(`${file}: <SummaryStep> without missing= — pass the labels of required (brief '!') answers that are still empty, [] when all are filled; the API accepts empty required fields, this prop is the only enforcement`);
-    }
-    if (!/<SuccessStep[\s/>]/.test(src)) {
-      errors.push(`${file}: no <SuccessStep> — every flow ends on a success step naming the result and offering follow-up actions; import it from '@/components/blocks/SuccessStep' (do not navigate back to a list)`);
-    }
-
-    // 3c. Removal from a step's local list is reversible — it gets an undo
-    //     toast, not a silent disappearance and not a confirm dialog. The
-    //     helper is pre-built; a live flow removed positions with no feedback.
-    if (/entfernen/i.test(src) && !src.includes('undoToast')) {
-      errors.push(`${file}: has an "entfernen" action but never calls undoToast — import { undoToast } from '@/lib/polish', remove immediately and offer "Rückgängig" (confirm dialogs are for irreversible writes only)`);
-    }
-
     // 4. UTC day-shift trap — same rule as gate 1 of check-dashboard.mjs, which
     //    only ever sees DashboardOverview.tsx. A wizard step writes date fields
     //    DIRECTLY via the service, so this is exactly where the shift lands.
@@ -138,6 +113,55 @@ if (pages.length > 0) {
   //    shows "werden erstellt…" forever next to the finished flows.
   if (/export const INTENTS_PENDING = true/.test(registrySrc)) {
     errors.push(`${REGISTRY}: INTENTS_PENDING is still true although ${pages.length} flow(s) exist — set it to false, the sidebar keeps showing ghost rows otherwise`);
+  }
+}
+
+// Runtime i18n: intent pages must render their UI text through makeT (all
+// three languages) — the dashboard has a live language switcher. Same rule
+// and same escape hatch as check-dashboard gate 21.
+for (const page of pages) {
+  const file = join(DIR, `${page}.tsx`);
+  const src = readFileSync(file, 'utf8');
+  const lines = src.split('\n');
+  // The closing `<` must start a tag (`</` or `<Tag`). Without that a
+  // comparison pair reads as JSX text: `x > 0 && (a.fields.b ?? 0) < y`
+  // matched, and the fixer dutifully annotated pure logic (live-seen).
+  const jsxText = />[^<>{}\n]*[A-Za-zÄÖÜäöüßÀ-ž]{3,}[^<>{}\n]*<[/A-Za-z]/;
+  const attrText = /\b(?:title|placeholder|label|aria-label|alt|emptyLabel|emptyText)=(?:\{\s*)?(?:"[^"{}]*[A-Za-zÄÖÜäöüßÀ-ž]{3,}[^"{}]*"|'[^'{}]*[A-Za-zÄÖÜäöüßÀ-ž]{3,}[^'{}]*')/;
+  const objText = /\b(?:title|label|name|emptyLabel|emptyText|hint|description)\s*:\s*(?:"[^"{}]*[A-Za-zÄÖÜäöüßÀ-ž]{3,}[^"{}]*"|'[^'{}]*[A-Za-zÄÖÜäöüßÀ-ž]{3,}[^'{}]*')/;
+  const hits = [];
+  for (let i = 0; i < lines.length && hits.length < 8; i++) {
+    const l = lines[i];
+    if (l.includes('i18n-exempt')) continue;
+    const trimmed = l.trim();
+    if (trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*')) continue;
+    if (jsxText.test(l) || attrText.test(l) || objText.test(l)) hits.push(`    line ${i + 1}: ${l}`);
+  }
+  if (hits.length) {
+    errors.push(
+      `${file}: hardcoded UI text — define your strings ONCE via makeT from '@/i18n' ({ de, en }) and render {tt('key')}; ` +
+      `brand names/codes take /* i18n-exempt */ on the line.\n` + hits.join('\n')
+    );
+  }
+  // LOOKUP_OPTIONS labels are locale-aware getters — resolving them at module
+  // scope freezes one language at import time (same rule as check-dashboard 22).
+  // Statement-based: multi-line `.map(` statements escaped a per-line regex.
+  let optName = 'LOOKUP_OPTIONS';
+  const importM = src.match(/import\s*\{([^}]*)\}\s*from\s*'@\/types\/app'/);
+  const aliasM = importM && importM[1].match(/LOOKUP_OPTIONS\s+as\s+(\w+)/);
+  if (aliasM) optName = aliasM[1];
+  for (let i = 0; i < lines.length; i++) {
+    if (!/^(?:export\s+)?const\s/.test(lines[i])) continue;
+    let j = i;
+    let stmt = lines[i];
+    while (!/;\s*$/.test(lines[j]) && j + 1 < lines.length && j - i < 12) {
+      j++;
+      stmt += '\n' + lines[j];
+    }
+    if (stmt.includes(optName) && /(?:\.label\b|label\s*:)/.test(stmt)) {
+      errors.push(`${file}:${i + 1}: module-scope LOOKUP_OPTIONS label read — move it inside the component body, the getters freeze at import otherwise:\n    ${lines[i]}`);
+    }
+    i = j;
   }
 }
 

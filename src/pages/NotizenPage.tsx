@@ -15,12 +15,12 @@ import { NotizenDialog } from '@/components/dialogs/NotizenDialog';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { PageShell } from '@/components/PageShell';
 import { AI_PHOTO_SCAN, AI_PHOTO_LOCATION } from '@/config/ai-features';
+import { t, appLabel, fieldLabel, lookupLabel, dateFnsLocale, dateFormat } from '@/i18n';
 import { format, parseISO } from 'date-fns';
-import { de } from 'date-fns/locale';
 
 function formatDate(d?: string) {
   if (!d) return '—';
-  try { return format(parseISO(d), 'dd.MM.yyyy', { locale: de }); } catch { return d; }
+  try { return format(parseISO(d), dateFormat(), { locale: dateFnsLocale() }); } catch { return d; }
 }
 
 export default function NotizenPage() {
@@ -119,18 +119,18 @@ export default function NotizenPage() {
 
   return (
     <PageShell
-      title="Notizen"
-      subtitle={`${records.length} Notizen im System`}
+      title={appLabel('notizen')}
+      subtitle={`${records.length} ${t('in_system', { entity: appLabel('notizen') })}`}
       action={
         <Button onClick={() => setDialogOpen(true)} className="shrink-0 rounded-full shadow-sm">
-          <IconPlus className="h-4 w-4 mr-2" /> Hinzufügen
+          <IconPlus className="h-4 w-4 mr-2" /> {t('add')}
         </Button>
       }
     >
       <div className="relative w-full max-w-sm">
         <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Notizen suchen..."
+          placeholder={t('search_entity', { entity: appLabel('notizen') })}
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="pl-9"
@@ -142,47 +142,47 @@ export default function NotizenPage() {
             <TableRow className="border-b border-input">
               <TableHead className="uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6 cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('unternehmen')}>
                 <span className="inline-flex items-center gap-1">
-                  Unternehmen
+                  {fieldLabel('notizen', 'unternehmen')}
                   {sortKey === 'unternehmen' ? (sortDir === 'asc' ? <IconArrowUp size={14} /> : <IconArrowDown size={14} />) : <IconArrowsUpDown size={14} className="opacity-30" />}
                 </span>
               </TableHead>
               <TableHead className="uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6 cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('notiz_titel')}>
                 <span className="inline-flex items-center gap-1">
-                  Titel der Notiz
+                  {fieldLabel('notizen', 'notiz_titel')}
                   {sortKey === 'notiz_titel' ? (sortDir === 'asc' ? <IconArrowUp size={14} /> : <IconArrowDown size={14} />) : <IconArrowsUpDown size={14} className="opacity-30" />}
                 </span>
               </TableHead>
               <TableHead className="uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6 cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('notiz_inhalt')}>
                 <span className="inline-flex items-center gap-1">
-                  Notizinhalt
+                  {fieldLabel('notizen', 'notiz_inhalt')}
                   {sortKey === 'notiz_inhalt' ? (sortDir === 'asc' ? <IconArrowUp size={14} /> : <IconArrowDown size={14} />) : <IconArrowsUpDown size={14} className="opacity-30" />}
                 </span>
               </TableHead>
               <TableHead className="uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6 cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('notiz_datum')}>
                 <span className="inline-flex items-center gap-1">
-                  Datum der Notiz
+                  {fieldLabel('notizen', 'notiz_datum')}
                   {sortKey === 'notiz_datum' ? (sortDir === 'asc' ? <IconArrowUp size={14} /> : <IconArrowDown size={14} />) : <IconArrowsUpDown size={14} className="opacity-30" />}
                 </span>
               </TableHead>
               <TableHead className="uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6 cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('kategorie')}>
                 <span className="inline-flex items-center gap-1">
-                  Kategorie
+                  {fieldLabel('notizen', 'kategorie')}
                   {sortKey === 'kategorie' ? (sortDir === 'asc' ? <IconArrowUp size={14} /> : <IconArrowDown size={14} />) : <IconArrowsUpDown size={14} className="opacity-30" />}
                 </span>
               </TableHead>
               <TableHead className="uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6 cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('prioritaet')}>
                 <span className="inline-flex items-center gap-1">
-                  Priorität
+                  {fieldLabel('notizen', 'prioritaet')}
                   {sortKey === 'prioritaet' ? (sortDir === 'asc' ? <IconArrowUp size={14} /> : <IconArrowDown size={14} />) : <IconArrowsUpDown size={14} className="opacity-30" />}
                 </span>
               </TableHead>
               <TableHead className="uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6 cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('schlagwoerter')}>
                 <span className="inline-flex items-center gap-1">
-                  Schlagwörter / Tags
+                  {fieldLabel('notizen', 'schlagwoerter')}
                   {sortKey === 'schlagwoerter' ? (sortDir === 'asc' ? <IconArrowUp size={14} /> : <IconArrowDown size={14} />) : <IconArrowsUpDown size={14} className="opacity-30" />}
                 </span>
               </TableHead>
-              <TableHead className="w-24 uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6">Aktionen</TableHead>
+              <TableHead className="w-24 uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6">{t('actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -192,8 +192,8 @@ export default function NotizenPage() {
                 <TableCell className="font-medium">{record.fields.notiz_titel ?? '—'}</TableCell>
                 <TableCell className="max-w-xs"><span className="truncate block">{record.fields.notiz_inhalt ?? '—'}</span></TableCell>
                 <TableCell className="text-muted-foreground">{formatDate(record.fields.notiz_datum)}</TableCell>
-                <TableCell><span className="inline-flex items-center bg-secondary border border-[#bfdbfe] text-[#2563eb] rounded-[10px] px-2 py-1 text-sm font-medium">{record.fields.kategorie?.label ?? '—'}</span></TableCell>
-                <TableCell><span className="inline-flex items-center bg-secondary border border-[#bfdbfe] text-[#2563eb] rounded-[10px] px-2 py-1 text-sm font-medium">{record.fields.prioritaet?.label ?? '—'}</span></TableCell>
+                <TableCell><span className="inline-flex items-center bg-secondary border border-[#bfdbfe] text-[#2563eb] rounded-[10px] px-2 py-1 text-sm font-medium">{lookupLabel('notizen', 'kategorie', record.fields.kategorie?.key) ?? record.fields.kategorie?.label ?? '—'}</span></TableCell>
+                <TableCell><span className="inline-flex items-center bg-secondary border border-[#bfdbfe] text-[#2563eb] rounded-[10px] px-2 py-1 text-sm font-medium">{lookupLabel('notizen', 'prioritaet', record.fields.prioritaet?.key) ?? record.fields.prioritaet?.label ?? '—'}</span></TableCell>
                 <TableCell>{record.fields.schlagwoerter ?? '—'}</TableCell>
                 <TableCell>
                   <div className="flex gap-1">
@@ -210,7 +210,7 @@ export default function NotizenPage() {
             {filtered.length === 0 && (
               <TableRow>
                 <TableCell colSpan={8} className="text-center py-16 text-muted-foreground">
-                  {search ? 'Keine Ergebnisse gefunden.' : 'Noch keine Notizen. Jetzt hinzufügen!'}
+                  {search ? t('no_results') : t('no_data_yet', { entity: appLabel('notizen') })}
                 </TableCell>
               </TableRow>
             )}
@@ -233,8 +233,8 @@ export default function NotizenPage() {
         open={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
-        title="Notizen löschen"
-        description="Soll dieser Eintrag wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden."
+        title={t('delete_entity', { entity: appLabel('notizen') })}
+        description={t('confirm_delete_desc')}
       />
 
     </PageShell>

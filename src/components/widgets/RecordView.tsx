@@ -115,6 +115,29 @@ import { createPortal } from 'react-dom';
 import { IconArrowLeft, IconPencil, IconX, IconAlertCircle, IconRefresh, IconFileOff, IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import { formatDate, formatDateTime, formatCurrency } from '@/lib/formatters';
+import { coreLocale as i18nLocale, type CoreLocale as Locale } from '@/i18n';
+
+// The widget's OWN chrome labels. They are prop DEFAULTS, and a destructuring
+// default is evaluated per render — so `L()[...]` here stays language-fresh
+// while a hoisted `const label = ...` would not.
+const LABELS: Record<Locale, {
+  edit: string; close: string; back: string; prev: string; next: string;
+  notFound: string; loadError: string; retry: string; timelineEmpty: string;
+}> = {
+  de: {
+    edit: 'Bearbeiten', close: 'Schließen', back: 'Zurück',
+    prev: 'Vorheriges', next: 'Nächstes',
+    notFound: 'Eintrag nicht gefunden', loadError: 'Fehler beim Laden',
+    retry: 'Erneut versuchen', timelineEmpty: 'Noch keine Einträge',
+  },
+  en: {
+    edit: 'Edit', close: 'Close', back: 'Back',
+    prev: 'Previous', next: 'Next',
+    notFound: 'Entry not found', loadError: 'Failed to load',
+    retry: 'Try again', timelineEmpty: 'No entries yet',
+  },
+};
+const L = () => LABELS[i18nLocale];
 
 // RecordAttachments — exported under the widget namespace so the agent has a
 // single import path for every record-detail building block. The underlying
@@ -136,7 +159,7 @@ type RecordViewProps = {
   children?: ReactNode;
 };
 
-export function RecordView({ onBack, onEdit, editLabel = 'Bearbeiten', backLabel = 'Zurück', aside, className, children }: RecordViewProps) {
+export function RecordView({ onBack, onEdit, editLabel = L().edit, backLabel = L().back, aside, className, children }: RecordViewProps) {
   const topbar = (onBack || onEdit) ? (
     <div className="flex items-center justify-between gap-3">
       {onBack ? (
@@ -215,7 +238,7 @@ type RecordViewEmptyProps = {
   className?: string;
 };
 
-export function RecordViewEmpty({ icon: Icon = IconFileOff, title = 'Eintrag nicht gefunden', description, action, className }: RecordViewEmptyProps) {
+export function RecordViewEmpty({ icon: Icon = IconFileOff, title = L().notFound, description, action, className }: RecordViewEmptyProps) {
   return (
     <div className={`flex flex-col items-center justify-center py-24 gap-4 text-center${className ? ` ${className}` : ''}`}>
       <div className="h-12 w-12 rounded-2xl bg-muted flex items-center justify-center text-muted-foreground">
@@ -238,7 +261,7 @@ type RecordViewErrorProps = {
   className?: string;
 };
 
-export function RecordViewError({ error, title = 'Fehler beim Laden', onRetry, retryLabel = 'Erneut versuchen', className }: RecordViewErrorProps) {
+export function RecordViewError({ error, title = L().loadError, onRetry, retryLabel = L().retry, className }: RecordViewErrorProps) {
   const message = typeof error === 'string' ? error : error.message;
   return (
     <div className={`flex flex-col items-center justify-center py-24 gap-4 text-center${className ? ` ${className}` : ''}`}>
@@ -669,9 +692,9 @@ export function RecordOverlay({
   onClose,
   onEdit,
   onBack,
-  editLabel = 'Bearbeiten',
-  closeLabel = 'Schließen',
-  backLabel = 'Zurück',
+  editLabel = L().edit,
+  closeLabel = L().close,
+  backLabel = L().back,
   ariaLabel,
   placement = 'side',
   size = 'md',
@@ -682,8 +705,8 @@ export function RecordOverlay({
   onPrev,
   onNext,
   counter,
-  prevLabel = 'Vorheriges',
-  nextLabel = 'Nächstes',
+  prevLabel = L().prev,
+  nextLabel = L().next,
   className,
   scrollKey,
   children,
@@ -854,7 +877,7 @@ export function RecordOverlay({
   );
 }
 
-export function RecordTimeline({ items, empty = 'Noch keine Einträge', renderItem, className }: RecordTimelineProps) {
+export function RecordTimeline({ items, empty = L().timelineEmpty, renderItem, className }: RecordTimelineProps) {
   if (!items.length) return <div className="text-sm text-muted-foreground">{empty}</div>;
   if (renderItem) {
     return (

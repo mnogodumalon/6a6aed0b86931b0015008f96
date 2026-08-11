@@ -1,6 +1,7 @@
 import { type ChangeEvent, type KeyboardEvent as ReactKeyboardEvent, useEffect, useRef, useState } from 'react';
 import { IconMapPin, IconSearch, IconLoader2 } from '@tabler/icons-react';
 import { Input } from '@/components/ui/input';
+import { t } from '@/i18n';
 
 // Address type-ahead for the geo field. Uses Photon (Komoot) — an OSM-based
 // geocoder BUILT for autocomplete/search-as-you-type (unlike Nominatim, whose
@@ -114,7 +115,7 @@ export function AddressAutocomplete({ onSelect, placeholder }: AddressAutocomple
           onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
           onKeyDown={onKeyDown}
           onFocus={() => { if (results.length > 0) setOpen(true); }}
-          placeholder={placeholder ?? 'Adresse suchen…'}
+          placeholder={placeholder ?? t('address_search')}
           className="pl-8 max-sm:h-11"
           autoComplete="off"
           role="combobox"
@@ -125,7 +126,7 @@ export function AddressAutocomplete({ onSelect, placeholder }: AddressAutocomple
       {open && (
         <ul className="absolute z-[1100] mt-1 max-h-60 w-full overflow-auto rounded-md border border-border bg-card py-1 shadow-lg" role="listbox">
           {results.length === 0 && !loading && (
-            <li className="px-3 py-2 text-sm text-muted-foreground">Keine Adresse gefunden</li>
+            <li className="px-3 py-2 text-sm text-muted-foreground">{t('address_none')}</li>
           )}
           {results.map((f, i) => (
             <li key={i}>

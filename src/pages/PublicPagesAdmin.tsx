@@ -12,44 +12,17 @@ import {
   listPublicPages, setPublished, getFields, updateFields,
   type PublicPageSummary, type FieldCatalogEntry,
 } from '@/lib/publicPagesAdmin';
+import { t } from '@/i18n';
 
 // Owner-facing management of the dashboard's public pages. Same-origin fetch
 // to /claude carries the LA session automatically. Anonymous visitors never
 // reach this — it lives inside the authenticated Layout.
-
-const T = {
-  title: 'Öffentliche Seiten',
-  subtitle: 'Formulare und Seiten, die du per Link teilen kannst — ohne dass Besucher ein Konto brauchen.',
-  empty: 'Noch keine Seiten. Sag im Chat, welche öffentliche Seite du brauchst — sie wird dann gebaut und erscheint hier.',
-  origin_auto: 'Vorschlag',
-  origin_user: 'Eigene',
-  origin_agent: 'KI-Seite',
-  status_published: 'Öffentlich',
-  status_draft: 'Entwurf',
-  publish: 'Veröffentlichen',
-  pause: 'Pausieren',
-  open: 'Öffnen',
-  copy: 'Link kopieren',
-  copied: 'Kopiert!',
-  confirm_title: 'Wirklich veröffentlichen?',
-  can_do: 'Jeder mit dem Link kann:',
-  cannot_do: 'Niemand kann:',
-  can_submit: 'Einträge absenden',
-  can_view: 'diese Daten sehen',
-  cannot_line: 'bestehende Daten sehen oder ändern.',
-  cancel: 'Abbrechen',
-  confirm_publish: 'Veröffentlichen',
-  fields: 'Felder',
-  fields_title: 'Felder auswählen',
-  fields_intro: 'Wähle, welche Felder im öffentlichen Formular erscheinen.',
-  field_required: 'Pflichtfeld — immer enthalten',
-  field_file: 'Datei-Upload wird öffentlich nicht unterstützt',
-  field_exposes: 'Zeigt Besuchern die Liste der verknüpften Einträge',
-  save: 'Speichern',
-};
+//
+// All text resolves through t() at render time — a module-scope map of
+// translated strings would go stale on a language switch.
 
 function originLabel(o: string): string {
-  return o === 'auto' ? T.origin_auto : o === 'agent' ? T.origin_agent : T.origin_user;
+  return o === 'auto' ? t('ppa_origin_auto') : o === 'agent' ? t('ppa_origin_agent') : t('ppa_origin_user');
 }
 
 // Plain-language summary of what a page's link grants — the owner confirms
@@ -165,7 +138,7 @@ export default function PublicPagesAdmin() {
   const caps = confirmPage ? capabilities(confirmPage) : {};
 
   return (
-    <PageShell title={T.title} subtitle={T.subtitle}>
+    <PageShell title={t('ppa_title')} subtitle={t('ppa_subtitle')}>
       {error ? (
         <div className="flex items-center gap-2 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive" role="alert">
           <IconAlertTriangle size={18} stroke={1.5} className="shrink-0" />
@@ -179,7 +152,7 @@ export default function PublicPagesAdmin() {
         </div>
       ) : entries.length === 0 ? (
         <div className="rounded-[27px] bg-card shadow-lg p-8 text-center text-muted-foreground">
-          {T.empty}
+          {t('ppa_empty')}
         </div>
       ) : (
         <div className="rounded-[27px] bg-card shadow-lg overflow-hidden divide-y divide-border">
@@ -194,7 +167,7 @@ export default function PublicPagesAdmin() {
                   </span>
                 </div>
                 <span className={`text-xs ${page.published ? 'text-primary' : 'text-muted-foreground'}`}>
-                  {page.published ? T.status_published : T.status_draft}
+                  {page.published ? t('ppa_status_published') : t('ppa_status_draft')}
                 </span>
               </div>
 
@@ -204,16 +177,16 @@ export default function PublicPagesAdmin() {
                     href={page.share_url}
                     target="_blank"
                     rel="noreferrer"
-                    title={T.open}
-                    aria-label={T.open}
+                    title={t('ppa_open')}
+                    aria-label={t('ppa_open')}
                     className="p-2 rounded-xl text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
                   >
                     <IconExternalLink size={18} stroke={1.5} />
                   </a>
                   <button
                     type="button"
-                    title={copiedSlug === page.slug ? T.copied : T.copy}
-                    aria-label={T.copy}
+                    title={copiedSlug === page.slug ? t('ppa_copied') : t('ppa_copy')}
+                    aria-label={t('ppa_copy')}
                     onClick={() => copy(page)}
                     className="p-2 rounded-xl text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
                   >
@@ -225,8 +198,8 @@ export default function PublicPagesAdmin() {
               {page.type !== 'custom' ? (
                 <button
                   type="button"
-                  title={T.fields}
-                  aria-label={T.fields}
+                  title={t('ppa_fields')}
+                  aria-label={t('ppa_fields')}
                   onClick={() => openFields(page.slug)}
                   className="shrink-0 p-2 rounded-xl text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
                 >
@@ -246,9 +219,9 @@ export default function PublicPagesAdmin() {
                 {busySlug === page.slug ? (
                   <IconLoader2 size={16} stroke={1.5} className="animate-spin" />
                 ) : page.published ? (
-                  T.pause
+                  t('ppa_pause')
                 ) : (
-                  T.publish
+                  t('ppa_publish')
                 )}
               </Button>
             </div>
@@ -259,22 +232,22 @@ export default function PublicPagesAdmin() {
       <Dialog open={!!confirmPage} onOpenChange={v => !v && setConfirmSlug(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{T.confirm_title}</DialogTitle>
+            <DialogTitle>{t('ppa_confirm_title')}</DialogTitle>
             <DialogDescription>{confirmPage?.title}</DialogDescription>
           </DialogHeader>
           <div className="space-y-3 text-sm">
             {caps.submit ? (
-              <p><span className="font-medium">{T.can_do}</span> {T.can_submit} <span className="text-muted-foreground">({caps.submit})</span></p>
+              <p><span className="font-medium">{t('ppa_can_do')}</span> {t('ppa_can_submit')} <span className="text-muted-foreground">({caps.submit})</span></p>
             ) : null}
             {caps.view ? (
-              <p><span className="font-medium">{T.can_do}</span> {T.can_view} <span className="text-muted-foreground">({caps.view})</span></p>
+              <p><span className="font-medium">{t('ppa_can_do')}</span> {t('ppa_can_view')} <span className="text-muted-foreground">({caps.view})</span></p>
             ) : null}
-            <p><span className="font-medium">{T.cannot_do}</span> {T.cannot_line}</p>
+            <p><span className="font-medium">{t('ppa_cannot_do')}</span> {t('ppa_cannot_line')}</p>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setConfirmSlug(null)}>{T.cancel}</Button>
+            <Button variant="outline" onClick={() => setConfirmSlug(null)}>{t('ppa_cancel')}</Button>
             <Button onClick={() => confirmPage && applyPublished(confirmPage.slug, true)}>
-              {T.confirm_publish}
+              {t('ppa_confirm_publish')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -283,8 +256,8 @@ export default function PublicPagesAdmin() {
       <Dialog open={!!fieldsSlug} onOpenChange={v => !v && setFieldsSlug(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{T.fields_title}</DialogTitle>
-            <DialogDescription>{T.fields_intro}</DialogDescription>
+            <DialogTitle>{t('ppa_fields_title')}</DialogTitle>
+            <DialogDescription>{t('ppa_fields_intro')}</DialogDescription>
           </DialogHeader>
           {fieldsLoading ? (
             <div className="flex justify-center py-8">
@@ -312,12 +285,12 @@ export default function PublicPagesAdmin() {
                     <span className="min-w-0">
                       <span className="block text-sm">{entry.label}</span>
                       {entry.locked ? (
-                        <span className="block text-xs text-muted-foreground">{T.field_required}</span>
+                        <span className="block text-xs text-muted-foreground">{t('ppa_field_required')}</span>
                       ) : entry.reason === 'file' ? (
-                        <span className="block text-xs text-muted-foreground">{T.field_file}</span>
+                        <span className="block text-xs text-muted-foreground">{t('ppa_field_file')}</span>
                       ) : entry.exposes_list ? (
                         <span className="flex items-center gap-1 text-xs text-amber-600 dark:text-amber-500">
-                          <IconEye size={13} stroke={1.5} /> {T.field_exposes}
+                          <IconEye size={13} stroke={1.5} /> {t('ppa_field_exposes')}
                         </span>
                       ) : null}
                     </span>
@@ -327,9 +300,9 @@ export default function PublicPagesAdmin() {
             </div>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setFieldsSlug(null)}>{T.cancel}</Button>
+            <Button variant="outline" onClick={() => setFieldsSlug(null)}>{t('ppa_cancel')}</Button>
             <Button onClick={saveFields} disabled={savingFields || fieldsLoading}>
-              {savingFields ? <IconLoader2 size={16} stroke={1.5} className="animate-spin" /> : T.save}
+              {savingFields ? <IconLoader2 size={16} stroke={1.5} className="animate-spin" /> : t('ppa_save')}
             </Button>
           </DialogFooter>
         </DialogContent>

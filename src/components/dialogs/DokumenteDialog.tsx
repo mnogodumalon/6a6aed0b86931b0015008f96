@@ -28,6 +28,7 @@ import type { ComputedContext } from '@/config/form-enhancements/types';
 import { applyFieldOrder, flattenFieldOrder, applyDefaults, evalComputed, numberInputProps, clampNumberValue, classifyComputed, extractApplookupRefs, mergeApplookupRefs, resolveApplookupRef } from '@/config/form-enhancements/types';
 import { formEnhancements, computedDeps, computedApplookupRefs } from '@/config/form-enhancements/Dokumente';
 import { AttachmentsSection } from '@/components/AttachmentsSection';
+import { t, appLabel, fieldLabel, lookupLabel, localeTag, CURRENCY } from '@/i18n';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Select, SelectContent, SelectItem,
@@ -233,7 +234,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
       await onSubmit(clean as Dokumente['fields']);
       onClose();
     } catch (err) {
-      setSubmitError(err instanceof Error && err.message ? err.message : 'Speichern fehlgeschlagen.');
+      setSubmitError(err instanceof Error && err.message ? err.message : t('submit_error'));
     } finally {
       setSaving(false);
     }
@@ -315,7 +316,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
       setScanSuccess(true);
       setTimeout(() => setScanSuccess(false), 3000);
     } catch (err) {
-      console.error('Scan fehlgeschlagen:', err);
+      console.error(`${t('scan_error')}:`, err);
       alert(err instanceof Error ? err.message : String(err));
     } finally {
       setScanning(false);
@@ -350,73 +351,73 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
     }
   }, []);
 
-  const DIALOG_INTENT = defaultValues ? 'Dokumente bearbeiten' : 'Dokumente hinzufügen';
+  const DIALOG_INTENT = defaultValues
+    ? t('edit_entity', { entity: appLabel('dokumente') })
+    : t('new_entity', { entity: appLabel('dokumente') });
 
   const fieldBlocks: Record<string, React.ReactNode> = {
     'unternehmen': (
       <div key="unternehmen" className="space-y-1.5">
-        <Label htmlFor="unternehmen">Unternehmen <span className="text-destructive" aria-hidden="true">*</span></Label>
+        <Label htmlFor="unternehmen">{fieldLabel('dokumente', 'unternehmen')} <span className="text-destructive" aria-hidden="true">*</span></Label>
         <Combobox
           id="unternehmen"
-          placeholder="Welches Unternehmen?"
+          placeholder=""
           items={unternehmenListAll.map(r => ({
             id: r.record_id,
             label: String(r.fields.name ?? r.record_id),
           }))}
           value={extractRecordId(fields.unternehmen)}
           onChange={id => setFields(f => ({ ...f, unternehmen: id ? createRecordUrl(APP_IDS.UNTERNEHMEN, id) : undefined }))}
-          searchPlaceholder="Suchen…"
-          emptyText="Kein Treffer"
           onCreateNew={(q) => openCreateUnternehmen("unternehmen", q)}
-          createLabel="Neu in Unternehmen"
+          createLabel={t('create_in', { entity: appLabel('unternehmen') })}
         />
         {showErrors && !fields.unternehmen && (
-          <p className="text-xs text-destructive mt-1">Pflichtfeld</p>
+          <p className="text-xs text-destructive mt-1">{t('required_hint')}</p>
         )}
       </div>
     ),
     'dokumentenbezeichnung': (
       <div key="dokumentenbezeichnung" className="space-y-1.5">
-        <Label htmlFor="dokumentenbezeichnung">Dokumentenbezeichnung <span className="text-destructive" aria-hidden="true">*</span></Label>
+        <Label htmlFor="dokumentenbezeichnung">{fieldLabel('dokumente', 'dokumentenbezeichnung')} <span className="text-destructive" aria-hidden="true">*</span></Label>
         <Input
           id="dokumentenbezeichnung"
-          placeholder="z. B. Jahresabschluss 2025"
+          placeholder=""
           value={fields.dokumentenbezeichnung ?? ''}
           onChange={e => setFields(f => ({ ...f, dokumentenbezeichnung: e.target.value }))}
           required
         />
         {showErrors && !fields.dokumentenbezeichnung && (
-          <p className="text-xs text-destructive mt-1">Pflichtfeld</p>
+          <p className="text-xs text-destructive mt-1">{t('required_hint')}</p>
         )}
       </div>
     ),
     'dokumententyp': (
       <div key="dokumententyp" className="space-y-1.5">
-        <Label htmlFor="dokumententyp">Dokumententyp</Label>
+        <Label htmlFor="dokumententyp">{fieldLabel('dokumente', 'dokumententyp')}</Label>
         <Select
           value={lookupKey(fields.dokumententyp) ?? ''}
           onValueChange={v => setFields(f => ({ ...f, dokumententyp: v === 'none' ? undefined : v as any }))}
         >
-          <SelectTrigger id="dokumententyp" className="max-sm:h-11"><SelectValue placeholder="Welcher Dokumenttyp?" /></SelectTrigger>
+          <SelectTrigger id="dokumententyp" className="max-sm:h-11"><SelectValue placeholder="" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="none">—</SelectItem>
-            <SelectItem value="gesellschaftsvertrag">Gesellschaftsvertrag</SelectItem>
-            <SelectItem value="jahresabschluss">Jahresabschluss</SelectItem>
-            <SelectItem value="protokoll">Sitzungsprotokoll</SelectItem>
-            <SelectItem value="praesentation">Präsentation</SelectItem>
-            <SelectItem value="beteiligungsvertrag">Beteiligungsvertrag</SelectItem>
-            <SelectItem value="geschaeftsbericht">Geschäftsbericht</SelectItem>
-            <SelectItem value="dokumententyp_sonstiges">Sonstiges</SelectItem>
+            <SelectItem value="gesellschaftsvertrag">{lookupLabel('dokumente', 'dokumententyp', 'gesellschaftsvertrag') ?? 'Gesellschaftsvertrag'}</SelectItem>
+            <SelectItem value="jahresabschluss">{lookupLabel('dokumente', 'dokumententyp', 'jahresabschluss') ?? 'Jahresabschluss'}</SelectItem>
+            <SelectItem value="protokoll">{lookupLabel('dokumente', 'dokumententyp', 'protokoll') ?? 'Sitzungsprotokoll'}</SelectItem>
+            <SelectItem value="praesentation">{lookupLabel('dokumente', 'dokumententyp', 'praesentation') ?? 'Präsentation'}</SelectItem>
+            <SelectItem value="beteiligungsvertrag">{lookupLabel('dokumente', 'dokumententyp', 'beteiligungsvertrag') ?? 'Beteiligungsvertrag'}</SelectItem>
+            <SelectItem value="geschaeftsbericht">{lookupLabel('dokumente', 'dokumententyp', 'geschaeftsbericht') ?? 'Geschäftsbericht'}</SelectItem>
+            <SelectItem value="dokumententyp_sonstiges">{lookupLabel('dokumente', 'dokumententyp', 'dokumententyp_sonstiges') ?? 'Sonstiges'}</SelectItem>
           </SelectContent>
         </Select>
       </div>
     ),
     'dokumentenbeschreibung': (
       <div key="dokumentenbeschreibung" className="space-y-1.5">
-        <Label htmlFor="dokumentenbeschreibung">Beschreibung</Label>
+        <Label htmlFor="dokumentenbeschreibung">{fieldLabel('dokumente', 'dokumentenbeschreibung')}</Label>
         <Textarea
           id="dokumentenbeschreibung"
-          placeholder="Inhalt, Besonderheiten, Hinweise..."
+          placeholder=""
           value={fields.dokumentenbeschreibung ?? ''}
           onChange={e => setFields(f => ({ ...f, dokumentenbeschreibung: e.target.value }))}
           rows={3}
@@ -425,10 +426,10 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
     ),
     'dokumentendatum': (
       <div key="dokumentendatum" className="space-y-1.5">
-        <Label htmlFor="dokumentendatum">Datum des Dokuments</Label>
+        <Label htmlFor="dokumentendatum">{fieldLabel('dokumente', 'dokumentendatum')}</Label>
         <DatePicker
           id="dokumentendatum"
-          placeholder="Datum des Dokuments"
+          placeholder=""
           mode="date"
           value={fields.dokumentendatum ?? null}
           onChange={v => setFields(f => ({ ...f, dokumentendatum: v ?? undefined }))}
@@ -437,7 +438,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
     ),
     'dokumentenlink': (
       <div key="dokumentenlink" className="space-y-1.5">
-        <Label htmlFor="dokumentenlink">Dokumentenlink (URL)</Label>
+        <Label htmlFor="dokumentenlink">{fieldLabel('dokumente', 'dokumentenlink')}</Label>
         <Input
           id="dokumentenlink"
           value={fields.dokumentenlink ?? ''}
@@ -447,7 +448,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
     ),
     'datei_upload': (
       <div key="datei_upload" className="space-y-1.5">
-        <Label htmlFor="datei_upload">Datei-Upload</Label>
+        <Label htmlFor="datei_upload">{fieldLabel('dokumente', 'datei_upload')}</Label>
         {fields.datei_upload ? (
           <div className="flex items-center gap-3 rounded-lg border p-2">
             <div className="relative h-14 w-14 shrink-0 rounded-md bg-muted overflow-hidden">
@@ -467,7 +468,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
                 <label
                   className="text-xs text-primary hover:underline cursor-pointer"
                 >
-                  Ändern
+                  {t('fr_change')}
                   <input
                     type="file"
                     accept="image/*,.pdf"
@@ -487,7 +488,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
                   className="text-xs text-muted-foreground hover:text-destructive"
                   onClick={() => setFields(f => ({ ...f, datei_upload: undefined }))}
                 >
-                  Entfernen
+                  {t('fr_remove')}
                 </button>
               </div>
             </div>
@@ -497,7 +498,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
             className="flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed border-muted-foreground/25 p-4 cursor-pointer hover:border-primary/50 hover:bg-muted/50 transition-colors"
           >
             <IconUpload size={20} className="text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">Datei hochladen</span>
+            <span className="text-sm text-muted-foreground">{t('fr_upload_file')}</span>
             <input
               type="file"
               accept="image/*,.pdf"
@@ -517,10 +518,10 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
     ),
     'bereitgestellt_von': (
       <div key="bereitgestellt_von" className="space-y-1.5">
-        <Label htmlFor="bereitgestellt_von">Bereitgestellt von</Label>
+        <Label htmlFor="bereitgestellt_von">{fieldLabel('dokumente', 'bereitgestellt_von')}</Label>
         <Input
           id="bereitgestellt_von"
-          placeholder="z. B. CFO Müller"
+          placeholder=""
           value={fields.bereitgestellt_von ?? ''}
           onChange={e => setFields(f => ({ ...f, bereitgestellt_von: e.target.value }))}
         />
@@ -528,10 +529,10 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
     ),
     'notizen_dokument': (
       <div key="notizen_dokument" className="space-y-1.5">
-        <Label htmlFor="notizen_dokument">Notizen zum Dokument</Label>
+        <Label htmlFor="notizen_dokument">{fieldLabel('dokumente', 'notizen_dokument')}</Label>
         <Textarea
           id="notizen_dokument"
-          placeholder="Zugriff, Gültigkeitsdauer, relevante Infos..."
+          placeholder=""
           value={fields.notizen_dokument ?? ''}
           onChange={e => setFields(f => ({ ...f, notizen_dokument: e.target.value }))}
           rows={3}
@@ -607,9 +608,9 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
     // Backend-Feld mit €-Label ODER virtueller Computed-Key, dessen Name nach Geld aussieht.
     const looksLikeCurrency = CURRENCY_KEYS.has(k) || /(?:kosten|preis|betrag|gesamt|netto|brutto|summe|mwst|rabatt|anzahlung|umsatz|saldo)/i.test(k);
     if (looksLikeCurrency) {
-      return n.toLocaleString('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return n.toLocaleString(localeTag(), { style: 'currency', currency: CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
-    return n.toLocaleString('de-DE', { maximumFractionDigits: 2 });
+    return n.toLocaleString(localeTag(), { maximumFractionDigits: 2 });
   }
 
   return (
@@ -631,14 +632,14 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
               }`}
             >
               <IconSparkles className={`h-3.5 w-3.5 ${aiOpen ? '' : 'text-primary'}`} />
-              <span className="hidden sm:inline">KI-Ausfüllen</span>
+              <span className="hidden sm:inline">{t('smart_fill')}</span>
               <IconChevronDown className={`h-3 w-3 transition-transform ${aiOpen ? 'rotate-180' : ''}`} />
             </button>
           )}
         </DialogHeader>
         {enablePhotoScan && aiOpen && (
           <div id="ai-fill-panel" className="border-b bg-muted/20 px-6 py-4 space-y-3">
-            <p className="text-xs text-muted-foreground">Versteht Fotos, Dokumente und Text und füllt alles für dich aus</p>
+            <p className="text-xs text-muted-foreground">{t('scan_header_sub')}</p>
             <div className="flex items-start gap-2 pl-0.5">
               <Checkbox
                 id="ai-use-personal-info"
@@ -648,21 +649,21 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
               />
               <span className="text-xs text-muted-foreground leading-snug">
                 <Label htmlFor="ai-use-personal-info" className="text-xs font-normal text-muted-foreground cursor-pointer inline">
-                  KI-Assistent darf zusätzlich Informationen zu meiner Person verwenden
+                  {t('useinfo_label')}
                 </Label>
                 {' '}
                 <button type="button" onClick={handleShowProfileInfo} className="text-xs text-primary hover:underline whitespace-nowrap">
-                  {profileLoading ? 'Lade...' : '(mehr Infos)'}
+                  {profileLoading ? t('useinfo_loading') : `(${t('useinfo_more')})`}
                 </button>
               </span>
             </div>
             {showProfileInfo && (
               <div className="rounded-md border bg-muted/50 p-2 text-xs max-h-40 overflow-y-auto">
-                <p className="font-medium mb-1">Folgende Infos über dich können von der KI genutzt werden:</p>
+                <p className="font-medium mb-1">{t('profile_preamble')}</p>
                 {profileData ? Object.values(profileData).map((v, i) => (
                   <span key={i}>{i > 0 && ", "}{typeof v === "object" ? JSON.stringify(v) : String(v)}</span>
                 )) : (
-                  <span className="text-muted-foreground">Profil konnte nicht geladen werden</span>
+                  <span className="text-muted-foreground">{t('useinfo_error')}</span>
                 )}
               </div>
             )}
@@ -693,8 +694,8 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
                     <IconLoader2 className="h-7 w-7 text-primary animate-spin" />
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-medium">KI analysiert...</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Felder werden automatisch ausgefüllt</p>
+                    <p className="text-sm font-medium">{t('scan_analyzing')}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t('scan_analyzing_sub')}</p>
                   </div>
                 </div>
               ) : scanSuccess ? (
@@ -703,8 +704,8 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
                     <IconCircleCheck className="h-7 w-7 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-medium text-green-700 dark:text-green-400">Felder ausgefüllt!</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Prüfe die Werte und passe sie ggf. an</p>
+                    <p className="text-sm font-medium text-green-700 dark:text-green-400">{t('scan_success')}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t('scan_success_sub')}</p>
                   </div>
                 </div>
               ) : (
@@ -713,7 +714,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
                     <IconPhotoPlus className="h-7 w-7 text-primary/70" />
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-medium">Foto oder Dokument hierher ziehen oder auswählen</p>
+                    <p className="text-sm font-medium">{t('scan_upload')}</p>
                   </div>
                 </div>
               )}
@@ -737,11 +738,11 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
             <div className="grid grid-cols-3 gap-2">
               <Button type="button" variant="outline" size="sm" className="h-10 text-xs" disabled={scanning}
                 onClick={e => { e.stopPropagation(); cameraInputRef.current?.click(); }}>
-                <IconCamera className="h-3.5 w-3.5 mr-1" />Kamera
+                <IconCamera className="h-3.5 w-3.5 mr-1" />{t('scan_camera_btn')}
               </Button>
               <Button type="button" variant="outline" size="sm" className="h-10 text-xs" disabled={scanning}
                 onClick={e => { e.stopPropagation(); fileInputRef.current?.click(); }}>
-                <IconUpload className="h-3.5 w-3.5 mr-1" />Foto wählen
+                <IconUpload className="h-3.5 w-3.5 mr-1" />{t('scan_file_btn')}
               </Button>
               <Button type="button" variant="outline" size="sm" className="h-10 text-xs" disabled={scanning}
                 onClick={e => {
@@ -752,13 +753,13 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
                     setTimeout(() => { if (fileInputRef.current) fileInputRef.current.accept = 'image/*,application/pdf'; }, 100);
                   }
                 }}>
-                <IconFileText className="h-3.5 w-3.5 mr-1" />Dokument
+                <IconFileText className="h-3.5 w-3.5 mr-1" />{t('scan_doc_btn')}
               </Button>
             </div>
 
             <div className="relative">
               <Textarea
-                placeholder="Text eingeben oder einfügen, z.B. Notizen, E-Mails, Beschreibungen..."
+                placeholder={t('scan_text_placeholder')}
                 value={aiText}
                 onChange={e => {
                   setAiText(e.target.value);
@@ -786,7 +787,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
                     if (text) setAiText(prev => prev ? prev + '\n' + text : text);
                   } catch {}
                 }}
-                title="Paste"
+                title={t('paste')}
               >
                 <IconClipboard className="h-4 w-4" />
               </button>
@@ -800,7 +801,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
                 disabled={scanning}
                 onClick={() => handleAiExtract()}
               >
-                <IconSparkles className="h-3.5 w-3.5 mr-1.5" />Analysieren
+                <IconSparkles className="h-3.5 w-3.5 mr-1.5" />{t('scan_text_analyze')}
               </Button>
             )}
           </div>
@@ -895,7 +896,7 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
             {showErrors && missingRequired.length > 0 && (
               <p className="text-xs text-destructive flex items-center gap-1.5" role="alert">
                 <IconAlertCircle className="h-3.5 w-3.5 shrink-0" />
-                Bitte fülle die markierten Pflichtfelder aus.
+                {t('missing_required')}
               </p>
             )}
             {recordId && (
@@ -911,13 +912,13 @@ export function DokumenteDialog({ open, onClose, onSubmit, defaultValues, record
             </div>
           )}
           <DialogFooter className="sticky bottom-0 border-t bg-background/95 backdrop-blur px-6 py-3 gap-2 max-sm:flex-row">
-            <Button type="button" variant="outline" onClick={onClose} className="max-sm:h-12 max-sm:flex-1 max-sm:text-base">Abbrechen</Button>
+            <Button type="button" variant="outline" onClick={onClose} className="max-sm:h-12 max-sm:flex-1 max-sm:text-base">{t('cancel')}</Button>
             <Button
               type="submit"
               className="max-sm:h-12 max-sm:flex-1 max-sm:text-base"
               disabled={saving || !isDirty || (showErrors && missingRequired.length > 0)}
             >
-              {saving ? 'Speichern...' : defaultValues ? 'Speichern' : 'Erstellen'}
+              {saving ? t('saving') : defaultValues ? t('save') : t('create')}
             </Button>
           </DialogFooter>
         </form>

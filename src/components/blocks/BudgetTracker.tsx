@@ -1,4 +1,5 @@
 import { formatCurrency } from '@/lib/formatters';
+import { t } from '@/i18n';
 
 interface BudgetTrackerProps {
   budget: number;
@@ -20,7 +21,7 @@ export function BudgetTracker({ budget, booked, label = 'Budget', showRemaining 
           <span className="font-medium text-muted-foreground">{label}</span>
           <span className="font-semibold">{formatCurrency(booked)}</span>
         </div>
-        <p className="text-xs text-muted-foreground">Kein Budget definiert</p>
+        <p className="text-xs text-muted-foreground">{t('budget_none')}</p>
       </div>
     );
   }
@@ -43,14 +44,14 @@ export function BudgetTracker({ budget, booked, label = 'Budget', showRemaining 
 
       <div className="flex items-center justify-between text-xs text-muted-foreground">
         <span>
-          Gebucht: <span className="font-semibold text-foreground">{formatCurrency(booked)}</span>
+          {t('budget_booked')}: <span className="font-semibold text-foreground">{formatCurrency(booked)}</span>
         </span>
-        <span>von {formatCurrency(budget)}</span>
+        <span>{t('budget_of')} {formatCurrency(budget)}</span>
       </div>
 
       {showRemaining && (
         <div className="flex items-center justify-between text-xs pt-1 border-t">
-          <span className="text-muted-foreground">Verbleibend</span>
+          <span className="text-muted-foreground">{t('budget_remaining')}</span>
           <span className={`font-semibold ${overBudget ? 'text-red-600' : 'text-green-600'}`}>
             {formatCurrency(remaining)}
           </span>
@@ -58,7 +59,7 @@ export function BudgetTracker({ budget, booked, label = 'Budget', showRemaining 
       )}
 
       {overBudget && (
-        <p className="text-xs text-red-600 font-medium">Budget überschritten!</p>
+        <p className="text-xs text-red-600 font-medium">{t('budget_over')}</p>
       )}
     </div>
   );

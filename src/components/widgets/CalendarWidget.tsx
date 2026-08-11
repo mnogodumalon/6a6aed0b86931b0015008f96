@@ -294,6 +294,9 @@ import {
   usePointerDrag, useNow, useRejectNotice, useNarrowContainer, useCoarsePointer,
   type DragGesture, type DragMode, type TimeSpan, type WriteResult,
 } from './primitives';
+// `Locale` above is date-fns' (the consumer's date-format locale) — the UI
+// language is a separate axis and comes from the runtime layer.
+import { coreLocale as i18nLocale, type CoreLocale as UiLocale } from '@/i18n';
 
 // Closed enums — exported as const arrays so consumers reference instead of
 // transcribe (a mistyped 'danger' was a real build failure). The union types are
@@ -397,8 +400,29 @@ export function visibleRange(cursor: Date, view: CalendarView, weekStartsOn: 0 |
 
 // ── Toolbar ─────────────────────────────────────────────────────────────
 
-const VIEW_LABELS: Record<CalendarView, string> = {
-  month: 'Monat', week: 'Woche', day: 'Tag', agenda: 'Agenda', year: 'Jahr',
+const VIEW_LABELS: Record<UiLocale, Record<CalendarView, string>> = {
+  de: { month: 'Monat', week: 'Woche', day: 'Tag', agenda: 'Agenda', year: 'Jahr' },
+  en: { month: 'Month', week: 'Week', day: 'Day', agenda: 'Agenda', year: 'Year' },
+};
+
+// The widget's OWN chrome strings. Indexed at RENDER time (`CAL_TEXTS[i18nLocale]`)
+// — never hoisted into a module constant, or a language switch would not reach it.
+const CAL_TEXTS: Record<UiLocale, {
+  threeDays: string; prev: string; next: string; today: string; dismiss: string;
+  allDay: string; noEventsInRange: string; noEventsOnDay: string;
+}> = {
+  de: {
+    threeDays: '3 Tage', prev: 'Zurück', next: 'Weiter', today: 'Heute',
+    dismiss: 'Meldung schließen', allDay: 'Ganztags',
+    noEventsInRange: 'Keine Termine in diesem Zeitraum.',
+    noEventsOnDay: 'Keine Termine an diesem Tag.',
+  },
+  en: {
+    threeDays: '3 days', prev: 'Back', next: 'Forward', today: 'Today',
+    dismiss: 'Dismiss message', allDay: 'All day',
+    noEventsInRange: 'No events in this period.',
+    noEventsOnDay: 'No events on this day.',
+  },
 };
 
 type CalendarToolbarProps = {
@@ -413,6 +437,8 @@ type CalendarToolbarProps = {
 
 export function CalendarToolbar({ calendar, locale, views = ['month', 'week', 'day', 'agenda'], className, narrow = false }: CalendarToolbarProps) {
   const { view, cursor } = calendar;
+  const ct = CAL_TEXTS[i18nLocale];
+  const viewLabels = VIEW_LABELS[i18nLocale];
   // Phone toolbar gets its own COMPACT title (no year, short month) — the
   // desktop title wraps into a two-line mess at 390px.
   const title = narrow
@@ -424,7 +450,7 @@ export function CalendarToolbar({ calendar, locale, views = ['month', 'week', 'd
       : view === 'day' ? format(cursor, 'EEEE, d. MMMM yyyy', { locale })
       : view === 'week' ? `${format(calendar.range.from, 'd. MMM', { locale })} – ${format(calendar.range.to, 'd. MMM yyyy', { locale })}`
       : format(cursor, 'MMMM yyyy', { locale }));
-  const pillLabel = (v: CalendarView) => (narrow && v === 'week' ? '3 Tage' : VIEW_LABELS[v]);
+  const pillLabel = (v: CalendarView) => (narrow && v === 'week' ? ct.threeDays : viewLabels[v]);
 
   // Phone layout: nav row (title takes the free space, truncated) + the view
   // switch as a FULL-WIDTH segment grid — left-hugging pills next to dead
@@ -437,11 +463,11 @@ export function CalendarToolbar({ calendar, locale, views = ['month', 'week', 'd
       <div className={`space-y-2${className ? ` ${className}` : ''}`}>
         <div className="flex items-center justify-between gap-2">
           <div className="flex h-8 shrink-0 items-stretch divide-x divide-input overflow-hidden rounded-full border border-input bg-card shadow-sm">
-            <button type="button" onClick={calendar.prev} aria-label="Zurück" className="flex w-9 items-center justify-center text-foreground active:bg-muted">
+            <button type="button" onClick={calendar.prev} aria-label={ct.prev} className="flex w-9 items-center justify-center text-foreground active:bg-muted">
               <IconChevronLeft className="h-4 w-4" />
             </button>
-            <button type="button" onClick={calendar.today} className="px-3 text-[13px] font-medium text-foreground active:bg-muted">Heute</button>
-            <button type="button" onClick={calendar.next} aria-label="Weiter" className="flex w-9 items-center justify-center text-foreground active:bg-muted">
+            <button type="button" onClick={calendar.today} className="px-3 text-[13px] font-medium text-foreground active:bg-muted">{ct.today}</button>
+            <button type="button" onClick={calendar.next} aria-label={ct.next} className="flex w-9 items-center justify-center text-foreground active:bg-muted">
               <IconChevronRight className="h-4 w-4" />
             </button>
           </div>
@@ -466,11 +492,11 @@ export function CalendarToolbar({ calendar, locale, views = ['month', 'week', 'd
   return (
     <div className={`flex flex-wrap items-center justify-between gap-3${className ? ` ${className}` : ''}`}>
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="icon" className="h-8 w-8" onClick={calendar.prev} aria-label="Zurück">
+        <Button variant="outline" size="icon" className="h-8 w-8" onClick={calendar.prev} aria-label={ct.prev}>
           <IconChevronLeft className="h-4 w-4" />
         </Button>
-        <Button variant="outline" size="sm" className="h-8" onClick={calendar.today}>Heute</Button>
-        <Button variant="outline" size="icon" className="h-8 w-8" onClick={calendar.next} aria-label="Weiter">
+        <Button variant="outline" size="sm" className="h-8" onClick={calendar.today}>{ct.today}</Button>
+        <Button variant="outline" size="icon" className="h-8 w-8" onClick={calendar.next} aria-label={ct.next}>
           <IconChevronRight className="h-4 w-4" />
         </Button>
         <h2 className="ml-1 text-base font-semibold text-foreground capitalize">{title}</h2>
@@ -620,7 +646,7 @@ export function CalendarWidget(props: CalendarWidgetProps) {
           <div role="status" aria-live="polite" className="flex items-center gap-2 border-b border-destructive/30 bg-destructive/10 px-4 py-2 text-sm font-medium text-destructive">
             <IconAlertCircle size={16} className="shrink-0" />
             <span className="min-w-0 flex-1">{reject.notice}</span>
-            <button type="button" onClick={reject.dismiss} aria-label="Meldung schließen" className="shrink-0 rounded p-0.5 transition-colors hover:bg-destructive/10">
+            <button type="button" onClick={reject.dismiss} aria-label={CAL_TEXTS[i18nLocale].dismiss} className="shrink-0 rounded p-0.5 transition-colors hover:bg-destructive/10">
               <IconX size={14} />
             </button>
           </div>
@@ -1353,7 +1379,7 @@ function WeekView(ctx: ViewContext) {
       {(!ctx.narrow || stripOnly || weekBars.length > 0 || stripPreviewBar != null
         || events.some(ev => isAllDay(ev) && !isMultiDay(ev) && days.some(d => occursOn(ev, d)))) && (
       <div className="flex border-b border-border">
-        <div className="w-14 shrink-0 px-1 py-1 text-right text-[10px] uppercase text-muted-foreground">Ganztags</div>
+        <div className="w-14 shrink-0 px-1 py-1 text-right text-[10px] uppercase text-muted-foreground">{CAL_TEXTS[i18nLocale].allDay}</div>
         <div className="relative grid flex-1" style={{ gridTemplateColumns: `repeat(${days.length}, minmax(0, 1fr))` }}>
           {days.map((day, i) => {
             const iso = format(day, 'yyyy-MM-dd');
@@ -1709,12 +1735,12 @@ function YearView(ctx: ViewContext) {
 function AgendaView(ctx: ViewContext) {
   const { cursor, weekStartsOn } = ctx;
   const range = visibleRange(cursor, 'agenda', weekStartsOn);
-  return <EventList ctx={ctx} from={range.from} to={range.to} emptyLabel="Keine Termine in diesem Zeitraum." />;
+  return <EventList ctx={ctx} from={range.from} to={range.to} emptyLabel={CAL_TEXTS[i18nLocale].noEventsInRange} />;
 }
 
 function DayView(ctx: ViewContext) {
   const { cursor } = ctx;
-  return <EventList ctx={ctx} from={startOfDay(cursor)} to={startOfDay(cursor)} emptyLabel="Keine Termine an diesem Tag." />;
+  return <EventList ctx={ctx} from={startOfDay(cursor)} to={startOfDay(cursor)} emptyLabel={CAL_TEXTS[i18nLocale].noEventsOnDay} />;
 }
 
 function EventList({ ctx, from, to, emptyLabel }: { ctx: ViewContext; from: Date; to: Date; emptyLabel: string }) {
@@ -1749,7 +1775,7 @@ function EventList({ ctx, from, to, emptyLabel }: { ctx: ViewContext; from: Date
                 <button key={ev.id} type="button" onClick={() => ctx.onEventClick?.(ev)} className="flex items-center gap-3 rounded-xl border border-border px-3 py-2 text-left hover:bg-muted min-w-0">
                   <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${TONE_DOT[tone]}`} />
                   <span className="w-24 shrink-0 text-xs tabular-nums text-muted-foreground">
-                    {isAllDay(ev) ? 'Ganztags' : `${format(eventStart(ev), 'HH:mm')}${ev.end ? `–${format(eventEnd(ev), 'HH:mm')}` : ''}`}
+                    {isAllDay(ev) ? CAL_TEXTS[i18nLocale].allDay : `${format(eventStart(ev), 'HH:mm')}${ev.end ? `–${format(eventEnd(ev), 'HH:mm')}` : ''}`}
                   </span>
                   <span className="flex flex-col min-w-0">
                     <span className="truncate font-medium text-foreground">{ev.title}</span>

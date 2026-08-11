@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, type ReactNode } from 'react';
 import { toast, Toaster } from 'sonner';
+import { t } from '@/i18n';
 
 const APPGROUP_ID = '6a6aed0b86931b0015008f96';
 const REPAIR_ENDPOINT = '/claude/build/repair';
@@ -70,7 +71,7 @@ export function useErrorBus(): ErrorBusValue {
 }
 
 async function runRepair(err: ErrorPayload): Promise<void> {
-  const toastId = toast.loading('Reparatur wird gestartet...');
+  const toastId = toast.loading(t('repair_starting'));
   const errorContext = JSON.stringify({
     type: err.type || 'api_error',
     source: err.source,
@@ -93,7 +94,7 @@ async function runRepair(err: ErrorPayload): Promise<void> {
     });
 
     if (!resp.ok || !resp.body) {
-      toast.error('Automatische Reparatur fehlgeschlagen. Bitte kontaktieren Sie den Support.', { id: toastId });
+      toast.error(t('repair_failed'), { id: toastId });
       return;
     }
 
@@ -116,21 +117,21 @@ async function runRepair(err: ErrorPayload): Promise<void> {
           toast.loading(content.replace(/^\[STATUS]\s*/, ''), { id: toastId });
         }
         if (content.startsWith('[DONE]')) {
-          toast.success('Das Problem wurde behoben. Bitte laden Sie die Seite neu.', { id: toastId, duration: 12000 });
+          toast.success(t('repair_done_desc'), { id: toastId, duration: 12000 });
           finished = true;
         }
         if (content.startsWith('[ERROR]') && !content.includes('Dashboard-Links')) {
-          toast.error('Automatische Reparatur fehlgeschlagen. Bitte kontaktieren Sie den Support.', { id: toastId });
+          toast.error(t('repair_failed'), { id: toastId });
           finished = true;
         }
       }
     }
 
     if (!finished) {
-      toast.error('Automatische Reparatur fehlgeschlagen. Bitte kontaktieren Sie den Support.', { id: toastId });
+      toast.error(t('repair_failed'), { id: toastId });
     }
   } catch {
-    toast.error('Automatische Reparatur fehlgeschlagen. Bitte kontaktieren Sie den Support.', { id: toastId });
+    toast.error(t('repair_failed'), { id: toastId });
   }
 }
 
@@ -149,10 +150,10 @@ export function ErrorBusProvider({ children }: { children: ReactNode }) {
 
     if (category === 'transient') {
       const isServerError = typeof err.status === 'number' && err.status >= 500;
-      toast.error(isServerError ? 'Serverfehler' : 'Netzwerkfehler', {
-        description: err.message || err.detail || (isServerError ? 'Bitte versuche es später erneut.' : 'Verbindung zum Server verloren.'),
+      toast.error(isServerError ? t('toast_server_title') : t('toast_network_title'), {
+        description: err.message || err.detail || (isServerError ? t('toast_server_desc') : t('toast_network_desc')),
         action: {
-          label: 'Neu laden',
+          label: t('repair_reload'),
           onClick: () => window.location.reload(),
         },
         duration: TOAST_DURATION_MS,
@@ -160,10 +161,10 @@ export function ErrorBusProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    toast.error('Etwas ist schiefgelaufen', {
-      description: err.detail || err.message || 'Ein Problem wurde entdeckt. Das Dashboard kann automatisch repariert werden.',
+    toast.error(t('repair_error_title'), {
+      description: err.detail || err.message || t('toast_bug_desc'),
       action: {
-        label: 'Dashboard reparieren',
+        label: t('repair_text'),
         onClick: () => { void runRepair(err); },
       },
       duration: TOAST_DURATION_MS,

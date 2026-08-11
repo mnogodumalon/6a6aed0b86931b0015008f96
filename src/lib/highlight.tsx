@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { IconCopy, IconCheck } from '@tabler/icons-react';
+import { t } from '@/i18n';
 
 // ---------------------------------------------------------------------------
 // Lightweight Python syntax highlighter (no external deps) — shared by the
@@ -52,10 +53,10 @@ export function CopyButton({ text }: { text: string }) {
         });
       }}
       className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors mt-1"
-      title={copied ? "Kopiert!" : "Code kopieren"}
+      title={copied ? t('copied') : t('copy_code')}
     >
       {copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
-      {copied && <span>Kopiert!</span>}
+      {copied && <span>{t('copied')}</span>}
     </button>
   );
 }

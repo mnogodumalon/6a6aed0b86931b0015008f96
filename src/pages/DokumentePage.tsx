@@ -15,12 +15,12 @@ import { DokumenteDialog } from '@/components/dialogs/DokumenteDialog';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { PageShell } from '@/components/PageShell';
 import { AI_PHOTO_SCAN, AI_PHOTO_LOCATION } from '@/config/ai-features';
+import { t, appLabel, fieldLabel, lookupLabel, dateFnsLocale, dateFormat } from '@/i18n';
 import { format, parseISO } from 'date-fns';
-import { de } from 'date-fns/locale';
 
 function formatDate(d?: string) {
   if (!d) return '—';
-  try { return format(parseISO(d), 'dd.MM.yyyy', { locale: de }); } catch { return d; }
+  try { return format(parseISO(d), dateFormat(), { locale: dateFnsLocale() }); } catch { return d; }
 }
 
 export default function DokumentePage() {
@@ -119,18 +119,18 @@ export default function DokumentePage() {
 
   return (
     <PageShell
-      title="Dokumente"
-      subtitle={`${records.length} Dokumente im System`}
+      title={appLabel('dokumente')}
+      subtitle={`${records.length} ${t('in_system', { entity: appLabel('dokumente') })}`}
       action={
         <Button onClick={() => setDialogOpen(true)} className="shrink-0 rounded-full shadow-sm">
-          <IconPlus className="h-4 w-4 mr-2" /> Hinzufügen
+          <IconPlus className="h-4 w-4 mr-2" /> {t('add')}
         </Button>
       }
     >
       <div className="relative w-full max-w-sm">
         <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Dokumente suchen..."
+          placeholder={t('search_entity', { entity: appLabel('dokumente') })}
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="pl-9"
@@ -142,59 +142,59 @@ export default function DokumentePage() {
             <TableRow className="border-b border-input">
               <TableHead className="uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6 cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('unternehmen')}>
                 <span className="inline-flex items-center gap-1">
-                  Unternehmen
+                  {fieldLabel('dokumente', 'unternehmen')}
                   {sortKey === 'unternehmen' ? (sortDir === 'asc' ? <IconArrowUp size={14} /> : <IconArrowDown size={14} />) : <IconArrowsUpDown size={14} className="opacity-30" />}
                 </span>
               </TableHead>
               <TableHead className="uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6 cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('dokumentenbezeichnung')}>
                 <span className="inline-flex items-center gap-1">
-                  Dokumentenbezeichnung
+                  {fieldLabel('dokumente', 'dokumentenbezeichnung')}
                   {sortKey === 'dokumentenbezeichnung' ? (sortDir === 'asc' ? <IconArrowUp size={14} /> : <IconArrowDown size={14} />) : <IconArrowsUpDown size={14} className="opacity-30" />}
                 </span>
               </TableHead>
               <TableHead className="uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6 cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('dokumententyp')}>
                 <span className="inline-flex items-center gap-1">
-                  Dokumententyp
+                  {fieldLabel('dokumente', 'dokumententyp')}
                   {sortKey === 'dokumententyp' ? (sortDir === 'asc' ? <IconArrowUp size={14} /> : <IconArrowDown size={14} />) : <IconArrowsUpDown size={14} className="opacity-30" />}
                 </span>
               </TableHead>
               <TableHead className="uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6 cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('dokumentenbeschreibung')}>
                 <span className="inline-flex items-center gap-1">
-                  Beschreibung
+                  {fieldLabel('dokumente', 'dokumentenbeschreibung')}
                   {sortKey === 'dokumentenbeschreibung' ? (sortDir === 'asc' ? <IconArrowUp size={14} /> : <IconArrowDown size={14} />) : <IconArrowsUpDown size={14} className="opacity-30" />}
                 </span>
               </TableHead>
               <TableHead className="uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6 cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('dokumentendatum')}>
                 <span className="inline-flex items-center gap-1">
-                  Datum des Dokuments
+                  {fieldLabel('dokumente', 'dokumentendatum')}
                   {sortKey === 'dokumentendatum' ? (sortDir === 'asc' ? <IconArrowUp size={14} /> : <IconArrowDown size={14} />) : <IconArrowsUpDown size={14} className="opacity-30" />}
                 </span>
               </TableHead>
               <TableHead className="uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6 cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('dokumentenlink')}>
                 <span className="inline-flex items-center gap-1">
-                  Dokumentenlink (URL)
+                  {fieldLabel('dokumente', 'dokumentenlink')}
                   {sortKey === 'dokumentenlink' ? (sortDir === 'asc' ? <IconArrowUp size={14} /> : <IconArrowDown size={14} />) : <IconArrowsUpDown size={14} className="opacity-30" />}
                 </span>
               </TableHead>
               <TableHead className="uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6 cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('datei_upload')}>
                 <span className="inline-flex items-center gap-1">
-                  Datei-Upload
+                  {fieldLabel('dokumente', 'datei_upload')}
                   {sortKey === 'datei_upload' ? (sortDir === 'asc' ? <IconArrowUp size={14} /> : <IconArrowDown size={14} />) : <IconArrowsUpDown size={14} className="opacity-30" />}
                 </span>
               </TableHead>
               <TableHead className="uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6 cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('bereitgestellt_von')}>
                 <span className="inline-flex items-center gap-1">
-                  Bereitgestellt von
+                  {fieldLabel('dokumente', 'bereitgestellt_von')}
                   {sortKey === 'bereitgestellt_von' ? (sortDir === 'asc' ? <IconArrowUp size={14} /> : <IconArrowDown size={14} />) : <IconArrowsUpDown size={14} className="opacity-30" />}
                 </span>
               </TableHead>
               <TableHead className="uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6 cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('notizen_dokument')}>
                 <span className="inline-flex items-center gap-1">
-                  Notizen zum Dokument
+                  {fieldLabel('dokumente', 'notizen_dokument')}
                   {sortKey === 'notizen_dokument' ? (sortDir === 'asc' ? <IconArrowUp size={14} /> : <IconArrowDown size={14} />) : <IconArrowsUpDown size={14} className="opacity-30" />}
                 </span>
               </TableHead>
-              <TableHead className="w-24 uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6">Aktionen</TableHead>
+              <TableHead className="w-24 uppercase text-xs font-semibold text-secondary-foreground tracking-wider px-6">{t('actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -202,7 +202,7 @@ export default function DokumentePage() {
               <TableRow key={record.record_id} className="hover:bg-muted/50 transition-colors cursor-pointer" onClick={(e) => { if ((e.target as HTMLElement).closest('button, [role="checkbox"]')) return; navigate(`/dokumente/${record.record_id}`); }}>
                 <TableCell><span className="inline-flex items-center bg-secondary border border-[#bfdbfe] text-[#2563eb] rounded-[10px] px-2 py-1 text-sm font-medium">{getUnternehmenDisplayName(record.fields.unternehmen)}</span></TableCell>
                 <TableCell className="font-medium">{record.fields.dokumentenbezeichnung ?? '—'}</TableCell>
-                <TableCell><span className="inline-flex items-center bg-secondary border border-[#bfdbfe] text-[#2563eb] rounded-[10px] px-2 py-1 text-sm font-medium">{record.fields.dokumententyp?.label ?? '—'}</span></TableCell>
+                <TableCell><span className="inline-flex items-center bg-secondary border border-[#bfdbfe] text-[#2563eb] rounded-[10px] px-2 py-1 text-sm font-medium">{lookupLabel('dokumente', 'dokumententyp', record.fields.dokumententyp?.key) ?? record.fields.dokumententyp?.label ?? '—'}</span></TableCell>
                 <TableCell className="max-w-xs"><span className="truncate block">{record.fields.dokumentenbeschreibung ?? '—'}</span></TableCell>
                 <TableCell className="text-muted-foreground">{formatDate(record.fields.dokumentendatum)}</TableCell>
                 <TableCell>{record.fields.dokumentenlink ?? '—'}</TableCell>
@@ -224,7 +224,7 @@ export default function DokumentePage() {
             {filtered.length === 0 && (
               <TableRow>
                 <TableCell colSpan={10} className="text-center py-16 text-muted-foreground">
-                  {search ? 'Keine Ergebnisse gefunden.' : 'Noch keine Dokumente. Jetzt hinzufügen!'}
+                  {search ? t('no_results') : t('no_data_yet', { entity: appLabel('dokumente') })}
                 </TableCell>
               </TableRow>
             )}
@@ -247,8 +247,8 @@ export default function DokumentePage() {
         open={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
-        title="Dokumente löschen"
-        description="Soll dieser Eintrag wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden."
+        title={t('delete_entity', { entity: appLabel('dokumente') })}
+        description={t('confirm_delete_desc')}
       />
 
     </PageShell>

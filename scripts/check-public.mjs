@@ -28,6 +28,7 @@ const ALLOWED_AT = [
   '@/components/widgets/',
   '@/lib/utils',
   '@/lib/formatters',
+  '@/i18n',
   '@/types/',
 ];
 

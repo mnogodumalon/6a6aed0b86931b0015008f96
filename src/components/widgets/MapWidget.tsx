@@ -210,6 +210,34 @@ import { Button } from '@/components/ui/button';
 // COPIED from GeoMapPicker (a form-field picker, not a family widget) below —
 // not imported — because the picker is not part of the widget family.
 import { TONE_DOT, type WidgetTone } from './primitives';
+import { coreLocale as i18nLocale, type CoreLocale as Locale } from '@/i18n';
+
+// The widget's OWN chrome strings — indexed at RENDER time (`MW[i18nLocale]`),
+// never hoisted into a module constant.
+const MW: Record<Locale, {
+  map: string; tileError: string; withoutLocation: string;
+  errorTitle: string; retry: string; retryHint: string;
+}> = {
+  de: {
+    map: 'Karte', tileError: 'Kartenkacheln konnten nicht geladen werden.',
+    withoutLocation: 'ohne gültigen Standort',
+    errorTitle: 'Karte konnte nicht geladen werden', retry: 'Erneut versuchen',
+    retryHint: 'Bitte erneut versuchen.',
+  },
+  en: {
+    map: 'Map', tileError: 'Map tiles could not be loaded.',
+    withoutLocation: 'without a valid location',
+    errorTitle: 'Map failed to load', retry: 'Try again',
+    retryHint: 'Please try again.',
+  },
+};
+
+// Records are a COUNTED noun: German has two forms, Czech three (1 záznam,
+// 2–4 záznamy, 5+ záznamů) — so the plural rule lives in a function.
+function recordsLabel(n: number, l: Locale): string {
+  if (l === 'en') return `${n} ${n === 1 ? 'record' : 'records'}`;
+  return `${n} ${n === 1 ? 'Datensatz' : 'Datensätze'}`;
+}
 
 // Closed enum — exported as a const array so consumers reference instead of
 // transcribe (a mistyped 'danger' was a real build failure in this family). The
@@ -530,7 +558,7 @@ export const MAP_NAV_PROVIDERS = [
   },
   {
     id: 'apple',
-    label: 'Apple Karten',
+    label: 'Apple Karten',   // DE default; NAV_LABELS overrides it at render
     Icon: IconBrandApple,
     href: (lat: number, long: number) => `https://maps.apple.com/?daddr=${lat},${long}&dirflg=d`,
   },
@@ -541,6 +569,13 @@ export const MAP_NAV_PROVIDERS = [
     href: (lat: number, long: number) => `https://waze.com/ul?ll=${lat},${long}&navigate=yes`,
   },
 ] as const;
+
+// Per-locale override for the provider chips. Only Apple's map app has a
+// localized name; Google Maps and Waze are brand names in every language.
+const NAV_LABELS: Record<Locale, Partial<Record<(typeof MAP_NAV_PROVIDERS)[number]['id'], string>>> = {
+  de: {},
+  en: { apple: 'Apple Maps' },
+};
 
 /** Directions URL to a coordinate. `provider` defaults to Google Maps (the
  *  universal one — native app on mobile, browser on desktop). A pure function of
@@ -567,7 +602,7 @@ export function MapRouteLinks({ lat, long, className }: { lat: number; long: num
           className="inline-flex items-center gap-1 rounded-md bg-secondary px-2 py-1 text-[11px] font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
         >
           <Icon className="h-3.5 w-3.5" stroke={1.5} />
-          {label}
+          {NAV_LABELS[i18nLocale][id] ?? label}
         </a>
       ))}
     </div>
@@ -640,7 +675,7 @@ export function MapWidget(props: MapWidgetProps) {
     // Total tile block (e.g. OSM rejecting a missing Referer) before a single
     // tile ever loaded → MapError, not a silent grey grid. A transient miss
     // after tiles have shown is tolerated.
-    tiles.on('tileerror', () => { if (!tilesOkRef.current) { setError(new Error('Kartenkacheln konnten nicht geladen werden.')); setStatus('error'); } });
+    tiles.on('tileerror', () => { if (!tilesOkRef.current) { setError(new Error(MW[i18nLocale].tileError)); setStatus('error'); } });
     tiles.addTo(map);
     // Default to a plain layer; the marker effect swaps in a cluster group when
     // the dataset (or the `cluster` prop) calls for it.
@@ -783,7 +818,7 @@ export function MapWidget(props: MapWidgetProps) {
           <div role="status" aria-live="polite" className="flex items-center gap-2 border-b border-amber-500/30 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-700">
             <IconAlertCircle size={16} className="shrink-0" />
             <span className="min-w-0 flex-1">
-              {dropped} {dropped === 1 ? 'Datensatz' : 'Datensätze'} ohne gültigen Standort
+              {recordsLabel(dropped, i18nLocale)} {MW[i18nLocale].withoutLocation}
             </span>
           </div>
         )}
@@ -795,7 +830,7 @@ export function MapWidget(props: MapWidgetProps) {
           <div
             ref={containerRef}
             className={`absolute inset-0 ${ZOOM_CONTROL_CLASSES} ${onMapPointClick ? '[&_.leaflet-container]:cursor-crosshair' : ''}`}
-            aria-label="Karte"
+            aria-label={MW[i18nLocale].map}
           />
           {legend && legend.length > 0 && (
             // A compact key OVERLAY (bottom-left, above tiles/controls at z-[1000],
@@ -901,8 +936,8 @@ type MapErrorProps = {
   className?: string;
 };
 
-export function MapError({ error, title = 'Karte konnte nicht geladen werden', onRetry, retryLabel = 'Erneut versuchen', icon: Icon = IconAlertCircle, className }: MapErrorProps) {
-  const message = error instanceof Error ? error.message : typeof error === 'string' ? error : 'Bitte erneut versuchen.';
+export function MapError({ error, title = MW[i18nLocale].errorTitle, onRetry, retryLabel = MW[i18nLocale].retry, icon: Icon = IconAlertCircle, className }: MapErrorProps) {
+  const message = error instanceof Error ? error.message : typeof error === 'string' ? error : MW[i18nLocale].retryHint;
   return (
     <div className={`flex flex-col items-center justify-center gap-4 rounded-[27px] bg-card shadow-lg py-24 text-center${className ? ` ${className}` : ''}`}>
       <div className="h-12 w-12 rounded-2xl bg-destructive/10 flex items-center justify-center text-destructive"><Icon size={22} /></div>

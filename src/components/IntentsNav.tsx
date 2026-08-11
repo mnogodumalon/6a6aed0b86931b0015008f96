@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { INTENTS, INTENTS_PENDING } from '@/config/intents';
+import { t, locale } from '@/i18n';
 
 /**
  * IntentsNav — Drawer-Sektion für Intent-Workflow-Seiten ("Abläufe").
@@ -16,9 +17,6 @@ import { INTENTS, INTENTS_PENDING } from '@/config/intents';
  * eingebautes pending-Rendering (pulsierende Zeile). Leer UND nicht pending
  * → nichts.
  */
-const HEADING = 'Abläufe';
-const PENDING_TEXT = 'Werden erstellt …';
-
 type LaNavItem = { title: string; url?: string; here?: boolean; pending?: boolean; meta?: { path: string } };
 
 export function IntentsNav() {
@@ -50,10 +48,14 @@ export function IntentsNav() {
   const itemsJson = useMemo(() => {
     let items: LaNavItem[];
     if (INTENTS.length === 0) {
-      items = INTENTS_PENDING ? [{ title: PENDING_TEXT, pending: true }] : [];
+      items = INTENTS_PENDING ? [{ title: t('intents_pending'), pending: true }] : [];
     } else {
       items = INTENTS.map(intent => ({
-        title: intent.label,
+        // Multilingual labels pick the active locale; legacy plain strings
+        // render as-is (pre-i18n dashboards).
+        title: typeof intent.label === 'string'
+          ? intent.label
+          : (intent.label as Record<string, string | undefined>)[locale] ?? intent.label.de ?? intent.label.en ?? intent.label.cs ?? '',
         url: `#${intent.path}`,
         here: location.pathname === intent.path,
         meta: { path: intent.path },
@@ -85,7 +87,7 @@ export function IntentsNav() {
     // primary = aufklappbare Gruppe INNERHALB der Aktionen-Sektion (Layout),
     // gleiches Muster wie „Datenverwaltung" unter Darstellung. dense = die
     // kleinere Unterpunkt-Schrift (--la-nav-text-size), wie im Gateway.
-    <la-nav-section ref={sectionRef} type="primary" label={HEADING} dense="">
+    <la-nav-section ref={sectionRef} type="primary" label={t('intents_heading')} dense="">
       <la-nav ref={navRef} mode="select" data-nav={itemsJson} />
     </la-nav-section>
   );

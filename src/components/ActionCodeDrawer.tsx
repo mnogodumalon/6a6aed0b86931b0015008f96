@@ -6,36 +6,42 @@ import {
   IconArrowLeft, IconBolt, IconLoader2, IconMessagePlus,
 } from '@tabler/icons-react';
 import { format, formatDistanceToNow, parseISO } from 'date-fns';
-import { de } from 'date-fns/locale';
+import { t, dateFnsLocale, dateTimeFormat } from '@/i18n';
 import { useActions } from '@/context/ActionsContext';
 import { fetchActionHistory, type Action, type ActionVersion } from '@/lib/actions-agent';
 import { splitRunOutput, artifactKindFromExt as artifactKind, type ArtifactKind } from '@/lib/run-results';
 import { highlightPython, CopyButton, diffLines } from '@/lib/highlight';
 import { ChatPanel, ChatHistoryList, JsonView, RunIdChip } from '@/components/ChatWidget';
 
-const ORIGIN_LABELS: Record<string, string> = {
-  fix: 'Auto-Fix',
-  chat: 'Chat',
-  initial: 'Erstellt',
-  revert: 'Wiederhergestellt',
+const ORIGIN_KEYS: Record<string, string> = {
+  fix: 'code_origin_fix',
+  chat: 'code_origin_chat',
+  initial: 'code_origin_initial',
+  revert: 'code_origin_revert',
 };
+
+// Resolved per render — the catalog lookup must follow the active locale
+function originLabel(origin: string): string {
+  const key = ORIGIN_KEYS[origin];
+  return key ? t(key) : origin;
+}
 
 function formatDateTime(d?: string) {
   if (!d) return '';
-  try { return format(parseISO(d), 'dd.MM.yyyy, HH:mm', { locale: de }); } catch { return d; }
+  try { return format(parseISO(d), dateTimeFormat(), { locale: dateFnsLocale() }); } catch { return d; }
 }
 
 function relTime(d?: string) {
   if (!d) return '';
-  try { return formatDistanceToNow(parseISO(d), { addSuffix: true, locale: de }); } catch { return d; }
+  try { return formatDistanceToNow(parseISO(d), { addSuffix: true, locale: dateFnsLocale() }); } catch { return d; }
 }
 
 // Timeline label: the agent's own summary, or a localized fallback for
 // revert/initial entries (their summaries are stored empty on purpose)
 function versionSummary(v: ActionVersion): string {
   if (v.summary) return v.summary;
-  if (v.origin === 'revert' && v.revert_of) return `Zurückgesetzt auf Version ${v.revert_of}`;
-  return ORIGIN_LABELS[v.origin] || '';
+  if (v.origin === 'revert' && v.revert_of) return `${t('code_restored_to')} ${v.revert_of}`;
+  return ORIGIN_KEYS[v.origin] ? t(ORIGIN_KEYS[v.origin]) : '';
 }
 
 // File artifacts in a run's stdout JSON: every http(s) string value becomes
@@ -64,11 +70,11 @@ function VersionEntry({ version, current, selected, onSelect }: {
       <span className="flex items-center gap-1.5 flex-wrap">
         <span className="text-xs font-bold tabular-nums">v{version.v}</span>
         <span className="rounded-full border border-border bg-card px-1.5 py-px text-[10px] font-medium text-muted-foreground">
-          {ORIGIN_LABELS[version.origin] || version.origin}
+          {originLabel(version.origin)}
         </span>
         {version.v === current && (
           <span className="rounded-full bg-emerald-100 px-1.5 py-px text-[10px] font-semibold text-emerald-700">
-            Aktiv
+            {t('code_version_active')}
           </span>
         )}
       </span>
@@ -228,7 +234,7 @@ export function ActionCodeDrawer() {
 
   // Fallback to the action's live code when there is no history (yet)
   const code = selectedEntry ? selectedEntry.code : (action?.value ?? '');
-  const codeLines = useMemo(() => (code ? code.split('\n') : ['# Leere Aktion']), [code]);
+  const codeLines = useMemo(() => (code ? code.split('\n') : [`# ${t('empty_action')}`]), [code]);
   const diffOps = useMemo(
     () => (prevEntry ? diffLines(prevEntry.code.split('\n'), codeLines) : null),
     [prevEntry, codeLines],
@@ -316,7 +322,7 @@ export function ActionCodeDrawer() {
 
   const handleRestore = useCallback(async () => {
     if (!action || !selectedEntry) return;
-    const ok = window.confirm(`Version wiederherstellen v${selectedEntry.v}?\n\nDer aktuelle Code wird ersetzt. Nichts geht verloren — es entsteht eine neue Version.`);
+    const ok = window.confirm(`${t('code_restore_confirm_title')} v${selectedEntry.v}?\n\n${t('code_restore_confirm_desc')}`);
     if (!ok) return;
     setRestoring(true);
     try {
@@ -355,8 +361,8 @@ export function ActionCodeDrawer() {
             type="button"
             onClick={backToActions}
             className="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-            aria-label="Zurück zu den Werkzeugen"
-            title="Zurück zu den Werkzeugen"
+            aria-label={t('code_back_to_tools')}
+            title={t('code_back_to_tools')}
           >
             <IconArrowLeft size={18} />
           </button>
@@ -371,7 +377,7 @@ export function ActionCodeDrawer() {
                 aria-haspopup="listbox"
                 aria-expanded={switcherOpen}
                 className="flex w-full min-w-0 items-center gap-1.5 rounded-lg px-1.5 py-0.5 -mx-1.5 text-left hover:bg-muted transition-colors"
-                title="Aktion wechseln"
+                title={t('code_switch_tool')}
               >
                 <span className="min-w-0">
                   <span className="block text-base font-semibold tracking-tight truncate">{title}</span>
@@ -397,7 +403,7 @@ export function ActionCodeDrawer() {
             type="button"
             onClick={closeAll}
             className="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-            aria-label="Schließen"
+            aria-label={t('close')}
           >
             <IconX size={18} />
           </button>
@@ -405,11 +411,11 @@ export function ActionCodeDrawer() {
           {switcherOpen && (
             <div
               role="listbox"
-              aria-label="Aktion wechseln"
+              aria-label={t('code_switch_tool')}
               className="absolute left-14 top-full z-10 mt-1 flex max-h-80 w-80 max-w-[82vw] flex-col gap-0.5 overflow-y-auto rounded-xl border border-border bg-card p-1.5 shadow-xl"
             >
               <div className="px-2 pt-1 pb-1.5 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground">
-                Aktion wechseln
+                {t('code_switch_tool')}
               </div>
               {actions.map(a => {
                 const isCurrent = a.app_id === action.app_id && a.identifier === action.identifier;
@@ -447,12 +453,12 @@ export function ActionCodeDrawer() {
 
         <div className="flex flex-1 min-h-0">
           {/* Version timeline — rail on large screens */}
-          <nav aria-label="Versionen" className="hidden lg:flex w-64 shrink-0 flex-col gap-0.5 overflow-y-auto border-r border-border px-3 py-3">
+          <nav aria-label={t('code_versions')} className="hidden lg:flex w-64 shrink-0 flex-col gap-0.5 overflow-y-auto border-r border-border px-3 py-3">
             <div className="px-2 pb-2 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground">
-              Versionen
+              {t('code_versions')}
             </div>
             {versions !== null && newestFirst.length === 0 && (
-              <p className="px-2 text-xs text-muted-foreground">Keine früheren Versionen</p>
+              <p className="px-2 text-xs text-muted-foreground">{t('code_no_versions')}</p>
             )}
             {newestFirst.map(v => (
               <VersionEntry key={v.v} version={v} current={current} selected={v.v === selected} onSelect={handleSelect} />
@@ -491,7 +497,7 @@ export function ActionCodeDrawer() {
                 onClick={() => setTab('code')}
                 className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${tab === 'code' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted/60'}`}
               >
-                Code
+                {t('code_tab_code')}
               </button>
               {prevEntry && (
                 <button
@@ -501,7 +507,7 @@ export function ActionCodeDrawer() {
                   onClick={() => setTab('diff')}
                   className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${tab === 'diff' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted/60'}`}
                 >
-                  Änderungen zu v{prevEntry.v}
+                  {t('code_tab_diff_to')} v{prevEntry.v}
                 </button>
               )}
               {run && (
@@ -512,7 +518,7 @@ export function ActionCodeDrawer() {
                   onClick={() => setTab('out')}
                   className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${tab === 'out' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted/60'}`}
                 >
-                  Ausgabe
+                  {t('code_out_tab')}
                 </button>
               )}
               <span className="flex-1" />
@@ -523,7 +529,7 @@ export function ActionCodeDrawer() {
                 className="inline-flex min-h-[2.25rem] items-center gap-1.5 rounded-full bg-primary px-3.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
                 {isRunning ? <IconLoader2 size={14} className="animate-spin" /> : <IconPlayerPlay size={14} />}
-                {isRunning ? 'In Arbeit...' : isOld ? `v${selected} testen` : 'Ausführen'}
+                {isRunning ? t('busy') : isOld ? t('acd_test_version', { v: selected }) : t('run')}
               </button>
             </div>
 
@@ -531,7 +537,7 @@ export function ActionCodeDrawer() {
             {isOld && (
               <div className="flex flex-wrap items-center gap-2 border-b border-border bg-secondary px-3 py-2 text-xs shrink-0">
                 <span>
-                  Du siehst <b>v{selected}</b> ({formatDateTime(selectedEntry?.ts)}) — nicht die aktive Version.
+                  {t('code_viewing_old_prefix')} <b>v{selected}</b> ({formatDateTime(selectedEntry?.ts)}) {t('code_viewing_old_suffix')}
                 </span>
                 <span className="flex-1" />
                 <button
@@ -541,7 +547,7 @@ export function ActionCodeDrawer() {
                   className="inline-flex min-h-[2.25rem] items-center gap-1.5 rounded-full bg-primary px-3.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
                 >
                   <IconRestore size={14} />
-                  Diese Version wiederherstellen
+                  {t('code_restore')}
                 </button>
               </div>
             )}
@@ -551,12 +557,12 @@ export function ActionCodeDrawer() {
               <div className="flex-1 min-h-0 overflow-auto px-4 py-3 space-y-3">
                 <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                   <span className="text-sm font-semibold text-foreground">
-                    Testlauf{run.version != null ? ` v${run.version}` : (current > 0 ? ` v${current}` : '')}
+                    {t('code_out_heading')}{run.version != null ? ` v${run.version}` : (current > 0 ? ` v${current}` : '')}
                   </span>
                   <span className="tabular-nums">{formatDateTime(new Date(run.ts).toISOString())}</span>
                   {run.version != null && (
                     <span className="rounded-full bg-secondary px-2 py-0.5 text-[11px] font-medium">
-                      Code aus der Historie — nicht wiederhergestellt
+                      {t('code_out_history_badge')}
                     </span>
                   )}
                   {/* Support correlator — always visible here, the output
@@ -565,7 +571,7 @@ export function ActionCodeDrawer() {
                 </div>
                 {run.inputs && Object.keys(run.inputs).length > 0 && (
                   <div className="text-xs text-muted-foreground">
-                    <span className="font-medium">Eingaben:</span>{' '}
+                    <span className="font-medium">{t('code_out_inputs')}:</span>{' '}
                     <span className="font-mono break-all">{JSON.stringify(run.inputs)}</span>
                   </div>
                 )}
@@ -580,7 +586,7 @@ export function ActionCodeDrawer() {
                         className="inline-flex min-h-[2.5rem] w-full items-center justify-center gap-1.5 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors disabled:opacity-50"
                       >
                         <IconWand size={16} />
-                        {chatLoading ? 'Wird behoben…' : 'Automatisch beheben'}
+                        {chatLoading ? t('fix_action_running') : t('fix_action_button')}
                       </button>
                     )}
                   </>
@@ -624,14 +630,14 @@ export function ActionCodeDrawer() {
                               onClick={() => window.open(probe?.previewUrl || a.url, '_blank', 'noopener')}
                               className="inline-flex min-h-[2rem] items-center rounded-lg border border-border bg-card px-2.5 text-xs font-medium hover:bg-muted transition-colors"
                             >
-                              Öffnen
+                              {t('code_out_open')}
                             </button>
                             <button
                               type="button"
                               onClick={() => { void downloadFile(a.url, name); }}
                               className="inline-flex min-h-[2rem] items-center rounded-lg border border-border bg-card px-2.5 text-xs font-medium hover:bg-muted transition-colors"
                             >
-                              Herunterladen
+                              {t('download')}
                             </button>
                           </div>
                         </div>
@@ -640,7 +646,7 @@ export function ActionCodeDrawer() {
                     {rest ? (
                       <div className="text-sm"><JsonView text={rest} /></div>
                     ) : artifacts.length === 0 ? (
-                      <p className="text-xs text-muted-foreground">(keine Ausgabe)</p>
+                      <p className="text-xs text-muted-foreground">{t('code_out_no_output')}</p>
                     ) : null}
                   </>
                 )}
@@ -675,10 +681,10 @@ export function ActionCodeDrawer() {
             {/* Status bar */}
             <div className="flex items-center gap-3 border-t border-border px-4 py-1.5 text-[11px] text-muted-foreground tabular-nums shrink-0">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <span>v{selectedEntry?.v ?? current}{isOld ? '' : ` · Aktiv`}</span>
-              {selectedEntry && <span>{ORIGIN_LABELS[selectedEntry.origin] || selectedEntry.origin}</span>}
+              <span>v{selectedEntry?.v ?? current}{isOld ? '' : ` · ${t('code_version_active')}`}</span>
+              {selectedEntry && <span>{originLabel(selectedEntry.origin)}</span>}
               {selectedEntry && <span>{formatDateTime(selectedEntry.ts)}</span>}
-              <span>{codeLines.length} Zeilen</span>
+              <span>{codeLines.length} {t('code_lines')}</span>
             </div>
           </div>
         </div>
@@ -694,14 +700,14 @@ export function ActionCodeDrawer() {
                   onClick={() => setDockHistoryFilter('tool')}
                   className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold transition-colors ${dockHistoryFilter === 'tool' ? 'border-primary/40 bg-accent text-accent-foreground' : 'border-border bg-card text-muted-foreground hover:text-foreground'}`}
                 >
-                  Diese Aktion
+                  {t('chat_history_filter_tool')}
                 </button>
                 <button
                   type="button"
                   onClick={() => setDockHistoryFilter('all')}
                   className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold transition-colors ${dockHistoryFilter === 'all' ? 'border-primary/40 bg-accent text-accent-foreground' : 'border-border bg-card text-muted-foreground hover:text-foreground'}`}
                 >
-                  Alle
+                  {t('chat_history_filter_all')}
                 </button>
               </div>
               <ChatHistoryList
@@ -723,13 +729,13 @@ export function ActionCodeDrawer() {
               type="button"
               onClick={() => { setScopeMenuOpen(o => !o); setDockHistoryOpen(false); }}
               aria-expanded={scopeMenuOpen}
-              title={dockScope === 'action' ? (action ? action.title || action.identifier : '') : 'Allgemeine Unterhaltung'}
+              title={dockScope === 'action' ? (action ? action.title || action.identifier : '') : t('scope_menu_general_title')}
               className={`flex min-w-0 max-w-[45%] shrink items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${scopeMenuOpen ? 'border-primary/40 bg-accent text-accent-foreground' : 'border-border bg-card text-muted-foreground hover:text-foreground'}`}
             >
               {dockScope === 'action'
                 ? <IconBolt size={12} className="shrink-0 text-primary" />
                 : <IconMessageCircle size={12} className="shrink-0" />}
-              <span className="min-w-0 truncate">{dockScope === 'action' ? (action ? action.title || action.identifier : '') : 'Allgemein'}</span>
+              <span className="min-w-0 truncate">{dockScope === 'action' ? (action ? action.title || action.identifier : '') : t('scope_general_short')}</span>
               <IconChevronUp size={12} className="shrink-0 opacity-60" />
             </button>
             <button
@@ -739,14 +745,14 @@ export function ActionCodeDrawer() {
               aria-expanded={dockOpen}
             >
               <IconMessageCircle size={14} />
-              Assistent
+              {t('chatw_title')}
               {dockOpen ? <IconChevronDown size={14} /> : <IconChevronUp size={14} />}
             </button>
             <div className="flex shrink-0 items-center gap-0.5">
               <button
                 type="button"
                 onClick={startFreshChat}
-                title="Neue Unterhaltung zu dieser Aktion"
+                title={t('chat_new_for_tool')}
                 className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               >
                 <IconMessagePlus size={14} />
@@ -754,7 +760,7 @@ export function ActionCodeDrawer() {
               <button
                 type="button"
                 onClick={() => { setDockHistoryOpen(o => !o); setScopeMenuOpen(false); }}
-                title="Verlauf"
+                title={t('chat_history_title')}
                 aria-expanded={dockHistoryOpen}
                 className={`rounded-md p-1.5 transition-colors ${dockHistoryOpen ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
               >
@@ -771,7 +777,7 @@ export function ActionCodeDrawer() {
                   <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary"><IconBolt size={14} /></span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm font-medium text-foreground">{action ? action.title || action.identifier : ''}</span>
-                    <span className="block text-xs text-muted-foreground">Fragen & Änderungen zu dieser Aktion</span>
+                    <span className="block text-xs text-muted-foreground">{t('scope_menu_action_desc')}</span>
                   </span>
                 </button>
                 <button
@@ -781,16 +787,16 @@ export function ActionCodeDrawer() {
                 >
                   <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground"><IconMessageCircle size={14} /></span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-medium text-foreground">Allgemeine Unterhaltung</span>
+                    <span className="block truncate text-sm font-medium text-foreground">{t('scope_menu_general_title')}</span>
                     {sessionAction && !sessionMatchesAction && (
-                      <span className="block truncate text-xs text-muted-foreground">Zuletzt: {sessionAction.title || sessionAction.identifier}</span>
+                      <span className="block truncate text-xs text-muted-foreground">{t('scope_menu_last_prefix')}: {sessionAction.title || sessionAction.identifier}</span>
                     )}
                   </span>
                 </button>
               </div>
             )}
           </div>
-          <ChatPanel placeholder="Frage zum Code stellen…" collapsed={!dockOpen} />
+          <ChatPanel placeholder={t('code_chat_placeholder')} collapsed={!dockOpen} />
         </div>
       </aside>
     </>,

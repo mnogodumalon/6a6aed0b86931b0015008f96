@@ -100,14 +100,30 @@ async def _deny_serial_intent_dispatch(input_data: dict, tool_use_id: str | None
 LA_API_URL = os.getenv("LA_API_URL", "https://my.living-apps.de/rest")
 LA_FRONTEND_URL = os.getenv("LA_FRONTEND_URL", "https://my.living-apps.de")
 
+# Explicit dashboard language set by the host (get_agent_command). Default
+# stays German — same behavior as before the language feature.
+UI_LANGUAGE = os.getenv("LANGUAGE", "de")
+_UI_LANGUAGE_NAMES = {"de": "German", "en": "English"}
+UI_LANGUAGE_NAME = _UI_LANGUAGE_NAMES.get(UI_LANGUAGE, "German")
+_TONE_RULE = (
+    ' Always use "du/dein/dir" — NEVER "Sie/Ihr/Ihnen".' if UI_LANGUAGE == "de" else ""
+)
+
 # ── Subagent prompts (only used in Phase 2 / "all" mode) ───────────
 
-INTENT_BUILDER_PROMPT = """\
-You build a single INTENT UI page — a task-oriented workflow that guides the user through a multi-step process.
-
-LANGUAGE & TONE: All UI text (labels, buttons, headings, descriptions, empty states, tooltips) MUST be in German. \
-Always use "du/dein/dir" — NEVER "Sie/Ihr/Ihnen".
-
+INTENT_BUILDER_PROMPT = (
+    "You build a single INTENT UI page — a task-oriented workflow that guides the user "
+    "through a multi-step process.\n"
+    "\n"
+    # The prompt body below is a plain literal — it is full of JSX braces, so
+    # only this language block may interpolate.
+    f"LANGUAGE & TONE: Communicate in {UI_LANGUAGE_NAME}.{_TONE_RULE}\n"
+    "UI TEXT (three languages): the dashboard has a runtime language switcher (de/en/cs). "
+    "Every UI string you write (labels, buttons, headings, descriptions, empty states, tooltips) "
+    "goes through makeT from '@/i18n': define ALL three languages once at the top of the page, "
+    "render {tt('key')}. Scaffold text via t()/appLabel()/fieldLabel()/lookupLabel(). "
+    "check-intents flags hardcoded strings.\n"
+    """
 ## WHAT AN INTENT UI IS (vs what it is NOT)
 
 An intent UI is NOT a fancy CRUD page. CRUD pages already exist for every entity — they have tables, search, \
@@ -204,12 +220,6 @@ ergonomic input method (date-range picker, tile-style multi-select with prices, 
 search-as-you-type). Full examples: .claude/skills/intent-ui/SKILL.md section \
 "NEVER use the pre-generated {Entity}Dialog inside an intent UI".
 - TOUCH-FRIENDLY: NEVER hide buttons behind hover.
-- UX FLOOR (skill section "UX Floor" — the brief's "Derived & guardrails" section names the fields): \
-the skeleton is fixed and gate-enforced — intro card, <SummaryStep> BEFORE the write, <SuccessStep> \
-after it, draftKey/draft/onDraftRestore wired; auto-set derivable fields (running numbers, start \
-status, today-dates) instead of asking; show + warn against every numeric guardrail the brief names; \
-every selection list carries at least one derived stat; later step texts use earlier answers BY NAME; \
-undoToast for reversible actions, confirm dialogs only for irreversible writes.
 - MANDATORY FIRST STEP: Before writing any code, Read `.claude/skills/intent-ui/SKILL.md` \
 in full. It is the authoritative source for design patterns AND critical API write rules \
 (lookup keys, applookup URLs, multipleapplookup arrays). Skipping it produces wrong code.
@@ -220,9 +230,8 @@ param so the dashboard can link directly to specific steps (e.g., ?eventId=xxx&s
 When the user navigates between steps, update the URL params to keep them in sync.
 - NAVIGATION OUT: Never link the user from an intent UI to a CRUD subpage \
 (`#/buchungen`, `#/kunden`, `#/katzen`, …). Allowed link targets are ONLY: `#/` (dashboard) \
-or `#/intents/<other-slug>` (follow-up intent). Success is a <SuccessStep>: its FIRST action is the \
-brief's "next" line (the next logical step of the work), then "Neue Buchung anlegen" (reset wizard) \
-and "Zurück zum Dashboard" — never "Zur Buchungsübersicht".
+or `#/intents/<other-slug>` (follow-up intent). On success, offer "Neue Buchung anlegen" \
+(reset wizard) and "Zurück zum Dashboard" — not "Zur Buchungsübersicht".
 
 CRITICAL API RULE — lookup fields when writing:
 When READING, lookups are objects: { key: 'x', label: 'X' }.
@@ -243,6 +252,7 @@ Rule: if the form-state is a Set<id> or id[], map to URLs first, then pass the A
 Scope: createRecordUrl builds the AUTHENTICATED /rest form. On public pages use
 recordRef(cfg, page, appId, recordId) from '@/lib/publicClient' instead — never createRecordUrl.
 """
+)
 
 FORM_POLISH_PROMPT = """\
 # Form-Polish Sub-Agent — Aufgabenbeschreibung
@@ -560,13 +570,15 @@ def _emit(payload: dict) -> None:
 
 # ── Stream-progress plumbing ─────────────────────────────────────────
 #
-# include_partial_messages makes the CLI forward the raw API stream events, so
-# a long generation is a steady flow of content_block_delta events instead of
-# a silent multi-minute gap. Two consumers:
-#   1. the stall watchdog — a [WAIT] then means a REAL stall (rate-limit
-#      backoff, dead connection), never "the model is writing a big file";
-#      a live run mis-attributed a 243s single-Write generation to backoff
-#      because the two were indistinguishable in the log.
+# include_partial_messages makes the CLI forward the raw API stream events.
+# CAVEAT (live-proven): for large tool inputs this CLI build delivers the
+# partial_json deltas in a BURST shortly before the block completes, not as a
+# steady flow — a 2-minute Write shows as silence and then ~22k chars at once.
+# Silence is therefore AMBIGUOUS (big generation OR backoff), and the watchdog
+# text must not claim otherwise: a run generating 38k tokens over 9 minutes at
+# normal token speed was misread as rate-limit stalls because of that claim.
+# Two consumers:
+#   1. the stall watchdog — one line per 30s of silence, cause kept neutral.
 #   2. a throttled `progress` log line (chars generated so far), so the
 #      wall-clock of a large Write is visible while it happens.
 _PROGRESS_EVERY_S = 15
@@ -1034,11 +1046,7 @@ BAD (these are just CRUD with lipstick — DO NOT BUILD THESE):
 
 The DashboardOverview.tsx is ALREADY BUILT and deployed. Do NOT rebuild it from scratch.
 
-1. ANALYZE entities, fields, relationships. Identify 2-3 DISTINCT multi-entity workflow phases. \
-Prefer flows that chain SEVERAL writes, encode a lifecycle rule (filtered eligibility + status \
-transition) or handle a schema-exposed exception (a stock field below its minimum -> reorder flow, \
-an end-of-day bulk close) — a flow that is one create with prefills is the dashboard's job; replace \
-such a candidate with one that passes instead of building it anyway.
+1. ANALYZE entities, fields, relationships. Identify 2-3 DISTINCT multi-entity workflow phases.
 
 **DECISION GATE — MOST WORKFLOWS BELONG IN THE DASHBOARD, NOT IN INTENT UIs:** \
 The dashboard already has interactive, domain-specific UIs with full CRUD. \
@@ -1083,25 +1091,17 @@ BudgetTracker, StatusBadge), the no-{Entity}Dialog rule, the lookup-write form a
 from a source that is maintained, unlike your memory of it. Never name a type, helper or path you did \
 not read in .entity_summary: a brief that told the builder to import `EnrichedKunden` named a type \
 that does not exist.
-   - DERIVED & GUARDRAILS in every brief — five lines, "none" where the schema or the process has \
-none: derived (the fields the flow auto-sets instead of asking — running-number pattern + the data it \
-counts, start status key, today-dates); guardrails (every stock/capacity/limit field a written \
-quantity must be shown against and warned about — entity.field, verbatim from .entity_summary); \
-stats (per selection step ONE derived stat its list shows); next (the ONE follow-up action after the \
-successful write — the next logical step of the WORK, it becomes the SuccessStep's primary button, \
-never "back to dashboard"); drops (answers that make a later step pointless — `answer → dropped step`, \
-the wizard removes the step and fixes its counter).
    - KEEP EACH BRIEF UNDER ~350 WORDS: file path, one-sentence goal, the steps (eligible records \
-with exact keys, fields as name![type: keys], service calls with app_ids), derived & guardrails, \
-the module-paths block. No "German UI" reminders, no date/hook/import rules, no required-fields \
-recap — the ! markers already carry it. A measured run spent ~40s just generating two briefs.
+with exact keys, fields as name![type: keys], service calls with app_ids), the module-paths block. \
+No "German UI" reminders, no date/hook/import rules, no required-fields recap — the ! markers \
+already carry it. A measured run spent ~40s just generating two briefs.
 
 DO NOT dispatch 'dashboard_builder'.
 
 3. After build_intent_pages returns (it reports OK/FAILED per page):
    - Wire EACH flow with the script — one call per flow, do NOT edit src/App.tsx or
      src/config/intents.ts by hand:
-       node scripts/wire-intent.mjs {PascalCaseName}Page {slug} '{1-3 German words}' {IconX} '{one line}'
+       node scripts/wire-intent.mjs {PascalCaseName}Page {slug} '{1-3 words in the UI language}' {IconX} '{one line}'
      It adds the lazy import + route to App.tsx, the icon import + registry entry to
      src/config/intents.ts (the sidebar "Abläufe" section renders from that registry; do NOT
      add navigation cards to the dashboard) and flips INTENTS_PENDING to false — that swaps
@@ -1164,11 +1164,7 @@ BAD (these are just CRUD with lipstick — DO NOT BUILD THESE):
 1. ANALYZE entities, fields, relationships. Think: what real-world MULTI-ENTITY WORKFLOWS do users perform? \
 A workflow always involves creating/updating records across 2+ entities in a sequence of steps. \
 Identify 2-3 DISTINCT workflow phases (e.g., preparation phase vs. closing phase vs. reporting phase). \
-Check for redundancy — if two workflows share most steps, merge them into one wizard with deep-linking. \
-Prefer flows that chain SEVERAL writes, encode a lifecycle rule (filtered eligibility + status \
-transition) or handle a schema-exposed exception (a stock field below its minimum -> reorder flow, \
-an end-of-day bulk close) — a flow that is one create with prefills is the dashboard's job; replace \
-such a candidate with one that passes instead of building it anyway.
+Check for redundancy — if two workflows share most steps, merge them into one wizard with deep-linking.
 
 **DECISION GATE — MOST WORKFLOWS BELONG IN THE DASHBOARD, NOT IN INTENT UIs:** \
 The dashboard agent already builds interactive, domain-specific UIs with full CRUD. \
@@ -1214,23 +1210,15 @@ BudgetTracker, StatusBadge), the no-{Entity}Dialog rule, the lookup-write form a
 from a source that is maintained, unlike your memory of it. Never name a type, helper or path you did \
 not read in .entity_summary: a brief that told the builder to import `EnrichedKunden` named a type \
 that does not exist.
-      - DERIVED & GUARDRAILS in every brief — five lines, "none" where the schema or the process has \
-none: derived (the fields the flow auto-sets instead of asking — running-number pattern + the data it \
-counts, start status key, today-dates); guardrails (every stock/capacity/limit field a written \
-quantity must be shown against and warned about — entity.field, verbatim from .entity_summary); \
-stats (per selection step ONE derived stat its list shows); next (the ONE follow-up action after the \
-successful write — the next logical step of the WORK, it becomes the SuccessStep's primary button, \
-never "back to dashboard"); drops (answers that make a later step pointless — `answer → dropped step`, \
-the wizard removes the step and fixes its counter).
       - KEEP EACH BRIEF UNDER ~350 WORDS: file path, one-sentence goal, the steps (eligible records \
-with exact keys, fields as name![type: keys], service calls with app_ids), derived & guardrails, \
-the module-paths block. No "German UI" reminders, no date/hook/import rules, no required-fields \
-recap — the ! markers already carry it. A measured run spent ~40s just generating two briefs.
+with exact keys, fields as name![type: keys], service calls with app_ids), the module-paths block. \
+No "German UI" reminders, no date/hook/import rules, no required-fields recap — the ! markers \
+already carry it. A measured run spent ~40s just generating two briefs.
 
 3. After build_intent_pages returns (it reports OK/FAILED per page):
    - Wire EACH flow with the script — one call per flow, do NOT edit src/App.tsx or
      src/config/intents.ts by hand:
-       node scripts/wire-intent.mjs {PascalCaseName}Page {slug} '{1-3 German words}' {IconX} '{one line}'
+       node scripts/wire-intent.mjs {PascalCaseName}Page {slug} '{1-3 words in the UI language}' {IconX} '{one line}'
      It adds the lazy import + route to App.tsx, the icon import + registry entry to
      src/config/intents.ts (the sidebar "Abläufe" section renders from that registry; do NOT
      add navigation cards to the dashboard) and flips INTENTS_PENDING to false — that swaps
@@ -1268,7 +1256,6 @@ CRITICAL: Dispatch ALL subagents in a SINGLE response for maximum parallelism.""
         # arrive continuously), so a [WAIT] is a REAL stall — the text says
         # which of the two worlds this build runs in.
         _mark_event()
-        streaming = bool(getattr(options, "include_partial_messages", False))
 
         async def _stall_watchdog():
             reported = 0.0
@@ -1277,13 +1264,12 @@ CRITICAL: Dispatch ALL subagents in a SINGLE response for maximum parallelism.""
                 silent = time.time() - _LAST_EVENT["t"]
                 if silent >= 30 and silent >= reported + 30:
                     reported = silent
-                    cause = (
-                        "echter Stall: Rate-Limit-Backoff oder Verbindung — eine laufende Generierung würde streamen"
-                        if streaming
-                        else "Rate-Limit-Backoff oder lange Generierung"
-                    )
+                    # Deliberately neutral: this CLI build delivers partial_json
+                    # deltas of big tool inputs as an end-of-block burst, so
+                    # silence here usually IS a large generation in progress
+                    # (see the stream-progress plumbing note above).
                     print(
-                        f"[WAIT] {round(silent)}s ohne Modell-Event ({cause})",
+                        f"[WAIT] {round(silent)}s ohne Stream-Event — meist eine große Generierung (Tool-Input-Deltas kommen gebündelt), sonst Rate-Limit-Backoff",
                         flush=True,
                     )
                 elif silent < 30:

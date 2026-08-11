@@ -6,6 +6,7 @@ import { highlightPython, CopyButton } from '@/lib/highlight';
 import { splitRunOutput, artifactKindFromExt, useArtifactProbes, openArtifact, type Artifact, type ArtifactProbe } from '@/lib/run-results';
 import { useActions, type RunInfo } from '@/context/ActionsContext';
 import type { ChatSessionMeta } from '@/lib/actions-agent';
+import { t, localeTag } from '@/i18n';
 
 // ---------------------------------------------------------------------------
 // Lightweight Markdown renderer (no external deps)
@@ -299,12 +300,18 @@ function getFileTypeInfo(dataUri: string) {
 
 // Localized labels for version-history origins (agent-written summaries stay
 // in the language the agent wrote them in; origins are localized here)
-const ORIGIN_LABELS: Record<string, string> = {
-  fix: 'Auto-Fix',
-  chat: 'Chat',
-  initial: 'Erstellt',
-  revert: 'Wiederhergestellt',
+const ORIGIN_KEYS: Record<string, string> = {
+  fix: 'code_origin_fix',
+  chat: 'code_origin_chat',
+  initial: 'code_origin_initial',
+  revert: 'code_origin_revert',
 };
+
+// Resolved per render — the catalog lookup must follow the active locale
+function originLabel(origin: string): string {
+  const key = ORIGIN_KEYS[origin];
+  return key ? t(key) : origin;
+}
 
 // The version card's action identity: a pill naming the Werkzeug the version
 // belongs to. Clicking it opens the action itself — devs land in the code
@@ -326,7 +333,7 @@ function VersionActionChip({ appId, identifier, version }: { appId: string; iden
   return (
     <button
       type="button"
-      title={`${title} — Aktion öffnen`}
+      title={`${title} — ${t('version_card_open_action')}`}
       onClick={() => devMode
         ? openCodeDrawerFor(appId, identifier, { version, tab: 'code' })
         : showActionInOverview(appId, identifier)}
@@ -379,14 +386,14 @@ function ArtifactResultRow({ artifact, probe }: { artifact: Artifact; probe?: Ar
           onClick={() => openArtifact(artifact.url, probe?.attachment)}
           className="shrink-0 text-xs font-semibold text-primary hover:underline"
         >
-          Öffnen
+          {t('code_out_open')}
         </button>
         <button
           type="button"
           onClick={() => void downloadFile(artifact.url, filename)}
           className="shrink-0 text-xs font-semibold text-primary hover:underline"
         >
-          Herunterladen
+          {t('download')}
         </button>
       </div>
     </div>
@@ -421,7 +428,7 @@ export function RunResultCard({ info, raw }: { info: RunInfo; raw: string }) {
         {action ? (
           <button
             type="button"
-            title={`${info.actionName} — Aktion öffnen`}
+            title={`${info.actionName} — ${t('version_card_open_action')}`}
             onClick={() => devMode
               ? openCodeDrawerFor(info.appId, info.actionIdentifier, info.version != null ? { version: info.version, tab: 'code' } : undefined)
               : showActionInOverview(info.appId, info.actionIdentifier)}
@@ -435,7 +442,7 @@ export function RunResultCard({ info, raw }: { info: RunInfo; raw: string }) {
           </span>
         )}
         <span className="shrink-0 rounded-full border border-green-200 bg-green-50 px-1.5 py-px text-[10px] font-semibold text-green-700">
-          ✓ Ausgeführt
+          ✓ {t('run_done_badge')}
         </span>
       </div>
       {(artifacts.length > 0 || rest) && (
@@ -443,7 +450,7 @@ export function RunResultCard({ info, raw }: { info: RunInfo; raw: string }) {
           {artifacts.map(a => <ArtifactResultRow key={a.url} artifact={a} probe={probes[a.url]} />)}
           {rest && (artifacts.length > 0 ? (
             <details className="border-t border-dashed border-border pt-1.5">
-              <summary className="cursor-pointer text-xs font-medium text-muted-foreground select-none">Details</summary>
+              <summary className="cursor-pointer text-xs font-medium text-muted-foreground select-none">{t('run_result_details')}</summary>
               <JsonView text={rest} />
             </details>
           ) : restIsJson ? (
@@ -465,7 +472,7 @@ export function RunIdChip({ runId, className = '' }: { runId: string; className?
   return (
     <button
       type="button"
-      title="RunID kopieren — bei Problemen für den Support angeben"
+      title={t('run_id_copy')}
       onClick={() => {
         void navigator.clipboard?.writeText(runId).then(() => {
           setCopied(true);
@@ -474,7 +481,7 @@ export function RunIdChip({ runId, className = '' }: { runId: string; className?
       }}
       className={`inline-flex items-center font-mono text-[10px] tabular-nums text-muted-foreground/60 transition-opacity hover:text-muted-foreground focus-visible:opacity-100 ${className}`}
     >
-      {copied ? 'Kopiert!' : runId}
+      {copied ? t('copied') : runId}
     </button>
   );
 }
@@ -508,14 +515,14 @@ function sessionTime(iso: string): string {
   const d = new Date(iso);
   if (isNaN(d.getTime())) return '';
   return d.toDateString() === new Date().toDateString()
-    ? d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
-    : d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+    ? d.toLocaleTimeString(localeTag(), { hour: '2-digit', minute: '2-digit' })
+    : d.toLocaleDateString(localeTag(), { day: '2-digit', month: '2-digit' });
 }
 
-const GROUP_LABELS: Record<'today' | 'yesterday' | 'older', string> = {
-  today: 'Heute',
-  yesterday: 'Gestern',
-  older: 'Älter',
+const GROUP_KEYS: Record<'today' | 'yesterday' | 'older', string> = {
+  today: 'chat_history_today',
+  yesterday: 'chat_history_yesterday',
+  older: 'chat_history_older',
 };
 
 export function ChatHistoryList({ filterAction, onSelect, onNewChat, compact = false }: {
@@ -560,7 +567,7 @@ export function ChatHistoryList({ filterAction, onSelect, onNewChat, compact = f
             <input
               value={query}
               onChange={e => setQuery(e.target.value)}
-              placeholder="Verlauf durchsuchen…"
+              placeholder={t('chat_history_search')}
               className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground/60"
             />
           </div>
@@ -570,7 +577,7 @@ export function ChatHistoryList({ filterAction, onSelect, onNewChat, compact = f
         {visible.length === 0 && (
           <div className="flex flex-col items-center justify-center gap-2 py-10 text-center text-muted-foreground">
             <IconHistory size={24} stroke={1.5} />
-            <p className="text-xs">Noch keine Unterhaltungen</p>
+            <p className="text-xs">{t('chat_history_empty')}</p>
             {onNewChat && (
               <button
                 type="button"
@@ -578,14 +585,14 @@ export function ChatHistoryList({ filterAction, onSelect, onNewChat, compact = f
                 className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted transition-colors"
               >
                 <IconMessagePlus size={13} />
-                Neuer Chat
+                {t('chat_new')}
               </button>
             )}
           </div>
         )}
         {groups.map(group => (
           <div key={`${group.key}-${group.sessions[0].id}`}>
-            <p className="px-2.5 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">{GROUP_LABELS[group.key]}</p>
+            <p className="px-2.5 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">{t(GROUP_KEYS[group.key])}</p>
             {group.sessions.map(s => (
               <div key={s.id} className="group relative">
                 <button
@@ -599,17 +606,17 @@ export function ChatHistoryList({ filterAction, onSelect, onNewChat, compact = f
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="flex items-baseline gap-2">
-                      <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">{stripMd(s.ai?.title || s.title) || 'Assistent'}</span>
+                      <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">{stripMd(s.ai?.title || s.title) || t('chatw_title')}</span>
                       <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">{sessionTime(s.updated_at || s.created_at)}</span>
                     </span>
                     {(s.ai?.summary || s.preview) && <span className="mt-0.5 block truncate text-xs text-muted-foreground">{stripMd(s.ai?.summary || s.preview)}</span>}
                     {(s.id === activeThreadId || s.origin === 'fix' || !!s.action || (!!s.user?.initials && !s.mine)) && (
                       <span className="mt-1 flex flex-wrap items-center gap-1">
                         {s.id === activeThreadId && (
-                          <span className="inline-flex items-center rounded-full border border-green-200 bg-green-50 px-1.5 py-px text-[10px] font-semibold text-green-700">Aktiv</span>
+                          <span className="inline-flex items-center rounded-full border border-green-200 bg-green-50 px-1.5 py-px text-[10px] font-semibold text-green-700">{t('chat_history_active')}</span>
                         )}
                         {s.origin === 'fix' && (
-                          <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-1.5 py-px text-[10px] font-semibold text-amber-700">Auto-Fix</span>
+                          <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-1.5 py-px text-[10px] font-semibold text-amber-700">{t('code_origin_fix')}</span>
                         )}
                         {s.action && (
                           <span className="inline-flex max-w-[11rem] items-center gap-1 truncate rounded-full border border-[#bfdbfe] bg-secondary px-1.5 py-px text-[10px] font-semibold text-[#2563eb]">
@@ -631,12 +638,12 @@ export function ChatHistoryList({ filterAction, onSelect, onNewChat, compact = f
                     else setArmedDelete(s.id);
                   }}
                   onBlur={() => setArmedDelete(null)}
-                  title="Sitzung löschen?"
+                  title={t('chat_history_delete_title')}
                   className={`absolute right-2 top-2 items-center justify-center rounded-md border border-border bg-card p-1.5 shadow-sm transition-colors ${
                     armedDelete === s.id ? 'flex text-destructive' : 'hidden text-muted-foreground hover:text-destructive group-hover:flex'
                   }`}
                 >
-                  {armedDelete === s.id ? <span className="px-0.5 text-[11px] font-semibold">Löschen?</span> : <IconTrash size={13} />}
+                  {armedDelete === s.id ? <span className="px-0.5 text-[11px] font-semibold">{t('chat_history_delete_action')}?</span> : <IconTrash size={13} />}
                 </button>
               </div>
             ))}
@@ -653,7 +660,8 @@ export function ChatHistoryList({ filterAction, onSelect, onNewChat, compact = f
 // show the SAME conversation from ActionsContext. Parent must be flex-col.
 // ---------------------------------------------------------------------------
 
-export function ChatPanel({ placeholder = 'Frage stellen oder Bild hochladen...', autoFocus = false, collapsed = false }: { placeholder?: string; autoFocus?: boolean; collapsed?: boolean }) {
+// The placeholder default is evaluated per render, so it follows the locale
+export function ChatPanel({ placeholder = t('chatw_placeholder'), autoFocus = false, collapsed = false }: { placeholder?: string; autoFocus?: boolean; collapsed?: boolean }) {
   const { messages, chatLoading, runningActionId, sendMessage, fixError, fixingMessageId, devMode, openCodeDrawerFor, revertActionVersion, chatSessions, activeThreadId, loadChatSession, resumedSessionAt, codeDrawerAction, dockScope, setDockScope, sessionAction } = useActions();
   const [input, setInput] = useState('');
 
@@ -687,7 +695,7 @@ export function ChatPanel({ placeholder = 'Frage stellen oder Bild hochladen...'
     const text = input.trim();
     if (!text && !image) return;
 
-    const userContent = text || ('Bild analysieren');
+    const userContent = text || t('chatw_analyze_image');
     sendMessage(userContent, image ?? undefined, fileName ?? undefined);
     setInput('');
     setImage(null);
@@ -723,21 +731,21 @@ export function ChatPanel({ placeholder = 'Frage stellen oder Bild hochladen...'
         {scopedFresh ? (
           <div className="flex flex-col items-center justify-center h-full text-center gap-2 text-muted-foreground">
             <IconBolt size={28} stroke={1.5} className="text-primary" />
-            <p className="text-xs max-w-[280px]">Frag etwas zu dieser Aktion — die Antwort kennt Code und Versionen.</p>
+            <p className="text-xs max-w-[280px]">{t('dock_empty_hint')}</p>
             <div className="mt-1 flex flex-wrap justify-center gap-1.5">
               <button
                 type="button"
-                onClick={() => sendMessage('Was macht diese Aktion?')}
+                onClick={() => sendMessage(t('dock_suggest_what'))}
                 className="rounded-full border border-primary/40 bg-card px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 transition-colors"
               >
-                Was macht diese Aktion?
+                {t('dock_suggest_what')}
               </button>
               <button
                 type="button"
-                onClick={() => sendMessage('Erkläre mir den Code')}
+                onClick={() => sendMessage(t('dock_suggest_explain'))}
                 className="rounded-full border border-primary/40 bg-card px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 transition-colors"
               >
-                Erkläre mir den Code
+                {t('dock_suggest_explain')}
               </button>
             </div>
           </div>
@@ -747,11 +755,11 @@ export function ChatPanel({ placeholder = 'Frage stellen oder Bild hochladen...'
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border border-dashed border-border bg-muted/60 px-3 py-2 text-xs text-muted-foreground">
             <span>
               {sessionAction
-                ? <>Diese Unterhaltung gehört zu <span className="font-medium text-foreground">„{sessionAction.title || sessionAction.identifier}"</span></>
-                : 'Allgemeine Unterhaltung ohne Aktions-Bezug'}
+                ? <>{t('dock_ctx_other_prefix')} <span className="font-medium text-foreground">„{sessionAction.title || sessionAction.identifier}"</span></>
+                : t('dock_ctx_general')}
             </span>
             <button type="button" onClick={() => setDockScope('action')} className="font-semibold text-primary hover:underline">
-              Neue Unterhaltung zu dieser Aktion
+              {t('chat_new_for_tool')}
             </button>
           </div>
         )}
@@ -761,7 +769,7 @@ export function ChatPanel({ placeholder = 'Frage stellen oder Bild hochladen...'
             <p className="text-xs">{placeholder}</p>
             {chatSessions.filter(s => s.id !== activeThreadId).length > 0 && (
               <div className="mt-3 w-full max-w-[260px] text-left">
-                <p className="mb-1.5 px-0.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">Zuletzt</p>
+                <p className="mb-1.5 px-0.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">{t('chat_history_recent')}</p>
                 {chatSessions.filter(s => s.id !== activeThreadId).slice(0, 2).map(s => (
                   <button
                     key={s.id}
@@ -792,7 +800,7 @@ export function ChatPanel({ placeholder = 'Frage stellen oder Bild hochladen...'
           <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
             <span className="h-px flex-1 bg-border" />
             <span className="shrink-0">
-              Sitzung fortgesetzt{sessionTime(resumedSessionAt) ? ` · ${sessionTime(resumedSessionAt)}` : ''}
+              {t('chat_resumed')}{sessionTime(resumedSessionAt) ? ` · ${sessionTime(resumedSessionAt)}` : ''}
             </span>
             <span className="h-px flex-1 bg-border" />
           </div>
@@ -829,10 +837,10 @@ export function ChatPanel({ placeholder = 'Frage stellen oder Bild hochladen...'
                     <span className="text-xs font-medium truncate max-w-[200px]">{m.imageName}</span>
                   </div>
                 )}
-                {m.content === 'In Arbeit...' ? (
+                {m.content === t('busy') ? (
                   <span className="flex items-center gap-2 text-muted-foreground">
                     <IconLoader2 size={14} className="animate-spin" />
-                    In Arbeit...
+                    {t('busy')}
                   </span>
                 ) : m.role === 'assistant' ? (
                   <ChatMarkdown content={m.content} />
@@ -851,7 +859,7 @@ export function ChatPanel({ placeholder = 'Frage stellen oder Bild hochladen...'
                 className="mt-1.5 inline-flex w-full max-w-[85%] items-center justify-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
                 <IconWand size={16} />
-                {fixingMessageId === m.id ? 'Wird behoben…' : 'Automatisch beheben'}
+                {fixingMessageId === m.id ? t('fix_action_running') : t('fix_action_button')}
               </button>
             )}
             {m.versionInfo && (
@@ -864,7 +872,7 @@ export function ChatPanel({ placeholder = 'Frage stellen oder Bild hochladen...'
                   <span className="mr-auto inline-flex items-center gap-1 text-xs text-muted-foreground">
                     <IconGitCommit size={14} className="text-primary shrink-0" />
                     <span className="font-semibold text-foreground">v{m.versionInfo.version}</span>
-                    <span>· {ORIGIN_LABELS[m.versionInfo.origin] || m.versionInfo.origin}</span>
+                    <span>· {originLabel(m.versionInfo.origin)}</span>
                   </span>
                   {devMode && (
                     <button
@@ -872,7 +880,7 @@ export function ChatPanel({ placeholder = 'Frage stellen oder Bild hochladen...'
                       onClick={() => openCodeDrawerFor(m.versionInfo!.appId, m.versionInfo!.actionIdentifier, { version: m.versionInfo!.version, tab: 'diff' })}
                       className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted transition-colors"
                     >
-                      Änderungen ansehen
+                      {t('version_card_view_changes')}
                     </button>
                   )}
                   {m.versionInfo.version > 1 && (
@@ -882,7 +890,7 @@ export function ChatPanel({ placeholder = 'Frage stellen oder Bild hochladen...'
                       onClick={() => revertActionVersion(m.versionInfo!.appId, m.versionInfo!.actionIdentifier, m.versionInfo!.version - 1)}
                       className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted transition-colors disabled:opacity-50"
                     >
-                      Rückgängig
+                      {t('version_card_undo')}
                     </button>
                   )}
                 </div>
@@ -893,11 +901,11 @@ export function ChatPanel({ placeholder = 'Frage stellen oder Bild hochladen...'
             )}
           </div>
         ))}
-        {chatLoading && messages.length > 0 && messages[messages.length - 1].content !== 'In Arbeit...' && messages[messages.length - 1].role === 'assistant' && messages[messages.length - 1].content === '' && (
+        {chatLoading && messages.length > 0 && messages[messages.length - 1].content !== t('busy') && messages[messages.length - 1].role === 'assistant' && messages[messages.length - 1].content === '' && (
           <div className="flex justify-start">
             <div className="bg-muted rounded-2xl rounded-bl-md px-3.5 py-2.5 flex items-center gap-2 text-sm text-muted-foreground">
               <TypingDots />
-              Denkt nach...
+              {t('chatw_thinking')}
             </div>
           </div>
         )}
@@ -936,7 +944,7 @@ export function ChatPanel({ placeholder = 'Frage stellen oder Bild hochladen...'
           <button
             onClick={() => fileRef.current?.click()}
             className="shrink-0 p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-            title="Datei anhängen"
+            title={t('chatw_attach_file')}
           >
             <IconPaperclip size={16} />
           </button>
@@ -1005,7 +1013,7 @@ export default function ChatWidget() {
             : 'bg-primary text-primary-foreground hover:scale-105 hover:shadow-xl'
           }
         `}
-        aria-label="Assistent"
+        aria-label={t('chatw_title')}
       >
         {chatOpen ? <IconX size={18} /> : <IconSparkles size={18} />}
       </button>
@@ -1024,18 +1032,18 @@ export default function ChatWidget() {
                 <button
                   onClick={() => setView('chat')}
                   className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                  title="Assistent"
+                  title={t('chatw_title')}
                 >
                   <IconArrowLeft size={14} />
                 </button>
-                <span className="text-sm font-semibold text-foreground truncate">Verlauf</span>
+                <span className="text-sm font-semibold text-foreground truncate">{t('chat_history_title')}</span>
               </div>
             ) : (
               <div className="flex items-center gap-2 min-w-0">
                 <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                   <IconSparkles size={12} className="text-primary" />
                 </div>
-                <span className="text-sm font-semibold text-foreground truncate">Assistent</span>
+                <span className="text-sm font-semibold text-foreground truncate">{t('chatw_title')}</span>
               </div>
             )}
             <div className="flex items-center gap-0.5 shrink-0">
@@ -1043,7 +1051,7 @@ export default function ChatWidget() {
                 <button
                   onClick={() => setView('history')}
                   className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                  title="Verlauf"
+                  title={t('chat_history_title')}
                 >
                   <IconHistory size={14} />
                 </button>
@@ -1053,14 +1061,14 @@ export default function ChatWidget() {
               <button
                 onClick={() => { newChatSession(); setView('chat'); }}
                 className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                title="Neuer Chat"
+                title={t('chat_new')}
               >
                 <IconMessagePlus size={14} />
               </button>
               <button
                 onClick={() => setIsFullscreen(!isFullscreen)}
                 className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                title={isFullscreen ? 'Verkleinern' : 'Vollbild'}
+                title={isFullscreen ? t('chatw_exit_fullscreen') : t('chatw_fullscreen')}
               >
                 {isFullscreen ? <IconMinimize size={14} /> : <IconMaximize size={14} />}
               </button>

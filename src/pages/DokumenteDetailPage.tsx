@@ -14,6 +14,7 @@ import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { AI_PHOTO_SCAN, AI_PHOTO_LOCATION } from '@/config/ai-features';
 import { formEnhancements } from '@/config/form-enhancements/Dokumente';
 import { evalComputed } from '@/config/form-enhancements/types';
+import { t, appLabel, fieldLabel, localeTag, CURRENCY } from '@/i18n';
 
 export default function DokumenteDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -67,11 +68,11 @@ export default function DokumenteDetailPage() {
   if (!record) {
     return (
       <RecordViewEmpty
-        title="Eintrag nicht gefunden"
+        title={t('not_found')}
         action={
           <Button variant="ghost" onClick={() => navigate('/dokumente')}>
             <IconArrowLeft className="h-4 w-4 mr-1.5" />
-            Zurück
+            {t('back')}
           </Button>
         }
       />
@@ -82,10 +83,10 @@ export default function DokumenteDetailPage() {
     <RecordView
       onBack={() => navigate('/dokumente')}
       onEdit={() => setEditing(true)}
-      backLabel="Zurück"
-      editLabel="Bearbeiten"
+      backLabel={t('back')}
+      editLabel={t('edit_button')}
     >
-      <RecordHeader title={record.fields.dokumentenbezeichnung ?? 'Dokumente'} />
+      <RecordHeader title={record.fields.dokumentenbezeichnung ?? appLabel('dokumente')} />
 
       {(() => {
         const lookupLists: Record<string, unknown> = {
@@ -93,8 +94,8 @@ export default function DokumenteDetailPage() {
         };
         const fmtComputed = (k: string, n: number) =>
           /(?:kosten|preis|betrag|gesamt|netto|brutto|summe|mwst|rabatt|anzahlung|umsatz|saldo)/i.test(k)
-            ? n.toLocaleString('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 })
-            : n.toLocaleString('de-DE', { maximumFractionDigits: 2 });
+            ? n.toLocaleString(localeTag(), { style: 'currency', currency: CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            : n.toLocaleString(localeTag(), { maximumFractionDigits: 2 });
         const computedFacts = Object.entries(formEnhancements.computed)
           .map(([key, formula]) => {
             const v = evalComputed(formula, record!.fields as Record<string, unknown>, { lookupLists });
@@ -106,15 +107,15 @@ export default function DokumenteDetailPage() {
         return computedFacts.length > 0 ? <RecordKeyFacts items={computedFacts} /> : null;
       })()}
 
-      <RecordSection title="Details" cols={2}>
-        <RecordField label="Unternehmen" value={getUnternehmenDisplayName(record.fields.unternehmen)} format="text" />
-        <RecordField label="Dokumentenbezeichnung" value={record.fields.dokumentenbezeichnung} format="text" />
-        <RecordField label="Dokumententyp" value={record.fields.dokumententyp} format="pill" />
-        <RecordField label="Beschreibung" value={record.fields.dokumentenbeschreibung} format="longtext" className="md:col-span-2" />
-        <RecordField label="Datum des Dokuments" value={record.fields.dokumentendatum} format="date" />
-        <RecordField label="Dokumentenlink (URL)" value={record.fields.dokumentenlink} format="url" />
-        <RecordField label="Bereitgestellt von" value={record.fields.bereitgestellt_von} format="text" />
-        <RecordField label="Notizen zum Dokument" value={record.fields.notizen_dokument} format="longtext" className="md:col-span-2" />
+      <RecordSection title={t('details')} cols={2}>
+        <RecordField label={fieldLabel('dokumente', 'unternehmen')} value={getUnternehmenDisplayName(record.fields.unternehmen)} format="text" />
+        <RecordField label={fieldLabel('dokumente', 'dokumentenbezeichnung')} value={record.fields.dokumentenbezeichnung} format="text" />
+        <RecordField label={fieldLabel('dokumente', 'dokumententyp')} value={record.fields.dokumententyp} format="pill" />
+        <RecordField label={fieldLabel('dokumente', 'dokumentenbeschreibung')} value={record.fields.dokumentenbeschreibung} format="longtext" className="md:col-span-2" />
+        <RecordField label={fieldLabel('dokumente', 'dokumentendatum')} value={record.fields.dokumentendatum} format="date" />
+        <RecordField label={fieldLabel('dokumente', 'dokumentenlink')} value={record.fields.dokumentenlink} format="url" />
+        <RecordField label={fieldLabel('dokumente', 'bereitgestellt_von')} value={record.fields.bereitgestellt_von} format="text" />
+        <RecordField label={fieldLabel('dokumente', 'notizen_dokument')} value={record.fields.notizen_dokument} format="longtext" className="md:col-span-2" />
       </RecordSection>
 
       <RecordAttachments appId={APP_IDS.DOKUMENTE} recordId={record.record_id} />
@@ -122,7 +123,7 @@ export default function DokumenteDetailPage() {
       <div className="flex justify-end pt-2">
         <Button variant="ghost" onClick={() => setDeleteOpen(true)} className="text-destructive hover:text-destructive">
           <IconTrash className="h-4 w-4 mr-1.5" />
-          Löschen
+          {t('delete')}
         </Button>
       </div>
 
@@ -141,8 +142,8 @@ export default function DokumenteDetailPage() {
         open={deleteOpen}
         onClose={() => setDeleteOpen(false)}
         onConfirm={handleDelete}
-        title="Dokumente löschen"
-        description="Soll dieser Eintrag wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden."
+        title={t('delete_entity', { entity: appLabel('dokumente') })}
+        description={t('confirm_delete_desc')}
       />
     </RecordView>
   );

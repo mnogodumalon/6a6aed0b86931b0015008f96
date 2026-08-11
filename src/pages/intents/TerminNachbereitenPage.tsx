@@ -38,6 +38,115 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 
+import { makeT } from '@/i18n';
+
+const tt = makeT({
+  de: {
+    termin: '(Termin)',
+    dokumente: 'Dokumente',
+    notizen: 'Notizen',
+    termin_2: 'Termin',
+    abschliessen: 'Abschließen',
+    protokoll: 'Protokoll',
+    notiz: 'Notiz',
+    pruefen: 'Prüfen',
+    fertig: 'Fertig',
+    termin_nachbereiten: 'Termin nachbereiten',
+    status_setzen_protokoll_anlegen: 'Status setzen, Protokoll anlegen, Ergebnis festhalten',
+    schliesse_einen_abgehaltenen_ter: 'Schließe einen abgehaltenen Termin ab: setze den Status auf „Stattgefunden", lege ein Sitzungsprotokoll an und halte das Ergebnis als Notiz fest.',
+    ohne_bezeichnung: '(ohne Bezeichnung)',
+    keine_geplanten_termine_vorhande: 'Keine geplanten Termine vorhanden.',
+    termin_suchen: 'Termin suchen …',
+    kein_termin_ausgewaehlt: 'Kein Termin ausgewählt.',
+    zurueck_zu_schritt_1: 'Zurück zu Schritt 1',
+    stattgefunden: 'Stattgefunden',
+    notizen_zum_termin_optional: 'Notizen zum Termin (optional)',
+    kurznotiz_zum_verlauf_des_termin: 'Kurznotiz zum Verlauf des Termins …',
+    weiter_protokoll_anlegen: 'Weiter: Protokoll anlegen',
+    protokoll_fuer: 'Protokoll für',
+    dokumentenbezeichnung: 'Dokumentenbezeichnung',
+    protokoll_2: 'Protokoll {p0}',
+    dokumententyp: 'Dokumententyp',
+    dokumentendatum: 'Dokumentendatum',
+    dokumentenlink_optional: 'Dokumentenlink (optional)',
+    https: 'https://…',
+    bereitgestellt_von_optional: 'Bereitgestellt von (optional)',
+    name_oder_team: 'Name oder Team',
+    weiter_ergebnis_notiz: 'Weiter: Ergebnis-Notiz',
+    ergebnis_notiz_fuer: 'Ergebnis-Notiz für',
+    notiz_titel: 'Notiz-Titel',
+    ergebnis: 'Ergebnis …',
+    notiz_inhalt: 'Notiz-Inhalt',
+    was_wurde_besprochen_welche_besc: 'Was wurde besprochen? Welche Beschlüsse wurden gefasst? Welche nächsten Schritte?',
+    kategorie: 'Kategorie',
+    prioritaet: 'Priorität',
+    weiter_pruefen_bestaetigen: 'Weiter: Prüfen & Bestätigen',
+    unternehmen: 'Unternehmen',
+    termin_notizen: 'Termin-Notizen',
+    ergebnis_notiz: 'Ergebnis-Notiz',
+    datum_heute: 'Datum (heute)',
+    protokoll_angelegt: 'Protokoll „{p0}" angelegt',
+    ergebnis_notiz_erstellt: 'Ergebnis-Notiz „{p0}" erstellt',
+    verknuepft_mit: 'Verknüpft mit: {p0}',
+    neue_beteiligung_aufnehmen: 'Neue Beteiligung aufnehmen',
+    weiteren_termin_nachbereiten: 'Weiteren Termin nachbereiten',
+    zurueck_zum_dashboard: 'Zurück zum Dashboard',
+    termin_wurde_erfolgreich_abgesch: 'Termin wurde erfolgreich abgeschlossen.',
+  },
+  en: {
+    termin: '(Appointment)',
+    dokumente: 'Documents',
+    notizen: 'Notes',
+    termin_2: 'Appointment',
+    abschliessen: 'Complete',
+    protokoll: 'Minutes',
+    notiz: 'Note',
+    pruefen: 'Review',
+    fertig: 'Finish',
+    termin_nachbereiten: 'Follow Up on Appointment',
+    status_setzen_protokoll_anlegen: 'Set status, create minutes, record outcome',
+    schliesse_einen_abgehaltenen_ter: 'Complete a held appointment: set the status to "Took Place", create meeting minutes, and record the outcome as a note.',
+    ohne_bezeichnung: '(no title)',
+    keine_geplanten_termine_vorhande: 'No scheduled appointments available.',
+    termin_suchen: 'Search appointment …',
+    kein_termin_ausgewaehlt: 'No appointment selected.',
+    zurueck_zu_schritt_1: 'Back to Step 1',
+    stattgefunden: 'Took Place',
+    notizen_zum_termin_optional: 'Notes on Appointment (optional)',
+    kurznotiz_zum_verlauf_des_termin: 'Brief note on the course of the appointment …',
+    weiter_protokoll_anlegen: 'Next: Create Minutes',
+    protokoll_fuer: 'Minutes for',
+    dokumentenbezeichnung: 'Document Title',
+    protokoll_2: 'Protocol {p0}',
+    dokumententyp: 'Document Type',
+    dokumentendatum: 'Document Date',
+    dokumentenlink_optional: 'Document Link (optional)',
+    https: 'https://…',
+    bereitgestellt_von_optional: 'Provided by (optional)',
+    name_oder_team: 'Name or Team',
+    weiter_ergebnis_notiz: 'Next: Result Note',
+    ergebnis_notiz_fuer: 'Result Note for',
+    notiz_titel: 'Note Title',
+    ergebnis: 'Result …',
+    notiz_inhalt: 'Note Content',
+    was_wurde_besprochen_welche_besc: 'What was discussed? What decisions were made? What are the next steps?',
+    kategorie: 'Category',
+    prioritaet: 'Priority',
+    weiter_pruefen_bestaetigen: 'Next: Review & Confirm',
+    unternehmen: 'Company',
+    termin_notizen: 'Appointment Notes',
+    ergebnis_notiz: 'Result Note',
+    datum_heute: 'Date (today)',
+    protokoll_angelegt: 'Protocol "{p0}" created',
+    ergebnis_notiz_erstellt: 'Result Note "{p0}" created',
+    verknuepft_mit: 'Linked to: {p0}',
+    neue_beteiligung_aufnehmen: 'Add New Participation',
+    weiteren_termin_nachbereiten: 'Follow Up Another Appointment',
+    zurueck_zum_dashboard: 'Back to Dashboard',
+    termin_wurde_erfolgreich_abgesch: 'Appointment was completed successfully.',
+  },
+});
+
 const DRAFT_KEY = 'intent:termin-nachbereiten';
 
 const DOKUMENTENTYP_OPTIONS = LOOKUP_OPTIONS['dokumente']?.['dokumententyp'] ?? [];
@@ -135,7 +244,7 @@ export default function TerminNachbereitenPage() {
       await fetchAll();
 
       return {
-        terminbezeichnung: termin.fields.terminbezeichnung ?? '(Termin)',
+        terminbezeichnung: termin.fields.terminbezeichnung ?? tt('termin'),
         unternehmenName: unternehmenId
           ? (unternehmenMap.get(unternehmenId)?.fields.name ?? '—')
           : '—',
@@ -167,8 +276,8 @@ export default function TerminNachbereitenPage() {
     const docsCount = uid ? dokumente.filter(d => extractRecordId(d.fields.unternehmen) === uid).length : 0;
     const notizCount = uid ? notizen.filter(n => extractRecordId(n.fields.unternehmen) === uid).length : 0;
     return [
-      { label: 'Dokumente', value: docsCount },
-      { label: 'Notizen', value: notizCount },
+      { label: tt('dokumente'), value: docsCount },
+      { label: tt('notizen'), value: notizCount },
     ];
   }
 
@@ -185,7 +294,7 @@ export default function TerminNachbereitenPage() {
     step > 1 && selectedTermin
       ? [
           {
-            label: 'Termin',
+            label: tt('termin_2'),
             value: `${selectedTermin.fields.terminbezeichnung ?? '—'} · ${selectedUnternehmen?.fields.name ?? '—'}`,
           },
         ]
@@ -198,18 +307,18 @@ export default function TerminNachbereitenPage() {
   ];
 
   const STEPS = [
-    { label: 'Termin' },
-    { label: 'Abschließen' },
-    { label: 'Protokoll' },
-    { label: 'Notiz' },
-    { label: 'Prüfen' },
-    { label: 'Fertig' },
+    { label: tt('termin_2') },
+    { label: tt('abschliessen') },
+    { label: tt('protokoll') },
+    { label: tt('notiz') },
+    { label: tt('pruefen') },
+    { label: tt('fertig') },
   ];
 
   return (
     <IntentWizardShell
-      title="Termin nachbereiten"
-      subtitle="Status setzen, Protokoll anlegen, Ergebnis festhalten"
+      title={tt('termin_nachbereiten')}
+      subtitle={tt('status_setzen_protokoll_anlegen')}
       steps={STEPS}
       currentStep={step}
       onStepChange={setStep}
@@ -218,7 +327,7 @@ export default function TerminNachbereitenPage() {
       onRetry={fetchAll}
       intro={{
         description:
-          'Schließe einen abgehaltenen Termin ab: setze den Status auf „Stattgefunden", lege ein Sitzungsprotokoll an und halte das Ergebnis als Notiz fest.',
+          tt('schliesse_einen_abgehaltenen_ter'),
         requirements: ['Abgehaltener Termin (Status: Geplant)', 'Protokollbezeichnung', 'Ergebnisnotiz'],
       }}
       answers={answers}
@@ -234,7 +343,7 @@ export default function TerminNachbereitenPage() {
             const uName = uid ? (unternehmenMap.get(uid)?.fields.name ?? '—') : '—';
             return {
               id: t.record_id,
-              title: t.fields.terminbezeichnung ?? '(ohne Bezeichnung)',
+              title: t.fields.terminbezeichnung ?? tt('ohne_bezeichnung'),
               subtitle: `${formatDateTime(t.fields.datum_uhrzeit)} · ${t.fields.ort ?? '—'} · ${uName}`,
               status: t.fields.terminstatus
                 ? { key: t.fields.terminstatus.key, label: t.fields.terminstatus.label }
@@ -252,8 +361,8 @@ export default function TerminNachbereitenPage() {
             }));
             setStep(2);
           }}
-          emptyText="Keine geplanten Termine vorhanden."
-          searchPlaceholder="Termin suchen …"
+          emptyText={tt('keine_geplanten_termine_vorhande')}
+          searchPlaceholder={tt('termin_suchen')}
         />
       )}
 
@@ -263,9 +372,9 @@ export default function TerminNachbereitenPage() {
           {!selectedTermin ? (
             <div className="flex flex-col items-center gap-3 py-10 text-center text-muted-foreground">
               <IconAlertCircle size={32} />
-              <p>Kein Termin ausgewählt.</p>
+              <p>{tt('kein_termin_ausgewaehlt')}</p>
               <Button variant="outline" onClick={() => setStep(1)}>
-                Zurück zu Schritt 1
+                {tt('zurueck_zu_schritt_1')}
               </Button>
             </div>
           ) : (
@@ -284,17 +393,17 @@ export default function TerminNachbereitenPage() {
                   </p>
                 )}
                 <div className="pt-1">
-                  <StatusBadge statusKey="stattgefunden" label="Stattgefunden" />
+                  <StatusBadge statusKey="stattgefunden" label={tt('stattgefunden')} />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="notizen_termin">Notizen zum Termin (optional)</Label>
+                <Label htmlFor="notizen_termin">{tt('notizen_zum_termin_optional')}</Label>
                 <Textarea
                   id="notizen_termin"
                   value={state.notizen_termin}
                   onChange={e => setState(s => ({ ...s, notizen_termin: e.target.value }))}
-                  placeholder="Kurznotiz zum Verlauf des Termins …"
+                  placeholder={tt('kurznotiz_zum_verlauf_des_termin')}
                   rows={3}
                 />
               </div>
@@ -303,7 +412,7 @@ export default function TerminNachbereitenPage() {
                 className="w-full"
                 onClick={() => setStep(3)}
               >
-                Weiter: Protokoll anlegen
+                {tt('weiter_protokoll_anlegen')}
                 <IconChevronRight size={16} className="ml-1" />
               </Button>
             </>
@@ -317,9 +426,9 @@ export default function TerminNachbereitenPage() {
           {!selectedTermin ? (
             <div className="flex flex-col items-center gap-3 py-10 text-center text-muted-foreground">
               <IconAlertCircle size={32} />
-              <p>Kein Termin ausgewählt.</p>
+              <p>{tt('kein_termin_ausgewaehlt')}</p>
               <Button variant="outline" onClick={() => setStep(1)}>
-                Zurück zu Schritt 1
+                {tt('zurueck_zu_schritt_1')}
               </Button>
             </div>
           ) : (
@@ -327,25 +436,25 @@ export default function TerminNachbereitenPage() {
               <div className="rounded-xl border bg-secondary/40 p-3 flex items-center gap-2 text-sm">
                 <IconFileText size={16} className="text-primary shrink-0" />
                 <span>
-                  Protokoll für <strong>{selectedTermin.fields.terminbezeichnung}</strong>
+                  {tt('protokoll_fuer')} <strong>{selectedTermin.fields.terminbezeichnung}</strong>
                   {selectedUnternehmen ? ` · ${selectedUnternehmen.fields.name}` : ''}
                 </span>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="dok_bezeichnung">
-                  Dokumentenbezeichnung <span className="text-destructive">*</span>
+                  {tt('dokumentenbezeichnung')} <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="dok_bezeichnung"
                   value={state.dokumentenbezeichnung}
                   onChange={e => setState(s => ({ ...s, dokumentenbezeichnung: e.target.value }))}
-                  placeholder={`Protokoll ${selectedTermin.fields.terminbezeichnung ?? ''}`}
+                  placeholder={tt('protokoll_2', { p0: selectedTermin.fields.terminbezeichnung ?? '' })}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="dok_typ">Dokumententyp</Label>
+                <Label htmlFor="dok_typ">{tt('dokumententyp')}</Label>
                 <Select
                   value={state.dokumententypKey}
                   onValueChange={v => setState(s => ({ ...s, dokumententypKey: v }))}
@@ -364,7 +473,7 @@ export default function TerminNachbereitenPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="dok_datum">Dokumentendatum</Label>
+                <Label htmlFor="dok_datum">{tt('dokumentendatum')}</Label>
                 <Input
                   id="dok_datum"
                   type="date"
@@ -374,23 +483,23 @@ export default function TerminNachbereitenPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="dok_link">Dokumentenlink (optional)</Label>
+                <Label htmlFor="dok_link">{tt('dokumentenlink_optional')}</Label>
                 <Input
                   id="dok_link"
                   type="url"
                   value={state.dokumentenlink}
                   onChange={e => setState(s => ({ ...s, dokumentenlink: e.target.value }))}
-                  placeholder="https://…"
+                  placeholder={tt('https')}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="dok_bereit">Bereitgestellt von (optional)</Label>
+                <Label htmlFor="dok_bereit">{tt('bereitgestellt_von_optional')}</Label>
                 <Input
                   id="dok_bereit"
                   value={state.bereitgestellt_von}
                   onChange={e => setState(s => ({ ...s, bereitgestellt_von: e.target.value }))}
-                  placeholder="Name oder Team"
+                  placeholder={tt('name_oder_team')}
                 />
               </div>
 
@@ -399,7 +508,7 @@ export default function TerminNachbereitenPage() {
                 disabled={!state.dokumentenbezeichnung.trim()}
                 onClick={() => setStep(4)}
               >
-                Weiter: Ergebnis-Notiz
+                {tt('weiter_ergebnis_notiz')}
                 <IconChevronRight size={16} className="ml-1" />
               </Button>
             </>
@@ -413,9 +522,9 @@ export default function TerminNachbereitenPage() {
           {!selectedTermin ? (
             <div className="flex flex-col items-center gap-3 py-10 text-center text-muted-foreground">
               <IconAlertCircle size={32} />
-              <p>Kein Termin ausgewählt.</p>
+              <p>{tt('kein_termin_ausgewaehlt')}</p>
               <Button variant="outline" onClick={() => setStep(1)}>
-                Zurück zu Schritt 1
+                {tt('zurueck_zu_schritt_1')}
               </Button>
             </div>
           ) : (
@@ -423,39 +532,39 @@ export default function TerminNachbereitenPage() {
               <div className="rounded-xl border bg-secondary/40 p-3 flex items-center gap-2 text-sm">
                 <IconNotes size={16} className="text-primary shrink-0" />
                 <span>
-                  Ergebnis-Notiz für <strong>{selectedTermin.fields.terminbezeichnung}</strong>
+                  {tt('ergebnis_notiz_fuer')} <strong>{selectedTermin.fields.terminbezeichnung}</strong>
                   {selectedUnternehmen ? ` · ${selectedUnternehmen.fields.name}` : ''}
                 </span>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="notiz_titel">
-                  Notiz-Titel <span className="text-destructive">*</span>
+                  {tt('notiz_titel')} <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="notiz_titel"
                   value={state.notiz_titel}
                   onChange={e => setState(s => ({ ...s, notiz_titel: e.target.value }))}
-                  placeholder={selectedTermin.fields.terminbezeichnung ?? 'Ergebnis …'}
+                  placeholder={selectedTermin.fields.terminbezeichnung ?? tt('ergebnis')}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="notiz_inhalt">
-                  Notiz-Inhalt <span className="text-destructive">*</span>
+                  {tt('notiz_inhalt')} <span className="text-destructive">*</span>
                 </Label>
                 <Textarea
                   id="notiz_inhalt"
                   value={state.notiz_inhalt}
                   onChange={e => setState(s => ({ ...s, notiz_inhalt: e.target.value }))}
-                  placeholder="Was wurde besprochen? Welche Beschlüsse wurden gefasst? Welche nächsten Schritte?"
+                  placeholder={tt('was_wurde_besprochen_welche_besc')}
                   rows={5}
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="notiz_kategorie">Kategorie</Label>
+                  <Label htmlFor="notiz_kategorie">{tt('kategorie')}</Label>
                   <Select
                     value={state.kategorieKey}
                     onValueChange={v => setState(s => ({ ...s, kategorieKey: v }))}
@@ -474,7 +583,7 @@ export default function TerminNachbereitenPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Priorität</Label>
+                  <Label>{tt('prioritaet')}</Label>
                   <div className="flex gap-2 flex-wrap">
                     {PRIORITAET_OPTIONS.map(opt => (
                       <button
@@ -499,7 +608,7 @@ export default function TerminNachbereitenPage() {
                 disabled={!state.notiz_titel.trim() || !state.notiz_inhalt.trim()}
                 onClick={() => setStep(5)}
               >
-                Weiter: Prüfen & Bestätigen
+                {tt('weiter_pruefen_bestaetigen')}
                 <IconChevronRight size={16} className="ml-1" />
               </Button>
             </>
@@ -512,37 +621,37 @@ export default function TerminNachbereitenPage() {
         <SummaryStep
           items={[
             {
-              label: 'Termin',
+              label: tt('termin_2'),
               value: selectedTermin?.fields.terminbezeichnung ?? '—',
               step: 1,
             },
             {
-              label: 'Unternehmen',
+              label: tt('unternehmen'),
               value: selectedUnternehmen?.fields.name ?? '—',
             },
             {
-              label: 'Termin-Notizen',
+              label: tt('termin_notizen'),
               value: state.notizen_termin.trim() || '(keine)',
               step: 2,
             },
             {
-              label: 'Protokoll',
+              label: tt('protokoll'),
               value: state.dokumentenbezeichnung || '—',
               step: 3,
             },
             {
-              label: 'Dokumententyp',
+              label: tt('dokumententyp'),
               value:
                 DOKUMENTENTYP_OPTIONS.find(o => o.key === state.dokumententypKey)?.label ?? '—',
               step: 3,
             },
             {
-              label: 'Ergebnis-Notiz',
+              label: tt('ergebnis_notiz'),
               value: state.notiz_titel || '—',
               step: 4,
             },
             {
-              label: 'Notiz-Inhalt',
+              label: tt('notiz_inhalt'),
               value:
                 state.notiz_inhalt.length > 80
                   ? state.notiz_inhalt.slice(0, 80) + '…'
@@ -550,13 +659,13 @@ export default function TerminNachbereitenPage() {
               step: 4,
             },
             {
-              label: 'Priorität',
+              label: tt('prioritaet'),
               value:
                 PRIORITAET_OPTIONS.find(o => o.key === state.prioritaetKey)?.label ?? '—',
               step: 4,
             },
             {
-              label: 'Datum (heute)',
+              label: tt('datum_heute'),
               value: format(new Date(), 'dd.MM.yyyy', { locale: de }),
             },
           ]}
@@ -578,21 +687,21 @@ export default function TerminNachbereitenPage() {
           title={`„${result.terminbezeichnung}" abgeschlossen`}
           details={[
             `Terminstatus auf „Stattgefunden" gesetzt`,
-            `Protokoll „${result.dokumentenbezeichnung}" angelegt`,
-            `Ergebnis-Notiz „${result.notiz_titel}" erstellt`,
-            `Verknüpft mit: ${result.unternehmenName}`,
+            tt('protokoll_angelegt', { p0: result.dokumentenbezeichnung }),
+            tt('ergebnis_notiz_erstellt', { p0: result.notiz_titel }),
+            tt('verknuepft_mit', { p0: result.unternehmenName }),
           ]}
           actions={[
             {
-              label: 'Neue Beteiligung aufnehmen',
+              label: tt('neue_beteiligung_aufnehmen'),
               href: '#/intents/neue-beteiligung',
             },
             {
-              label: 'Weiteren Termin nachbereiten',
+              label: tt('weiteren_termin_nachbereiten'),
               onClick: resetWizard,
             },
             {
-              label: 'Zurück zum Dashboard',
+              label: tt('zurueck_zum_dashboard'),
               href: '#/',
             },
           ]}
@@ -602,10 +711,10 @@ export default function TerminNachbereitenPage() {
       {/* Fallback: step 6 without result (shouldn't happen, but safe) */}
       {step === 6 && !result && done && (
         <div className="flex flex-col items-center gap-3 py-10 text-center">
-          <p className="text-muted-foreground">Termin wurde erfolgreich abgeschlossen.</p>
-          <Button onClick={resetWizard}>Weiteren Termin nachbereiten</Button>
+          <p className="text-muted-foreground">{tt('termin_wurde_erfolgreich_abgesch')}</p>
+          <Button onClick={resetWizard}>{tt('weiteren_termin_nachbereiten')}</Button>
           <a href="#/" className="text-sm text-muted-foreground underline">
-            Zurück zum Dashboard
+            {tt('zurueck_zum_dashboard')}
           </a>
         </div>
       )}

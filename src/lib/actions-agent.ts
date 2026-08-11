@@ -1,9 +1,10 @@
 import { ensureUploadableImage } from "@/lib/ai";
+// The agent answers in the language the user is CURRENTLY looking at, so the
+// locale is read per request (module-scope copy would freeze the build value).
+import { locale } from "@/i18n";
 
 const AGENT_ENDPOINT = "https://my.living-apps.de/actions-agent";
 const APPGROUP_ID = "6a6aed0b86931b0015008f96";
-// UI language of this generated app — the agent answers in this language.
-const LANG = "de";
 
 export interface InputSchemaProperty {
   type: string;
@@ -448,7 +449,7 @@ export async function agentChat(
       state: {},
       properties: {
         appgroup_id: APPGROUP_ID,
-        lang: LANG,
+        lang: locale,
         // JSON.stringify drops the key when undefined
         active_action: opts?.activeAction,
       },
@@ -509,7 +510,7 @@ export async function fixAction(
   formData.append("action_identifier", ctx.actionIdentifier);
   formData.append("thread_id", ctx.threadId);
   formData.append("appgroup_id", APPGROUP_ID);
-  formData.append("lang", LANG);
+  formData.append("lang", locale);
   formData.append("error", ctx.error);
   if (ctx.stdout) formData.append("stdout", ctx.stdout);
   if (ctx.runId) formData.append("run_id", ctx.runId);

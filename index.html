@@ -18,6 +18,20 @@
          Nur der Loader (type="module") wird dynamisch eingehängt: vite build
          versucht absolute Modul-Pfade aufzulösen und bricht ab ("Failed to
          resolve … from index.html"). -->
+    <!-- Sprache VOR dem la-Loader setzen: die Widget-Library liest
+         <html lang>; das React-Bundle (src/i18n) lädt erst danach und würde
+         sonst einen Frame/Init zu spät kommen. Gleicher Pre-Hydration-Trick
+         wie der Drawer-Collapse-Spiegel oben. -->
+    <script>
+      (function () {
+        try {
+          var l = localStorage.getItem('app-locale');
+          if (l === 'de' || l === 'en' || l === 'cs') {
+            document.documentElement.lang = l;
+          }
+        } catch (e) { /* private mode */ }
+      })();
+    </script>
     <link rel="stylesheet" href="/react-webcomponents/current/header-bar-widget.placeholder.css">
     <script src="/react-webcomponents/current/drawer.placeholder.js"></script>
     <link rel="stylesheet" href="/react-webcomponents/current/drawer.placeholder.css">

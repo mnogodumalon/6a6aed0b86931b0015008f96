@@ -4,6 +4,7 @@ import { extractRecordId } from '@/services/livingAppsService';
 import {
   RecordSection, RecordField, RecordRelation, RecordAttachments,
 } from '@/components/widgets/RecordView';
+import { t, appLabel, fieldLabel } from '@/i18n';
 import { SatelliteSection } from '@/components/SatelliteSection';
 
 export interface UnternehmenDetailsProps {
@@ -43,48 +44,48 @@ export function UnternehmenDetails({
 }: UnternehmenDetailsProps) {
   return (
     <>
-      <RecordSection title="Details" cols={2}>
-        <RecordField label="Unternehmensname" value={record.fields.name} format="text" />
-        <RecordField label="Rechtsform" value={record.fields.rechtsform} format="pill" />
-        <RecordField label="Branche" value={record.fields.branche} format="pill" />
-        <RecordField label="Status der Beteiligung" value={record.fields.status} format="pill" />
-        <RecordField label="Beteiligungsquote (%)" value={record.fields.beteiligungsquote} format="text" />
-        <RecordField label="Investiertes Kapital (EUR)" value={record.fields.investiertes_kapital} format="text" />
-        <RecordField label="Aktueller Unternehmenswert (EUR)" value={record.fields.aktueller_wert} format="text" />
-        <RecordField label="Investitionsdatum" value={record.fields.investitionsdatum} format="date" />
-        <RecordField label="Stadt" value={record.fields.stadt} format="text" />
-        <RecordField label="Land" value={record.fields.land} format="text" />
-        <RecordField label="Website" value={record.fields.website} format="url" />
-        <RecordField label="Vorname Ansprechpartner" value={record.fields.ansprechpartner_vorname} format="text" />
-        <RecordField label="Nachname Ansprechpartner" value={record.fields.ansprechpartner_nachname} format="text" />
-        <RecordField label="E-Mail Ansprechpartner" value={record.fields.ansprechpartner_email} format="email" />
-        <RecordField label="Telefon Ansprechpartner" value={record.fields.ansprechpartner_telefon} format="text" />
-        <RecordField label="Cockpit-Zusammenfassung" value={record.fields.cockpit_zusammenfassung} format="longtext" className="md:col-span-2" />
-        <RecordField label="Allgemeine Notizen" value={record.fields.allgemeine_notizen} format="longtext" className="md:col-span-2" />
+      <RecordSection title={t('details')} cols={2}>
+        <RecordField label={fieldLabel('unternehmen', 'name')} value={record.fields.name} format="text" />
+        <RecordField label={fieldLabel('unternehmen', 'rechtsform')} value={record.fields.rechtsform} format="pill" />
+        <RecordField label={fieldLabel('unternehmen', 'branche')} value={record.fields.branche} format="pill" />
+        <RecordField label={fieldLabel('unternehmen', 'status')} value={record.fields.status} format="pill" />
+        <RecordField label={fieldLabel('unternehmen', 'beteiligungsquote')} value={record.fields.beteiligungsquote} format="text" />
+        <RecordField label={fieldLabel('unternehmen', 'investiertes_kapital')} value={record.fields.investiertes_kapital} format="text" />
+        <RecordField label={fieldLabel('unternehmen', 'aktueller_wert')} value={record.fields.aktueller_wert} format="text" />
+        <RecordField label={fieldLabel('unternehmen', 'investitionsdatum')} value={record.fields.investitionsdatum} format="date" />
+        <RecordField label={fieldLabel('unternehmen', 'stadt')} value={record.fields.stadt} format="text" />
+        <RecordField label={fieldLabel('unternehmen', 'land')} value={record.fields.land} format="text" />
+        <RecordField label={fieldLabel('unternehmen', 'website')} value={record.fields.website} format="url" />
+        <RecordField label={fieldLabel('unternehmen', 'ansprechpartner_vorname')} value={record.fields.ansprechpartner_vorname} format="text" />
+        <RecordField label={fieldLabel('unternehmen', 'ansprechpartner_nachname')} value={record.fields.ansprechpartner_nachname} format="text" />
+        <RecordField label={fieldLabel('unternehmen', 'ansprechpartner_email')} value={record.fields.ansprechpartner_email} format="email" />
+        <RecordField label={fieldLabel('unternehmen', 'ansprechpartner_telefon')} value={record.fields.ansprechpartner_telefon} format="text" />
+        <RecordField label={fieldLabel('unternehmen', 'cockpit_zusammenfassung')} value={record.fields.cockpit_zusammenfassung} format="longtext" className="md:col-span-2" />
+        <RecordField label={fieldLabel('unternehmen', 'allgemeine_notizen')} value={record.fields.allgemeine_notizen} format="longtext" className="md:col-span-2" />
       </RecordSection>
 
       <SatelliteSection
-        title="Termine"
+        title={appLabel('termine')}
         items={termineList.filter(r => extractRecordId(r.fields.unternehmen) === record.record_id)}
-        map={r => ({ name: r.fields.terminbezeichnung ?? 'Termine', meta: r.fields.datum_uhrzeit })}
+        map={r => ({ name: r.fields.terminbezeichnung ?? appLabel('termine'), meta: r.fields.datum_uhrzeit })}
         onOpen={onOpenTermine}
         onAdd={onAddTermine}
         getKey={r => r.record_id}
       />
 
       <SatelliteSection
-        title="Dokumente"
+        title={appLabel('dokumente')}
         items={dokumenteList.filter(r => extractRecordId(r.fields.unternehmen) === record.record_id)}
-        map={r => ({ name: r.fields.dokumentenbezeichnung ?? 'Dokumente', meta: r.fields.dokumentendatum })}
+        map={r => ({ name: r.fields.dokumentenbezeichnung ?? appLabel('dokumente'), meta: r.fields.dokumentendatum })}
         onOpen={onOpenDokumente}
         onAdd={onAddDokumente}
         getKey={r => r.record_id}
       />
 
       <SatelliteSection
-        title="Notizen"
+        title={appLabel('notizen')}
         items={notizenList.filter(r => extractRecordId(r.fields.unternehmen) === record.record_id)}
-        map={r => ({ name: r.fields.notiz_titel ?? 'Notizen', meta: r.fields.notiz_datum })}
+        map={r => ({ name: r.fields.notiz_titel ?? appLabel('notizen'), meta: r.fields.notiz_datum })}
         onOpen={onOpenNotizen}
         onAdd={onAddNotizen}
         getKey={r => r.record_id}

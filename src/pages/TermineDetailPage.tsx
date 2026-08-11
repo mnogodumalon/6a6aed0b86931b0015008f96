@@ -14,6 +14,7 @@ import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { AI_PHOTO_SCAN, AI_PHOTO_LOCATION } from '@/config/ai-features';
 import { formEnhancements } from '@/config/form-enhancements/Termine';
 import { evalComputed } from '@/config/form-enhancements/types';
+import { t, appLabel, fieldLabel, localeTag, CURRENCY } from '@/i18n';
 
 export default function TermineDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -67,11 +68,11 @@ export default function TermineDetailPage() {
   if (!record) {
     return (
       <RecordViewEmpty
-        title="Eintrag nicht gefunden"
+        title={t('not_found')}
         action={
           <Button variant="ghost" onClick={() => navigate('/termine')}>
             <IconArrowLeft className="h-4 w-4 mr-1.5" />
-            Zurück
+            {t('back')}
           </Button>
         }
       />
@@ -82,10 +83,10 @@ export default function TermineDetailPage() {
     <RecordView
       onBack={() => navigate('/termine')}
       onEdit={() => setEditing(true)}
-      backLabel="Zurück"
-      editLabel="Bearbeiten"
+      backLabel={t('back')}
+      editLabel={t('edit_button')}
     >
-      <RecordHeader title={record.fields.terminbezeichnung ?? 'Termine'} />
+      <RecordHeader title={record.fields.terminbezeichnung ?? appLabel('termine')} />
 
       {(() => {
         const lookupLists: Record<string, unknown> = {
@@ -93,8 +94,8 @@ export default function TermineDetailPage() {
         };
         const fmtComputed = (k: string, n: number) =>
           /(?:kosten|preis|betrag|gesamt|netto|brutto|summe|mwst|rabatt|anzahlung|umsatz|saldo)/i.test(k)
-            ? n.toLocaleString('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 })
-            : n.toLocaleString('de-DE', { maximumFractionDigits: 2 });
+            ? n.toLocaleString(localeTag(), { style: 'currency', currency: CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            : n.toLocaleString(localeTag(), { maximumFractionDigits: 2 });
         const computedFacts = Object.entries(formEnhancements.computed)
           .map(([key, formula]) => {
             const v = evalComputed(formula, record!.fields as Record<string, unknown>, { lookupLists });
@@ -106,17 +107,17 @@ export default function TermineDetailPage() {
         return computedFacts.length > 0 ? <RecordKeyFacts items={computedFacts} /> : null;
       })()}
 
-      <RecordSection title="Details" cols={2}>
-        <RecordField label="Unternehmen" value={getUnternehmenDisplayName(record.fields.unternehmen)} format="text" />
-        <RecordField label="Terminbezeichnung" value={record.fields.terminbezeichnung} format="text" />
-        <RecordField label="Terminart" value={record.fields.terminart} format="pill" />
-        <RecordField label="Datum & Uhrzeit" value={record.fields.datum_uhrzeit} format="datetime" />
-        <RecordField label="Ort / Videolink" value={record.fields.ort} format="text" />
-        <RecordField label="Wiederholung" value={record.fields.wiederholung} format="pill" />
-        <RecordField label="Erinnerung (Tage vorher)" value={record.fields.erinnerung_tage} format="text" />
-        <RecordField label="Mit Google-Kalender synchronisieren" value={record.fields.google_kalender} format="bool" />
-        <RecordField label="Status" value={record.fields.terminstatus} format="pill" />
-        <RecordField label="Notizen zum Termin" value={record.fields.notizen_termin} format="longtext" className="md:col-span-2" />
+      <RecordSection title={t('details')} cols={2}>
+        <RecordField label={fieldLabel('termine', 'unternehmen')} value={getUnternehmenDisplayName(record.fields.unternehmen)} format="text" />
+        <RecordField label={fieldLabel('termine', 'terminbezeichnung')} value={record.fields.terminbezeichnung} format="text" />
+        <RecordField label={fieldLabel('termine', 'terminart')} value={record.fields.terminart} format="pill" />
+        <RecordField label={fieldLabel('termine', 'datum_uhrzeit')} value={record.fields.datum_uhrzeit} format="datetime" />
+        <RecordField label={fieldLabel('termine', 'ort')} value={record.fields.ort} format="text" />
+        <RecordField label={fieldLabel('termine', 'wiederholung')} value={record.fields.wiederholung} format="pill" />
+        <RecordField label={fieldLabel('termine', 'erinnerung_tage')} value={record.fields.erinnerung_tage} format="text" />
+        <RecordField label={fieldLabel('termine', 'google_kalender')} value={record.fields.google_kalender} format="bool" />
+        <RecordField label={fieldLabel('termine', 'terminstatus')} value={record.fields.terminstatus} format="pill" />
+        <RecordField label={fieldLabel('termine', 'notizen_termin')} value={record.fields.notizen_termin} format="longtext" className="md:col-span-2" />
       </RecordSection>
 
       <RecordAttachments appId={APP_IDS.TERMINE} recordId={record.record_id} />
@@ -124,7 +125,7 @@ export default function TermineDetailPage() {
       <div className="flex justify-end pt-2">
         <Button variant="ghost" onClick={() => setDeleteOpen(true)} className="text-destructive hover:text-destructive">
           <IconTrash className="h-4 w-4 mr-1.5" />
-          Löschen
+          {t('delete')}
         </Button>
       </div>
 
@@ -143,8 +144,8 @@ export default function TermineDetailPage() {
         open={deleteOpen}
         onClose={() => setDeleteOpen(false)}
         onConfirm={handleDelete}
-        title="Termine löschen"
-        description="Soll dieser Eintrag wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden."
+        title={t('delete_entity', { entity: appLabel('termine') })}
+        description={t('confirm_delete_desc')}
       />
     </RecordView>
   );

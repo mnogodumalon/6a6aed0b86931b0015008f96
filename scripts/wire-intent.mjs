@@ -140,10 +140,23 @@ if (!entriesBlock) fail(`${REGISTRY}: marker '// <custom:intents>' not found —
 if (entriesBlock[1].includes(`path: '/intents/${slug}'`)) {
   same.push(`${REGISTRY}: entry /intents/${slug} already present`);
 } else {
+  // Label: preferred is a JSON object with both UI languages
+  // ('{"de":"Neue Buchung","en":"New booking"}');
+  // a plain string stays valid and renders unchanged in every language.
+  let labelLiteral = `'${esc(label)}'`;
+  if (label.trim().startsWith('{')) {
+    let parsed;
+    try { parsed = JSON.parse(label); } catch { fail(`label looks like JSON but does not parse: ${label}`); }
+    const parts = ['de', 'en', 'cs']
+      .filter((l) => typeof parsed[l] === 'string' && parsed[l].trim())
+      .map((l) => `${l}: '${esc(parsed[l])}'`);
+    if (!parts.length) fail(`label JSON must carry at least one of de/en/cs: ${label}`);
+    labelLiteral = `{ ${parts.join(', ')} }`;
+  }
   const desc = description ? `, description: '${esc(description)}'` : '';
   reg = insertBeforeMarker(
     reg, '// </custom:intents>',
-    `{ path: '/intents/${slug}', label: '${esc(label)}', icon: ${icon}${desc} },`, REGISTRY,
+    `{ path: '/intents/${slug}', label: ${labelLiteral}, icon: ${icon}${desc} },`, REGISTRY,
   );
   done.push(`${REGISTRY}: entry /intents/${slug}`);
 }

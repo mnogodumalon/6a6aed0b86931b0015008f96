@@ -28,6 +28,7 @@ import type { ComputedContext } from '@/config/form-enhancements/types';
 import { applyFieldOrder, flattenFieldOrder, applyDefaults, evalComputed, numberInputProps, clampNumberValue, classifyComputed, extractApplookupRefs, mergeApplookupRefs, resolveApplookupRef } from '@/config/form-enhancements/types';
 import { formEnhancements, computedDeps, computedApplookupRefs } from '@/config/form-enhancements/Termine';
 import { AttachmentsSection } from '@/components/AttachmentsSection';
+import { t, appLabel, fieldLabel, lookupLabel, localeTag, CURRENCY } from '@/i18n';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Select, SelectContent, SelectItem,
@@ -237,7 +238,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
       await onSubmit(clean as Termine['fields']);
       onClose();
     } catch (err) {
-      setSubmitError(err instanceof Error && err.message ? err.message : 'Speichern fehlgeschlagen.');
+      setSubmitError(err instanceof Error && err.message ? err.message : t('submit_error'));
     } finally {
       setSaving(false);
     }
@@ -309,7 +310,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
       setScanSuccess(true);
       setTimeout(() => setScanSuccess(false), 3000);
     } catch (err) {
-      console.error('Scan fehlgeschlagen:', err);
+      console.error(`${t('scan_error')}:`, err);
       alert(err instanceof Error ? err.message : String(err));
     } finally {
       setScanning(false);
@@ -344,91 +345,91 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
     }
   }, []);
 
-  const DIALOG_INTENT = defaultValues ? 'Termine bearbeiten' : 'Termine hinzufügen';
+  const DIALOG_INTENT = defaultValues
+    ? t('edit_entity', { entity: appLabel('termine') })
+    : t('new_entity', { entity: appLabel('termine') });
 
   const fieldBlocks: Record<string, React.ReactNode> = {
     'unternehmen': (
       <div key="unternehmen" className="space-y-1.5">
-        <Label htmlFor="unternehmen">Unternehmen <span className="text-destructive" aria-hidden="true">*</span></Label>
+        <Label htmlFor="unternehmen">{fieldLabel('termine', 'unternehmen')} <span className="text-destructive" aria-hidden="true">*</span></Label>
         <Combobox
           id="unternehmen"
-          placeholder="Welches Unternehmen?"
+          placeholder=""
           items={unternehmenListAll.map(r => ({
             id: r.record_id,
             label: String(r.fields.name ?? r.record_id),
           }))}
           value={extractRecordId(fields.unternehmen)}
           onChange={id => setFields(f => ({ ...f, unternehmen: id ? createRecordUrl(APP_IDS.UNTERNEHMEN, id) : undefined }))}
-          searchPlaceholder="Suchen…"
-          emptyText="Kein Treffer"
           onCreateNew={(q) => openCreateUnternehmen("unternehmen", q)}
-          createLabel="Neu in Unternehmen"
+          createLabel={t('create_in', { entity: appLabel('unternehmen') })}
         />
         {showErrors && !fields.unternehmen && (
-          <p className="text-xs text-destructive mt-1">Pflichtfeld</p>
+          <p className="text-xs text-destructive mt-1">{t('required_hint')}</p>
         )}
       </div>
     ),
     'terminbezeichnung': (
       <div key="terminbezeichnung" className="space-y-1.5">
-        <Label htmlFor="terminbezeichnung">Terminbezeichnung <span className="text-destructive" aria-hidden="true">*</span></Label>
+        <Label htmlFor="terminbezeichnung">{fieldLabel('termine', 'terminbezeichnung')} <span className="text-destructive" aria-hidden="true">*</span></Label>
         <Input
           id="terminbezeichnung"
-          placeholder="z. B. Vorstandssitzung Q3"
+          placeholder=""
           value={fields.terminbezeichnung ?? ''}
           onChange={e => setFields(f => ({ ...f, terminbezeichnung: e.target.value }))}
           required
         />
         {showErrors && !fields.terminbezeichnung && (
-          <p className="text-xs text-destructive mt-1">Pflichtfeld</p>
+          <p className="text-xs text-destructive mt-1">{t('required_hint')}</p>
         )}
       </div>
     ),
     'terminart': (
       <div key="terminart" className="space-y-1.5">
-        <Label htmlFor="terminart">Terminart <span className="text-destructive" aria-hidden="true">*</span></Label>
+        <Label htmlFor="terminart">{fieldLabel('termine', 'terminart')} <span className="text-destructive" aria-hidden="true">*</span></Label>
         <Select
           value={lookupKey(fields.terminart) ?? ''}
           onValueChange={v => setFields(f => ({ ...f, terminart: v === 'none' ? undefined : v as any }))}
         >
-          <SelectTrigger id="terminart" className="max-sm:h-11"><SelectValue placeholder="Wähle eine Terminart" /></SelectTrigger>
+          <SelectTrigger id="terminart" className="max-sm:h-11"><SelectValue placeholder="" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="none">—</SelectItem>
-            <SelectItem value="gremiensitzung">Gremiensitzung</SelectItem>
-            <SelectItem value="gesellschafterversammlung">Gesellschafterversammlung</SelectItem>
-            <SelectItem value="beiratssitzung">Beiratssitzung</SelectItem>
-            <SelectItem value="strategiemeeting">Strategiemeeting</SelectItem>
-            <SelectItem value="jahresabschluss">Jahresabschlussbesprechung</SelectItem>
-            <SelectItem value="terminart_sonstiges">Sonstiges</SelectItem>
+            <SelectItem value="gremiensitzung">{lookupLabel('termine', 'terminart', 'gremiensitzung') ?? 'Gremiensitzung'}</SelectItem>
+            <SelectItem value="gesellschafterversammlung">{lookupLabel('termine', 'terminart', 'gesellschafterversammlung') ?? 'Gesellschafterversammlung'}</SelectItem>
+            <SelectItem value="beiratssitzung">{lookupLabel('termine', 'terminart', 'beiratssitzung') ?? 'Beiratssitzung'}</SelectItem>
+            <SelectItem value="strategiemeeting">{lookupLabel('termine', 'terminart', 'strategiemeeting') ?? 'Strategiemeeting'}</SelectItem>
+            <SelectItem value="jahresabschluss">{lookupLabel('termine', 'terminart', 'jahresabschluss') ?? 'Jahresabschlussbesprechung'}</SelectItem>
+            <SelectItem value="terminart_sonstiges">{lookupLabel('termine', 'terminart', 'terminart_sonstiges') ?? 'Sonstiges'}</SelectItem>
           </SelectContent>
         </Select>
         {showErrors && !fields.terminart && (
-          <p className="text-xs text-destructive mt-1">Pflichtfeld</p>
+          <p className="text-xs text-destructive mt-1">{t('required_hint')}</p>
         )}
       </div>
     ),
     'datum_uhrzeit': (
       <div key="datum_uhrzeit" className="space-y-1.5">
-        <Label htmlFor="datum_uhrzeit">Datum & Uhrzeit <span className="text-destructive" aria-hidden="true">*</span></Label>
+        <Label htmlFor="datum_uhrzeit">{fieldLabel('termine', 'datum_uhrzeit')} <span className="text-destructive" aria-hidden="true">*</span></Label>
         <DatePicker
           id="datum_uhrzeit"
-          placeholder="Wann ist der Termin?"
+          placeholder=""
           mode="datetime"
           value={fields.datum_uhrzeit ?? null}
           onChange={v => setFields(f => ({ ...f, datum_uhrzeit: v ?? undefined }))}
           required
         />
         {showErrors && !fields.datum_uhrzeit && (
-          <p className="text-xs text-destructive mt-1">Pflichtfeld</p>
+          <p className="text-xs text-destructive mt-1">{t('required_hint')}</p>
         )}
       </div>
     ),
     'ort': (
       <div key="ort" className="space-y-1.5">
-        <Label htmlFor="ort">Ort / Videolink</Label>
+        <Label htmlFor="ort">{fieldLabel('termine', 'ort')}</Label>
         <Input
           id="ort"
-          placeholder="z. B. Berlin oder https://..."
+          placeholder=""
           value={fields.ort ?? ''}
           onChange={e => setFields(f => ({ ...f, ort: e.target.value }))}
         />
@@ -436,7 +437,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
     ),
     'wiederholung': (
       <div key="wiederholung" className="space-y-1.5">
-        <Label htmlFor="wiederholung">Wiederholung</Label>
+        <Label htmlFor="wiederholung">{fieldLabel('termine', 'wiederholung')}</Label>
         <div role="radiogroup" className="flex flex-wrap gap-1.5">
           <button
             type="button"
@@ -449,7 +450,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
                 : 'bg-background text-foreground border-input hover:bg-accent'
             }`}
           >
-            Einmalig
+            {lookupLabel('termine', 'wiederholung', 'einmalig') ?? 'Einmalig'}
           </button>
           <button
             type="button"
@@ -462,7 +463,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
                 : 'bg-background text-foreground border-input hover:bg-accent'
             }`}
           >
-            Wöchentlich
+            {lookupLabel('termine', 'wiederholung', 'woechentlich') ?? 'Wöchentlich'}
           </button>
           <button
             type="button"
@@ -475,7 +476,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
                 : 'bg-background text-foreground border-input hover:bg-accent'
             }`}
           >
-            Monatlich
+            {lookupLabel('termine', 'wiederholung', 'monatlich') ?? 'Monatlich'}
           </button>
           <button
             type="button"
@@ -488,7 +489,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
                 : 'bg-background text-foreground border-input hover:bg-accent'
             }`}
           >
-            Quartalsweise
+            {lookupLabel('termine', 'wiederholung', 'quartalsweise') ?? 'Quartalsweise'}
           </button>
           <button
             type="button"
@@ -501,20 +502,20 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
                 : 'bg-background text-foreground border-input hover:bg-accent'
             }`}
           >
-            Jährlich
+            {lookupLabel('termine', 'wiederholung', 'jaehrlich') ?? 'Jährlich'}
           </button>
         </div>
       </div>
     ),
     'erinnerung_tage': (
       <div key="erinnerung_tage" className="space-y-1.5">
-        <Label htmlFor="erinnerung_tage">Erinnerung (Tage vorher)</Label>
+        <Label htmlFor="erinnerung_tage">{fieldLabel('termine', 'erinnerung_tage')}</Label>
         <Input
           id="erinnerung_tage"
           type="number"
           step="any"
           {...numberInputProps(formEnhancements, 'erinnerung_tage')}
-          placeholder="z. B. 3"
+          placeholder=""
           value={fields.erinnerung_tage !== undefined ? fields.erinnerung_tage : (computedValues['erinnerung_tage'] ?? '')}
           onChange={e => setFields(f => ({ ...f, erinnerung_tage: clampNumberValue(formEnhancements, 'erinnerung_tage', e.target.value) }))}
         />
@@ -522,20 +523,20 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
     ),
     'google_kalender': (
       <div key="google_kalender" className="space-y-1.5">
-        <Label htmlFor="google_kalender">Mit Google-Kalender synchronisieren</Label>
+        <Label htmlFor="google_kalender">{fieldLabel('termine', 'google_kalender')}</Label>
         <div className="flex items-center gap-2 pt-1">
           <Checkbox
             id="google_kalender"
             checked={!!fields.google_kalender}
             onCheckedChange={(v) => setFields(f => ({ ...f, google_kalender: !!v }))}
           />
-          <Label htmlFor="google_kalender" className="font-normal">Mit Google-Kalender synchronisieren</Label>
+          <Label htmlFor="google_kalender" className="font-normal">{fieldLabel('termine', 'google_kalender')}</Label>
         </div>
       </div>
     ),
     'terminstatus': (
       <div key="terminstatus" className="space-y-1.5">
-        <Label htmlFor="terminstatus">Status</Label>
+        <Label htmlFor="terminstatus">{fieldLabel('termine', 'terminstatus')}</Label>
         <div role="radiogroup" className="flex flex-wrap gap-1.5">
           <button
             type="button"
@@ -548,7 +549,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
                 : 'bg-background text-foreground border-input hover:bg-accent'
             }`}
           >
-            Geplant
+            {lookupLabel('termine', 'terminstatus', 'geplant') ?? 'Geplant'}
           </button>
           <button
             type="button"
@@ -561,7 +562,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
                 : 'bg-background text-foreground border-input hover:bg-accent'
             }`}
           >
-            Stattgefunden
+            {lookupLabel('termine', 'terminstatus', 'stattgefunden') ?? 'Stattgefunden'}
           </button>
           <button
             type="button"
@@ -574,17 +575,17 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
                 : 'bg-background text-foreground border-input hover:bg-accent'
             }`}
           >
-            Abgesagt
+            {lookupLabel('termine', 'terminstatus', 'abgesagt') ?? 'Abgesagt'}
           </button>
         </div>
       </div>
     ),
     'notizen_termin': (
       <div key="notizen_termin" className="space-y-1.5">
-        <Label htmlFor="notizen_termin">Notizen zum Termin</Label>
+        <Label htmlFor="notizen_termin">{fieldLabel('termine', 'notizen_termin')}</Label>
         <Textarea
           id="notizen_termin"
-          placeholder="Tagesordnung, Ergebnisse, Handlungen..."
+          placeholder=""
           value={fields.notizen_termin ?? ''}
           onChange={e => setFields(f => ({ ...f, notizen_termin: e.target.value }))}
           rows={3}
@@ -660,9 +661,9 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
     // Backend-Feld mit €-Label ODER virtueller Computed-Key, dessen Name nach Geld aussieht.
     const looksLikeCurrency = CURRENCY_KEYS.has(k) || /(?:kosten|preis|betrag|gesamt|netto|brutto|summe|mwst|rabatt|anzahlung|umsatz|saldo)/i.test(k);
     if (looksLikeCurrency) {
-      return n.toLocaleString('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return n.toLocaleString(localeTag(), { style: 'currency', currency: CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
-    return n.toLocaleString('de-DE', { maximumFractionDigits: 2 });
+    return n.toLocaleString(localeTag(), { maximumFractionDigits: 2 });
   }
 
   return (
@@ -684,14 +685,14 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
               }`}
             >
               <IconSparkles className={`h-3.5 w-3.5 ${aiOpen ? '' : 'text-primary'}`} />
-              <span className="hidden sm:inline">KI-Ausfüllen</span>
+              <span className="hidden sm:inline">{t('smart_fill')}</span>
               <IconChevronDown className={`h-3 w-3 transition-transform ${aiOpen ? 'rotate-180' : ''}`} />
             </button>
           )}
         </DialogHeader>
         {enablePhotoScan && aiOpen && (
           <div id="ai-fill-panel" className="border-b bg-muted/20 px-6 py-4 space-y-3">
-            <p className="text-xs text-muted-foreground">Versteht Fotos, Dokumente und Text und füllt alles für dich aus</p>
+            <p className="text-xs text-muted-foreground">{t('scan_header_sub')}</p>
             <div className="flex items-start gap-2 pl-0.5">
               <Checkbox
                 id="ai-use-personal-info"
@@ -701,21 +702,21 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
               />
               <span className="text-xs text-muted-foreground leading-snug">
                 <Label htmlFor="ai-use-personal-info" className="text-xs font-normal text-muted-foreground cursor-pointer inline">
-                  KI-Assistent darf zusätzlich Informationen zu meiner Person verwenden
+                  {t('useinfo_label')}
                 </Label>
                 {' '}
                 <button type="button" onClick={handleShowProfileInfo} className="text-xs text-primary hover:underline whitespace-nowrap">
-                  {profileLoading ? 'Lade...' : '(mehr Infos)'}
+                  {profileLoading ? t('useinfo_loading') : `(${t('useinfo_more')})`}
                 </button>
               </span>
             </div>
             {showProfileInfo && (
               <div className="rounded-md border bg-muted/50 p-2 text-xs max-h-40 overflow-y-auto">
-                <p className="font-medium mb-1">Folgende Infos über dich können von der KI genutzt werden:</p>
+                <p className="font-medium mb-1">{t('profile_preamble')}</p>
                 {profileData ? Object.values(profileData).map((v, i) => (
                   <span key={i}>{i > 0 && ", "}{typeof v === "object" ? JSON.stringify(v) : String(v)}</span>
                 )) : (
-                  <span className="text-muted-foreground">Profil konnte nicht geladen werden</span>
+                  <span className="text-muted-foreground">{t('useinfo_error')}</span>
                 )}
               </div>
             )}
@@ -746,8 +747,8 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
                     <IconLoader2 className="h-7 w-7 text-primary animate-spin" />
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-medium">KI analysiert...</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Felder werden automatisch ausgefüllt</p>
+                    <p className="text-sm font-medium">{t('scan_analyzing')}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t('scan_analyzing_sub')}</p>
                   </div>
                 </div>
               ) : scanSuccess ? (
@@ -756,8 +757,8 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
                     <IconCircleCheck className="h-7 w-7 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-medium text-green-700 dark:text-green-400">Felder ausgefüllt!</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Prüfe die Werte und passe sie ggf. an</p>
+                    <p className="text-sm font-medium text-green-700 dark:text-green-400">{t('scan_success')}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t('scan_success_sub')}</p>
                   </div>
                 </div>
               ) : (
@@ -766,7 +767,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
                     <IconPhotoPlus className="h-7 w-7 text-primary/70" />
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-medium">Foto oder Dokument hierher ziehen oder auswählen</p>
+                    <p className="text-sm font-medium">{t('scan_upload')}</p>
                   </div>
                 </div>
               )}
@@ -790,11 +791,11 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
             <div className="grid grid-cols-3 gap-2">
               <Button type="button" variant="outline" size="sm" className="h-10 text-xs" disabled={scanning}
                 onClick={e => { e.stopPropagation(); cameraInputRef.current?.click(); }}>
-                <IconCamera className="h-3.5 w-3.5 mr-1" />Kamera
+                <IconCamera className="h-3.5 w-3.5 mr-1" />{t('scan_camera_btn')}
               </Button>
               <Button type="button" variant="outline" size="sm" className="h-10 text-xs" disabled={scanning}
                 onClick={e => { e.stopPropagation(); fileInputRef.current?.click(); }}>
-                <IconUpload className="h-3.5 w-3.5 mr-1" />Foto wählen
+                <IconUpload className="h-3.5 w-3.5 mr-1" />{t('scan_file_btn')}
               </Button>
               <Button type="button" variant="outline" size="sm" className="h-10 text-xs" disabled={scanning}
                 onClick={e => {
@@ -805,13 +806,13 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
                     setTimeout(() => { if (fileInputRef.current) fileInputRef.current.accept = 'image/*,application/pdf'; }, 100);
                   }
                 }}>
-                <IconFileText className="h-3.5 w-3.5 mr-1" />Dokument
+                <IconFileText className="h-3.5 w-3.5 mr-1" />{t('scan_doc_btn')}
               </Button>
             </div>
 
             <div className="relative">
               <Textarea
-                placeholder="Text eingeben oder einfügen, z.B. Notizen, E-Mails, Beschreibungen..."
+                placeholder={t('scan_text_placeholder')}
                 value={aiText}
                 onChange={e => {
                   setAiText(e.target.value);
@@ -839,7 +840,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
                     if (text) setAiText(prev => prev ? prev + '\n' + text : text);
                   } catch {}
                 }}
-                title="Paste"
+                title={t('paste')}
               >
                 <IconClipboard className="h-4 w-4" />
               </button>
@@ -853,7 +854,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
                 disabled={scanning}
                 onClick={() => handleAiExtract()}
               >
-                <IconSparkles className="h-3.5 w-3.5 mr-1.5" />Analysieren
+                <IconSparkles className="h-3.5 w-3.5 mr-1.5" />{t('scan_text_analyze')}
               </Button>
             )}
           </div>
@@ -948,7 +949,7 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
             {showErrors && missingRequired.length > 0 && (
               <p className="text-xs text-destructive flex items-center gap-1.5" role="alert">
                 <IconAlertCircle className="h-3.5 w-3.5 shrink-0" />
-                Bitte fülle die markierten Pflichtfelder aus.
+                {t('missing_required')}
               </p>
             )}
             {recordId && (
@@ -964,13 +965,13 @@ export function TermineDialog({ open, onClose, onSubmit, defaultValues, recordId
             </div>
           )}
           <DialogFooter className="sticky bottom-0 border-t bg-background/95 backdrop-blur px-6 py-3 gap-2 max-sm:flex-row">
-            <Button type="button" variant="outline" onClick={onClose} className="max-sm:h-12 max-sm:flex-1 max-sm:text-base">Abbrechen</Button>
+            <Button type="button" variant="outline" onClick={onClose} className="max-sm:h-12 max-sm:flex-1 max-sm:text-base">{t('cancel')}</Button>
             <Button
               type="submit"
               className="max-sm:h-12 max-sm:flex-1 max-sm:text-base"
               disabled={saving || !isDirty || (showErrors && missingRequired.length > 0)}
             >
-              {saving ? 'Speichern...' : defaultValues ? 'Speichern' : 'Erstellen'}
+              {saving ? t('saving') : defaultValues ? t('save') : t('create')}
             </Button>
           </DialogFooter>
         </form>

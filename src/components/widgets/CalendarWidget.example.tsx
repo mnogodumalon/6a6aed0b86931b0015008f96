@@ -20,7 +20,7 @@
  * interface `Zimmer`, `APP_IDS.ZIMMER`, method `getZimmer()`.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { de } from 'date-fns/locale';
+import { dateFnsLocale } from '@/i18n';
 import { format, parseISO, isBefore, startOfToday } from 'date-fns';
 import { LivingAppsService, extractRecordId } from '@/services/livingAppsService';
 import type { Buchung, Zimmer } from '@/types/app';
@@ -149,7 +149,7 @@ export function HotelCalendarExample() {
         events={events}
         view={cal.view}
         referenceDate={cal.cursor}
-        locale={de}
+        locale={dateFnsLocale()}  // runtime locale — never pin date-fns `de` here
         onViewChange={cal.setView}
         onCursorChange={cal.setCursor}
         onRangeChange={(from, to) => {

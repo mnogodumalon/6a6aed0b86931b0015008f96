@@ -1,8 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useActions } from '@/context/ActionsContext';
 import { ActionsDrawer } from '@/components/ActionsDrawer';
-
-const LABEL = 'Werkzeuge';
+import { t } from '@/i18n';
 
 /**
  * ActionsSidebar — Drawer-Eintrag, der den ActionsDrawer öffnet.
@@ -22,7 +21,7 @@ export function ActionsSidebar() {
   // Immer sichtbar — eine leere Liste zeigt den Empty-State des Drawers mit
   // der Im-Chat-erstellen-CTA statt den Einstiegspunkt ganz zu verstecken.
   // Ohne Zähler: schlichter Eintrag im Figma-Muster der Aktionen-Sektion.
-  const itemsJson = JSON.stringify([{ title: LABEL }]);
+  const itemsJson = JSON.stringify([{ title: t('tools_label') }]);
 
   useEffect(() => {
     const el = navRef.current;

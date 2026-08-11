@@ -1,6 +1,7 @@
 import type { ComponentType, ReactNode } from 'react';
 import { IconPlus } from '@tabler/icons-react';
 import { RecordSection, RecordRelation } from '@/components/widgets/RecordView';
+import { t } from '@/i18n';
 
 /**
  * SatelliteSection — one section of a hub record's overlay (hub-and-spoke).
@@ -50,7 +51,7 @@ interface SatelliteSectionProps<T> {
   onOpen: (item: T) => void;
   /** REQUIRED — the contextual "+" that opens this entity's create dialog with the hub pre-set. */
   onAdd: () => void;
-  /** Defaults to `${title} hinzufügen`. */
+  /** Defaults to a localised "add ${title}" label. */
   addLabel?: string;
   /** Section heading icon. */
   icon?: IconType;
@@ -77,7 +78,7 @@ export function SatelliteSection<T,>({ title, items, map, onOpen, onAdd, addLabe
         })}
         {items.length === 0 && (
           <p className="rounded-2xl border border-dashed border-border px-4 py-3 text-sm text-muted-foreground">
-            {emptyText ?? `Noch keine ${title}.`}
+            {emptyText ?? t('sat_empty', { title })}
           </p>
         )}
         <button
@@ -85,7 +86,7 @@ export function SatelliteSection<T,>({ title, items, map, onOpen, onAdd, addLabe
           onClick={onAdd}
           className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-border py-3 text-sm font-medium text-muted-foreground transition-colors hover:border-primary hover:bg-primary/5 hover:text-primary"
         >
-          <IconPlus size={18} stroke={1.75} />{addLabel ?? `${title} hinzufügen`}
+          <IconPlus size={18} stroke={1.75} />{addLabel ?? t('sat_add', { title })}
         </button>
       </div>
     </RecordSection>

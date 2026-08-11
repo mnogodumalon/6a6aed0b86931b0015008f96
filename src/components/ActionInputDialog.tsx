@@ -13,6 +13,7 @@ import {
   Select, SelectContent, SelectItem,
   SelectTrigger, SelectValue,
 } from '@/components/ui/select';
+import { t } from '@/i18n';
 
 const MAX_UPLOAD_SIZE = 10 * 1024 * 1024;
 
@@ -49,11 +50,11 @@ export function ActionInputDialog({ action, schema, options, onSubmit, onCancel 
         const prop = schema.properties[key];
         if (prop.format === 'file') {
           if (!fileMap[key]) {
-            setError(`"${prop.title || key}" ist erforderlich.`);
+            setError(`"${prop.title || key}" ${t('field_required')}.`);
             return;
           }
         } else if (!values[key] && values[key] !== 0 && values[key] !== false) {
-          setError(`"${prop.title || key}" ist erforderlich.`);
+          setError(`"${prop.title || key}" ${t('field_required')}.`);
           return;
         }
       }
@@ -63,7 +64,7 @@ export function ActionInputDialog({ action, schema, options, onSubmit, onCancel 
     const finalInputs = { ...values };
     for (const [key, file] of Object.entries(fileMap)) {
       if (file.size > MAX_UPLOAD_SIZE) {
-        setError(`"${file.name}": Datei überschreitet das Limit von 10 MB.`);
+        setError(`"${file.name}": ${t('file_too_large')}`);
         return;
       }
       files.push(file);
@@ -83,7 +84,7 @@ export function ActionInputDialog({ action, schema, options, onSubmit, onCancel 
           onValueChange={v => setValues(prev => ({ ...prev, [key]: v }))}
         >
           <SelectTrigger className="w-full">
-            <span className="truncate"><SelectValue placeholder="Auswählen..." /></span>
+            <span className="truncate"><SelectValue placeholder={t('select_placeholder')} /></span>
           </SelectTrigger>
           <SelectContent className="max-w-[calc(100vw-3rem)]">
             {dynamicOptions.map(opt => (
@@ -101,7 +102,7 @@ export function ActionInputDialog({ action, schema, options, onSubmit, onCancel 
           onValueChange={v => setValues(prev => ({ ...prev, [key]: v }))}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Auswählen..." />
+            <SelectValue placeholder={t('select_placeholder')} />
           </SelectTrigger>
           <SelectContent>
             {prop.enum.map(opt => (
@@ -211,8 +212,8 @@ export function ActionInputDialog({ action, schema, options, onSubmit, onCancel 
           ))}
           {error && <p className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onCancel}>Abbrechen</Button>
-            <Button type="submit">Ausführen</Button>
+            <Button type="button" variant="outline" onClick={onCancel}>{t('cancel')}</Button>
+            <Button type="submit">{t('run')}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

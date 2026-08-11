@@ -7,29 +7,24 @@ import {
 import { useActions } from '@/context/ActionsContext';
 import type { Action, FileAttachment } from '@/lib/actions-agent';
 import { format, formatDistanceToNow, parseISO } from 'date-fns';
-import { de } from 'date-fns/locale';
+import { t, dateFnsLocale, dateTimeFormat } from '@/i18n';
 
-const TITLE = 'Werkzeuge';
-const SUBTITLE_AVAILABLE = 'verfügbar';
-const RUN_LABEL = 'Ausführen';
-const BUSY_LABEL = 'In Arbeit...';
-const DELETE_LABEL = 'Löschen';
-const SOURCE_LABEL = 'Quellcode';
-const CODE_LABEL = 'Code';
-const VIEW_CHANGES_LABEL = 'Änderungen ansehen';
-const DOWNLOAD_LABEL = 'Herunterladen';
-const FILES_LABEL = 'Dateien';
-
-const ORIGIN_LABELS: Record<string, string> = {
-  fix: 'Auto-Fix',
-  chat: 'Chat',
-  initial: 'Erstellt',
-  revert: 'Wiederhergestellt',
+const ORIGIN_KEYS: Record<string, string> = {
+  fix: 'code_origin_fix',
+  chat: 'code_origin_chat',
+  initial: 'code_origin_initial',
+  revert: 'code_origin_revert',
 };
+
+// Resolved per render — the catalog lookup must follow the active locale
+function originLabel(origin: string): string {
+  const key = ORIGIN_KEYS[origin];
+  return key ? t(key) : origin;
+}
 
 function relTime(d?: string) {
   if (!d) return '';
-  try { return formatDistanceToNow(parseISO(d), { addSuffix: true, locale: de }); } catch { return d; }
+  try { return formatDistanceToNow(parseISO(d), { addSuffix: true, locale: dateFnsLocale() }); } catch { return d; }
 }
 
 function FileIcon({ mimeType }: { mimeType: string }) {
@@ -40,7 +35,7 @@ function FileIcon({ mimeType }: { mimeType: string }) {
 
 function formatDateTime(d?: string) {
   if (!d) return '';
-  try { return format(parseISO(d), 'dd.MM.yyyy, HH:mm', { locale: de }); } catch { return d; }
+  try { return format(parseISO(d), dateTimeFormat(), { locale: dateFnsLocale() }); } catch { return d; }
 }
 
 function FileItem({ file, fresh, onDownload, onDelete }: {
@@ -62,7 +57,7 @@ function FileItem({ file, fresh, onDownload, onDelete }: {
         type="button"
         onClick={() => onDownload(file.url, file.filename)}
         className="shrink-0 inline-flex items-center justify-center h-8 w-8 rounded-lg text-primary hover:bg-primary/10 transition-colors"
-        title={DOWNLOAD_LABEL}
+        title={t('download')}
       >
         <IconDownload size={14} />
       </button>
@@ -70,7 +65,7 @@ function FileItem({ file, fresh, onDownload, onDelete }: {
         type="button"
         onClick={() => onDelete(file)}
         className="shrink-0 inline-flex items-center justify-center h-8 w-8 rounded-lg text-destructive hover:bg-destructive/10 transition-colors"
-        title={DELETE_LABEL}
+        title={t('delete')}
       >
         <IconTrash size={14} />
       </button>
@@ -148,17 +143,17 @@ function ActionRow({
             className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {running ? <IconLoader2 size={14} className="animate-spin" /> : <IconPlayerPlay size={14} />}
-            <span className="hidden sm:inline">{running ? BUSY_LABEL : RUN_LABEL}</span>
+            <span className="hidden sm:inline">{running ? t('busy') : t('run')}</span>
           </button>
           {devMode && (
             <button
               type="button"
               onClick={() => onShowCode(action)}
               className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold border border-primary/30 bg-primary/5 text-primary hover:bg-primary/10 transition-colors"
-              title={SOURCE_LABEL}
+              title={t('source_code')}
             >
               <IconCode size={14} />
-              <span className="hidden sm:inline">{CODE_LABEL}</span>
+              <span className="hidden sm:inline">{t('code_tab_code')}</span>
             </button>
           )}
         </div>
@@ -173,7 +168,7 @@ function ActionRow({
               className="inline-flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs text-muted-foreground hover:bg-accent transition-colors"
             >
               <IconFile size={12} />
-              {files.length} {FILES_LABEL}
+              {files.length} {t('files_label')}
               <IconChevronDown size={12} className={`transition-transform ${filesOpen ? 'rotate-180' : ''}`} />
             </button>
           ) : (
@@ -184,10 +179,10 @@ function ActionRow({
               type="button"
               onClick={() => onShowChanges(action)}
               className="flex-1 min-w-0 truncate text-left px-2 py-1.5 text-[11px] text-muted-foreground hover:text-foreground hover:underline underline-offset-2 transition-colors"
-              title={VIEW_CHANGES_LABEL}
+              title={t('version_card_view_changes')}
             >
               <span className="font-semibold text-foreground">v{action.current_version}</span>
-              {' · '}{ORIGIN_LABELS[latest.origin] || latest.origin}{' · '}{relTime(latest.ts)}
+              {' · '}{originLabel(latest.origin)}{' · '}{relTime(latest.ts)}
               {latest.summary ? ` — ${latest.summary}` : ''}
             </button>
           ) : (
@@ -197,7 +192,7 @@ function ActionRow({
             type="button"
             onClick={() => { void onDelete(action); }}
             className="inline-flex items-center justify-center h-8 w-8 rounded-lg text-destructive hover:bg-destructive/10 transition-colors"
-            title={DELETE_LABEL}
+            title={t('delete')}
           >
             <IconTrash size={14} />
           </button>
@@ -258,21 +253,21 @@ export function ActionsDrawer({ open, onClose }: ActionsDrawerProps) {
       />
       <aside
         role="dialog"
-        aria-label={TITLE}
+        aria-label={t('tools_label')}
         className="fixed top-0 right-0 z-[var(--z-overlay)] h-full w-full sm:max-w-xl bg-card border-l border-border shadow-2xl flex flex-col animate-in slide-in-from-right duration-200"
       >
         <header className="flex items-center gap-3 px-6 py-4 border-b">
           <div className="flex-1 min-w-0">
-            <h2 className="text-xl font-semibold tracking-tight truncate">{TITLE}</h2>
+            <h2 className="text-xl font-semibold tracking-tight truncate">{t('tools_label')}</h2>
             {total > 0 && (
-              <p className="text-xs text-muted-foreground truncate mt-0.5">{total} {SUBTITLE_AVAILABLE}</p>
+              <p className="text-xs text-muted-foreground truncate mt-0.5">{total} {t('tools_subtitle_available')}</p>
             )}
           </div>
           <button
             type="button"
             onClick={onClose}
             className="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-            aria-label="Schließen"
+            aria-label={t('close')}
           >
             <IconX size={18} />
           </button>
@@ -285,9 +280,9 @@ export function ActionsDrawer({ open, onClose }: ActionsDrawerProps) {
                 <IconBolt size={22} className="text-accent-foreground" />
               </div>
               <div>
-                <p className="text-sm font-medium text-foreground">Noch keine Werkzeuge angelegt</p>
+                <p className="text-sm font-medium text-foreground">{t('tools_empty_title')}</p>
                 <p className="mt-1 max-w-[16rem] text-sm text-muted-foreground">
-                  Beschreibe im Chat, was du automatisieren willst — daraus entsteht dein erstes Werkzeug.
+                  {t('tools_empty_desc')}
                 </p>
               </div>
               <button
@@ -295,7 +290,7 @@ export function ActionsDrawer({ open, onClose }: ActionsDrawerProps) {
                 onClick={() => { onClose(); setChatOpen(true); }}
                 className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
               >
-                Im Chat erstellen
+                {t('tools_empty_cta')}
               </button>
             </div>
           ) : (
@@ -325,8 +320,8 @@ export function ActionsDrawer({ open, onClose }: ActionsDrawerProps) {
                       <IconFile size={18} />
                     </span>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-foreground truncate">{FILES_LABEL}</h3>
-                      <p className="text-sm text-muted-foreground mt-0.5">{unassigned.length} {unassigned.length === 1 ? 'Datei' : 'Dateien'}</p>
+                      <h3 className="font-semibold text-foreground truncate">{t('files_label')}</h3>
+                      <p className="text-sm text-muted-foreground mt-0.5">{unassigned.length} {unassigned.length === 1 ? t('tools_file_singular') : t('tools_file_plural')}</p>
                     </div>
                   </div>
                   <ul className="border-t bg-muted/20 py-1 px-1">

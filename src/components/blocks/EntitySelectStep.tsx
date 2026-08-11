@@ -3,6 +3,7 @@ import { IconSearch, IconChevronRight, IconPlus } from '@tabler/icons-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { getStatusColor } from '@/components/blocks/StatusBadge';
+import { t } from '@/i18n';
 
 interface SelectItem {
   id: string;
@@ -31,9 +32,11 @@ interface EntitySelectStepProps {
 export function EntitySelectStep({
   items,
   onSelect,
-  searchPlaceholder = 'Suchen...',
+  // Destructuring defaults are evaluated on every render, so these follow a
+  // language switch without any extra wiring.
+  searchPlaceholder = t('search'),
   emptyIcon,
-  emptyText = 'Keine Ergebnisse gefunden.',
+  emptyText = t('no_results'),
   createLabel,
   onCreateNew,
   createDialog,
@@ -65,7 +68,7 @@ export function EntitySelectStep({
         {onCreateNew && (
           <Button variant="outline" onClick={onCreateNew} className="shrink-0 gap-1.5">
             <IconPlus size={15} />
-            {createLabel ?? 'Neu erstellen'}
+            {createLabel ?? t('step_create_new')}
           </Button>
         )}
       </div>
@@ -81,7 +84,7 @@ export function EntitySelectStep({
           {onCreateNew && (
             <Button variant="outline" size="sm" onClick={onCreateNew} className="mt-3 gap-1.5">
               <IconPlus size={14} />
-              {createLabel ?? 'Neu erstellen'}
+              {createLabel ?? t('step_create_new')}
             </Button>
           )}
         </div>

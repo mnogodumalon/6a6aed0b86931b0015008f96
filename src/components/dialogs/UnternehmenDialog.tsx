@@ -27,6 +27,7 @@ import type { ComputedContext } from '@/config/form-enhancements/types';
 import { applyFieldOrder, flattenFieldOrder, applyDefaults, evalComputed, numberInputProps, clampNumberValue, classifyComputed, extractApplookupRefs, mergeApplookupRefs, resolveApplookupRef } from '@/config/form-enhancements/types';
 import { formEnhancements, computedDeps, computedApplookupRefs } from '@/config/form-enhancements/Unternehmen';
 import { AttachmentsSection } from '@/components/AttachmentsSection';
+import { t, appLabel, fieldLabel, lookupLabel, localeTag, CURRENCY } from '@/i18n';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Select, SelectContent, SelectItem,
@@ -207,7 +208,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
       await onSubmit(clean as Unternehmen['fields']);
       onClose();
     } catch (err) {
-      setSubmitError(err instanceof Error && err.message ? err.message : 'Speichern fehlgeschlagen.');
+      setSubmitError(err instanceof Error && err.message ? err.message : t('submit_error'));
     } finally {
       setSaving(false);
     }
@@ -271,7 +272,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
       setScanSuccess(true);
       setTimeout(() => setScanSuccess(false), 3000);
     } catch (err) {
-      console.error('Scan fehlgeschlagen:', err);
+      console.error(`${t('scan_error')}:`, err);
       alert(err instanceof Error ? err.message : String(err));
     } finally {
       setScanning(false);
@@ -306,73 +307,75 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
     }
   }, []);
 
-  const DIALOG_INTENT = defaultValues ? 'Unternehmen bearbeiten' : 'Unternehmen hinzufügen';
+  const DIALOG_INTENT = defaultValues
+    ? t('edit_entity', { entity: appLabel('unternehmen') })
+    : t('new_entity', { entity: appLabel('unternehmen') });
 
   const fieldBlocks: Record<string, React.ReactNode> = {
     'name': (
       <div key="name" className="space-y-1.5">
-        <Label htmlFor="name">Unternehmensname <span className="text-destructive" aria-hidden="true">*</span></Label>
+        <Label htmlFor="name">{fieldLabel('unternehmen', 'name')} <span className="text-destructive" aria-hidden="true">*</span></Label>
         <Input
           id="name"
-          placeholder="z. B. Acme GmbH"
+          placeholder=""
           value={fields.name ?? ''}
           onChange={e => setFields(f => ({ ...f, name: e.target.value }))}
           required
         />
         {showErrors && !fields.name && (
-          <p className="text-xs text-destructive mt-1">Pflichtfeld</p>
+          <p className="text-xs text-destructive mt-1">{t('required_hint')}</p>
         )}
       </div>
     ),
     'rechtsform': (
       <div key="rechtsform" className="space-y-1.5">
-        <Label htmlFor="rechtsform">Rechtsform</Label>
+        <Label htmlFor="rechtsform">{fieldLabel('unternehmen', 'rechtsform')}</Label>
         <Select
           value={lookupKey(fields.rechtsform) ?? ''}
           onValueChange={v => setFields(f => ({ ...f, rechtsform: v === 'none' ? undefined : v as any }))}
         >
-          <SelectTrigger id="rechtsform" className="max-sm:h-11"><SelectValue placeholder="Wähle eine Rechtsform" /></SelectTrigger>
+          <SelectTrigger id="rechtsform" className="max-sm:h-11"><SelectValue placeholder="" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="none">—</SelectItem>
-            <SelectItem value="gmbh">GmbH</SelectItem>
-            <SelectItem value="ag">AG</SelectItem>
-            <SelectItem value="gmbh_co_kg">GmbH & Co. KG</SelectItem>
-            <SelectItem value="ug">UG (haftungsbeschränkt)</SelectItem>
-            <SelectItem value="kg">KG</SelectItem>
-            <SelectItem value="ohg">OHG</SelectItem>
-            <SelectItem value="einzelunternehmen">Einzelunternehmen</SelectItem>
-            <SelectItem value="sonstige">Sonstige</SelectItem>
+            <SelectItem value="gmbh">{lookupLabel('unternehmen', 'rechtsform', 'gmbh') ?? 'GmbH'}</SelectItem>
+            <SelectItem value="ag">{lookupLabel('unternehmen', 'rechtsform', 'ag') ?? 'AG'}</SelectItem>
+            <SelectItem value="gmbh_co_kg">{lookupLabel('unternehmen', 'rechtsform', 'gmbh_co_kg') ?? 'GmbH & Co. KG'}</SelectItem>
+            <SelectItem value="ug">{lookupLabel('unternehmen', 'rechtsform', 'ug') ?? 'UG (haftungsbeschränkt)'}</SelectItem>
+            <SelectItem value="kg">{lookupLabel('unternehmen', 'rechtsform', 'kg') ?? 'KG'}</SelectItem>
+            <SelectItem value="ohg">{lookupLabel('unternehmen', 'rechtsform', 'ohg') ?? 'OHG'}</SelectItem>
+            <SelectItem value="einzelunternehmen">{lookupLabel('unternehmen', 'rechtsform', 'einzelunternehmen') ?? 'Einzelunternehmen'}</SelectItem>
+            <SelectItem value="sonstige">{lookupLabel('unternehmen', 'rechtsform', 'sonstige') ?? 'Sonstige'}</SelectItem>
           </SelectContent>
         </Select>
       </div>
     ),
     'branche': (
       <div key="branche" className="space-y-1.5">
-        <Label htmlFor="branche">Branche</Label>
+        <Label htmlFor="branche">{fieldLabel('unternehmen', 'branche')}</Label>
         <Select
           value={lookupKey(fields.branche) ?? ''}
           onValueChange={v => setFields(f => ({ ...f, branche: v === 'none' ? undefined : v as any }))}
         >
-          <SelectTrigger id="branche" className="max-sm:h-11"><SelectValue placeholder="Wähle eine Branche" /></SelectTrigger>
+          <SelectTrigger id="branche" className="max-sm:h-11"><SelectValue placeholder="" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="none">—</SelectItem>
-            <SelectItem value="energie">Energie & Umwelt</SelectItem>
-            <SelectItem value="medien">Medien & Kommunikation</SelectItem>
-            <SelectItem value="beratung">Beratung & Dienstleistung</SelectItem>
-            <SelectItem value="branche_sonstige">Sonstige</SelectItem>
-            <SelectItem value="technologie">Technologie & Software</SelectItem>
-            <SelectItem value="gesundheit">Gesundheit & Medizin</SelectItem>
-            <SelectItem value="finanzen">Finanzen & Versicherung</SelectItem>
-            <SelectItem value="immobilien">Immobilien</SelectItem>
-            <SelectItem value="handel">Handel & E-Commerce</SelectItem>
-            <SelectItem value="produktion">Produktion & Industrie</SelectItem>
+            <SelectItem value="energie">{lookupLabel('unternehmen', 'branche', 'energie') ?? 'Energie & Umwelt'}</SelectItem>
+            <SelectItem value="medien">{lookupLabel('unternehmen', 'branche', 'medien') ?? 'Medien & Kommunikation'}</SelectItem>
+            <SelectItem value="beratung">{lookupLabel('unternehmen', 'branche', 'beratung') ?? 'Beratung & Dienstleistung'}</SelectItem>
+            <SelectItem value="branche_sonstige">{lookupLabel('unternehmen', 'branche', 'branche_sonstige') ?? 'Sonstige'}</SelectItem>
+            <SelectItem value="technologie">{lookupLabel('unternehmen', 'branche', 'technologie') ?? 'Technologie & Software'}</SelectItem>
+            <SelectItem value="gesundheit">{lookupLabel('unternehmen', 'branche', 'gesundheit') ?? 'Gesundheit & Medizin'}</SelectItem>
+            <SelectItem value="finanzen">{lookupLabel('unternehmen', 'branche', 'finanzen') ?? 'Finanzen & Versicherung'}</SelectItem>
+            <SelectItem value="immobilien">{lookupLabel('unternehmen', 'branche', 'immobilien') ?? 'Immobilien'}</SelectItem>
+            <SelectItem value="handel">{lookupLabel('unternehmen', 'branche', 'handel') ?? 'Handel & E-Commerce'}</SelectItem>
+            <SelectItem value="produktion">{lookupLabel('unternehmen', 'branche', 'produktion') ?? 'Produktion & Industrie'}</SelectItem>
           </SelectContent>
         </Select>
       </div>
     ),
     'status': (
       <div key="status" className="space-y-1.5">
-        <Label htmlFor="status">Status der Beteiligung <span className="text-destructive" aria-hidden="true">*</span></Label>
+        <Label htmlFor="status">{fieldLabel('unternehmen', 'status')} <span className="text-destructive" aria-hidden="true">*</span></Label>
         <div role="radiogroup" className="flex flex-wrap gap-1.5">
           <button
             type="button"
@@ -385,7 +388,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
                 : 'bg-background text-foreground border-input hover:bg-accent'
             }`}
           >
-            Aktiv
+            {lookupLabel('unternehmen', 'status', 'aktiv') ?? 'Aktiv'}
           </button>
           <button
             type="button"
@@ -398,7 +401,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
                 : 'bg-background text-foreground border-input hover:bg-accent'
             }`}
           >
-            Inaktiv
+            {lookupLabel('unternehmen', 'status', 'inaktiv') ?? 'Inaktiv'}
           </button>
           <button
             type="button"
@@ -411,23 +414,23 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
                 : 'bg-background text-foreground border-input hover:bg-accent'
             }`}
           >
-            Exit
+            {lookupLabel('unternehmen', 'status', 'exit') ?? 'Exit'}
           </button>
         </div>
         {showErrors && !fields.status && (
-          <p className="text-xs text-destructive mt-1">Pflichtfeld</p>
+          <p className="text-xs text-destructive mt-1">{t('required_hint')}</p>
         )}
       </div>
     ),
     'beteiligungsquote': (
       <div key="beteiligungsquote" className="space-y-1.5">
-        <Label htmlFor="beteiligungsquote">Beteiligungsquote (%)</Label>
+        <Label htmlFor="beteiligungsquote">{fieldLabel('unternehmen', 'beteiligungsquote')}</Label>
         <Input
           id="beteiligungsquote"
           type="number"
           step="any"
           {...numberInputProps(formEnhancements, 'beteiligungsquote')}
-          placeholder="z. B. 25"
+          placeholder=""
           value={fields.beteiligungsquote !== undefined ? fields.beteiligungsquote : (computedValues['beteiligungsquote'] ?? '')}
           onChange={e => setFields(f => ({ ...f, beteiligungsquote: clampNumberValue(formEnhancements, 'beteiligungsquote', e.target.value) }))}
         />
@@ -435,13 +438,13 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
     ),
     'investiertes_kapital': (
       <div key="investiertes_kapital" className="space-y-1.5">
-        <Label htmlFor="investiertes_kapital">Investiertes Kapital (EUR)</Label>
+        <Label htmlFor="investiertes_kapital">{fieldLabel('unternehmen', 'investiertes_kapital')}</Label>
         <Input
           id="investiertes_kapital"
           type="number"
           step="any"
           {...numberInputProps(formEnhancements, 'investiertes_kapital')}
-          placeholder="z. B. 500.000"
+          placeholder=""
           value={fields.investiertes_kapital !== undefined ? fields.investiertes_kapital : (computedValues['investiertes_kapital'] ?? '')}
           onChange={e => setFields(f => ({ ...f, investiertes_kapital: clampNumberValue(formEnhancements, 'investiertes_kapital', e.target.value) }))}
         />
@@ -449,13 +452,13 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
     ),
     'aktueller_wert': (
       <div key="aktueller_wert" className="space-y-1.5">
-        <Label htmlFor="aktueller_wert">Aktueller Unternehmenswert (EUR)</Label>
+        <Label htmlFor="aktueller_wert">{fieldLabel('unternehmen', 'aktueller_wert')}</Label>
         <Input
           id="aktueller_wert"
           type="number"
           step="any"
           {...numberInputProps(formEnhancements, 'aktueller_wert')}
-          placeholder="z. B. 750.000"
+          placeholder=""
           value={fields.aktueller_wert !== undefined ? fields.aktueller_wert : (computedValues['aktueller_wert'] ?? '')}
           onChange={e => setFields(f => ({ ...f, aktueller_wert: clampNumberValue(formEnhancements, 'aktueller_wert', e.target.value) }))}
         />
@@ -463,10 +466,10 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
     ),
     'investitionsdatum': (
       <div key="investitionsdatum" className="space-y-1.5">
-        <Label htmlFor="investitionsdatum">Investitionsdatum</Label>
+        <Label htmlFor="investitionsdatum">{fieldLabel('unternehmen', 'investitionsdatum')}</Label>
         <DatePicker
           id="investitionsdatum"
-          placeholder="Wann wurde investiert?"
+          placeholder=""
           mode="date"
           value={fields.investitionsdatum ?? null}
           onChange={v => setFields(f => ({ ...f, investitionsdatum: v ?? undefined }))}
@@ -475,10 +478,10 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
     ),
     'stadt': (
       <div key="stadt" className="space-y-1.5">
-        <Label htmlFor="stadt">Stadt</Label>
+        <Label htmlFor="stadt">{fieldLabel('unternehmen', 'stadt')}</Label>
         <Input
           id="stadt"
-          placeholder="z. B. München"
+          placeholder=""
           value={fields.stadt ?? ''}
           onChange={e => setFields(f => ({ ...f, stadt: e.target.value }))}
         />
@@ -486,10 +489,10 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
     ),
     'land': (
       <div key="land" className="space-y-1.5">
-        <Label htmlFor="land">Land</Label>
+        <Label htmlFor="land">{fieldLabel('unternehmen', 'land')}</Label>
         <Input
           id="land"
-          placeholder="z. B. Deutschland"
+          placeholder=""
           value={fields.land ?? ''}
           onChange={e => setFields(f => ({ ...f, land: e.target.value }))}
         />
@@ -497,7 +500,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
     ),
     'website': (
       <div key="website" className="space-y-1.5">
-        <Label htmlFor="website">Website</Label>
+        <Label htmlFor="website">{fieldLabel('unternehmen', 'website')}</Label>
         <Input
           id="website"
           value={fields.website ?? ''}
@@ -507,10 +510,10 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
     ),
     'ansprechpartner_vorname': (
       <div key="ansprechpartner_vorname" className="space-y-1.5">
-        <Label htmlFor="ansprechpartner_vorname">Vorname Ansprechpartner</Label>
+        <Label htmlFor="ansprechpartner_vorname">{fieldLabel('unternehmen', 'ansprechpartner_vorname')}</Label>
         <Input
           id="ansprechpartner_vorname"
-          placeholder="z. B. Max"
+          placeholder=""
           value={fields.ansprechpartner_vorname ?? ''}
           onChange={e => setFields(f => ({ ...f, ansprechpartner_vorname: e.target.value }))}
         />
@@ -518,10 +521,10 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
     ),
     'ansprechpartner_nachname': (
       <div key="ansprechpartner_nachname" className="space-y-1.5">
-        <Label htmlFor="ansprechpartner_nachname">Nachname Ansprechpartner</Label>
+        <Label htmlFor="ansprechpartner_nachname">{fieldLabel('unternehmen', 'ansprechpartner_nachname')}</Label>
         <Input
           id="ansprechpartner_nachname"
-          placeholder="z. B. Mustermann"
+          placeholder=""
           value={fields.ansprechpartner_nachname ?? ''}
           onChange={e => setFields(f => ({ ...f, ansprechpartner_nachname: e.target.value }))}
         />
@@ -529,11 +532,11 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
     ),
     'ansprechpartner_email': (
       <div key="ansprechpartner_email" className="space-y-1.5">
-        <Label htmlFor="ansprechpartner_email">E-Mail Ansprechpartner</Label>
+        <Label htmlFor="ansprechpartner_email">{fieldLabel('unternehmen', 'ansprechpartner_email')}</Label>
         <Input
           id="ansprechpartner_email"
           type="email"
-          placeholder="z. B. max@beispiel.de"
+          placeholder=""
           value={fields.ansprechpartner_email ?? ''}
           onChange={e => setFields(f => ({ ...f, ansprechpartner_email: e.target.value }))}
         />
@@ -541,7 +544,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
     ),
     'ansprechpartner_telefon': (
       <div key="ansprechpartner_telefon" className="space-y-1.5">
-        <Label htmlFor="ansprechpartner_telefon">Telefon Ansprechpartner</Label>
+        <Label htmlFor="ansprechpartner_telefon">{fieldLabel('unternehmen', 'ansprechpartner_telefon')}</Label>
         <Input
           id="ansprechpartner_telefon"
           value={fields.ansprechpartner_telefon ?? ''}
@@ -551,10 +554,10 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
     ),
     'cockpit_zusammenfassung': (
       <div key="cockpit_zusammenfassung" className="space-y-1.5">
-        <Label htmlFor="cockpit_zusammenfassung">Cockpit-Zusammenfassung</Label>
+        <Label htmlFor="cockpit_zusammenfassung">{fieldLabel('unternehmen', 'cockpit_zusammenfassung')}</Label>
         <Textarea
           id="cockpit_zusammenfassung"
-          placeholder="Kurze Übersicht für das Cockpit. Wichtige Kennzahlen, Status, besondere Punkte.."
+          placeholder=""
           value={fields.cockpit_zusammenfassung ?? ''}
           onChange={e => setFields(f => ({ ...f, cockpit_zusammenfassung: e.target.value }))}
           rows={3}
@@ -563,10 +566,10 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
     ),
     'allgemeine_notizen': (
       <div key="allgemeine_notizen" className="space-y-1.5">
-        <Label htmlFor="allgemeine_notizen">Allgemeine Notizen</Label>
+        <Label htmlFor="allgemeine_notizen">{fieldLabel('unternehmen', 'allgemeine_notizen')}</Label>
         <Textarea
           id="allgemeine_notizen"
-          placeholder="Interne Anmerkungen, Besonderheiten, Kontexte..."
+          placeholder=""
           value={fields.allgemeine_notizen ?? ''}
           onChange={e => setFields(f => ({ ...f, allgemeine_notizen: e.target.value }))}
           rows={3}
@@ -642,9 +645,9 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
     // Backend-Feld mit €-Label ODER virtueller Computed-Key, dessen Name nach Geld aussieht.
     const looksLikeCurrency = CURRENCY_KEYS.has(k) || /(?:kosten|preis|betrag|gesamt|netto|brutto|summe|mwst|rabatt|anzahlung|umsatz|saldo)/i.test(k);
     if (looksLikeCurrency) {
-      return n.toLocaleString('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return n.toLocaleString(localeTag(), { style: 'currency', currency: CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
-    return n.toLocaleString('de-DE', { maximumFractionDigits: 2 });
+    return n.toLocaleString(localeTag(), { maximumFractionDigits: 2 });
   }
 
   return (
@@ -666,14 +669,14 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
               }`}
             >
               <IconSparkles className={`h-3.5 w-3.5 ${aiOpen ? '' : 'text-primary'}`} />
-              <span className="hidden sm:inline">KI-Ausfüllen</span>
+              <span className="hidden sm:inline">{t('smart_fill')}</span>
               <IconChevronDown className={`h-3 w-3 transition-transform ${aiOpen ? 'rotate-180' : ''}`} />
             </button>
           )}
         </DialogHeader>
         {enablePhotoScan && aiOpen && (
           <div id="ai-fill-panel" className="border-b bg-muted/20 px-6 py-4 space-y-3">
-            <p className="text-xs text-muted-foreground">Versteht Fotos, Dokumente und Text und füllt alles für dich aus</p>
+            <p className="text-xs text-muted-foreground">{t('scan_header_sub')}</p>
             <div className="flex items-start gap-2 pl-0.5">
               <Checkbox
                 id="ai-use-personal-info"
@@ -683,21 +686,21 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
               />
               <span className="text-xs text-muted-foreground leading-snug">
                 <Label htmlFor="ai-use-personal-info" className="text-xs font-normal text-muted-foreground cursor-pointer inline">
-                  KI-Assistent darf zusätzlich Informationen zu meiner Person verwenden
+                  {t('useinfo_label')}
                 </Label>
                 {' '}
                 <button type="button" onClick={handleShowProfileInfo} className="text-xs text-primary hover:underline whitespace-nowrap">
-                  {profileLoading ? 'Lade...' : '(mehr Infos)'}
+                  {profileLoading ? t('useinfo_loading') : `(${t('useinfo_more')})`}
                 </button>
               </span>
             </div>
             {showProfileInfo && (
               <div className="rounded-md border bg-muted/50 p-2 text-xs max-h-40 overflow-y-auto">
-                <p className="font-medium mb-1">Folgende Infos über dich können von der KI genutzt werden:</p>
+                <p className="font-medium mb-1">{t('profile_preamble')}</p>
                 {profileData ? Object.values(profileData).map((v, i) => (
                   <span key={i}>{i > 0 && ", "}{typeof v === "object" ? JSON.stringify(v) : String(v)}</span>
                 )) : (
-                  <span className="text-muted-foreground">Profil konnte nicht geladen werden</span>
+                  <span className="text-muted-foreground">{t('useinfo_error')}</span>
                 )}
               </div>
             )}
@@ -728,8 +731,8 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
                     <IconLoader2 className="h-7 w-7 text-primary animate-spin" />
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-medium">KI analysiert...</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Felder werden automatisch ausgefüllt</p>
+                    <p className="text-sm font-medium">{t('scan_analyzing')}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t('scan_analyzing_sub')}</p>
                   </div>
                 </div>
               ) : scanSuccess ? (
@@ -738,8 +741,8 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
                     <IconCircleCheck className="h-7 w-7 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-medium text-green-700 dark:text-green-400">Felder ausgefüllt!</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Prüfe die Werte und passe sie ggf. an</p>
+                    <p className="text-sm font-medium text-green-700 dark:text-green-400">{t('scan_success')}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t('scan_success_sub')}</p>
                   </div>
                 </div>
               ) : (
@@ -748,7 +751,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
                     <IconPhotoPlus className="h-7 w-7 text-primary/70" />
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-medium">Foto oder Dokument hierher ziehen oder auswählen</p>
+                    <p className="text-sm font-medium">{t('scan_upload')}</p>
                   </div>
                 </div>
               )}
@@ -772,11 +775,11 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
             <div className="grid grid-cols-3 gap-2">
               <Button type="button" variant="outline" size="sm" className="h-10 text-xs" disabled={scanning}
                 onClick={e => { e.stopPropagation(); cameraInputRef.current?.click(); }}>
-                <IconCamera className="h-3.5 w-3.5 mr-1" />Kamera
+                <IconCamera className="h-3.5 w-3.5 mr-1" />{t('scan_camera_btn')}
               </Button>
               <Button type="button" variant="outline" size="sm" className="h-10 text-xs" disabled={scanning}
                 onClick={e => { e.stopPropagation(); fileInputRef.current?.click(); }}>
-                <IconUpload className="h-3.5 w-3.5 mr-1" />Foto wählen
+                <IconUpload className="h-3.5 w-3.5 mr-1" />{t('scan_file_btn')}
               </Button>
               <Button type="button" variant="outline" size="sm" className="h-10 text-xs" disabled={scanning}
                 onClick={e => {
@@ -787,13 +790,13 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
                     setTimeout(() => { if (fileInputRef.current) fileInputRef.current.accept = 'image/*,application/pdf'; }, 100);
                   }
                 }}>
-                <IconFileText className="h-3.5 w-3.5 mr-1" />Dokument
+                <IconFileText className="h-3.5 w-3.5 mr-1" />{t('scan_doc_btn')}
               </Button>
             </div>
 
             <div className="relative">
               <Textarea
-                placeholder="Text eingeben oder einfügen, z.B. Notizen, E-Mails, Beschreibungen..."
+                placeholder={t('scan_text_placeholder')}
                 value={aiText}
                 onChange={e => {
                   setAiText(e.target.value);
@@ -821,7 +824,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
                     if (text) setAiText(prev => prev ? prev + '\n' + text : text);
                   } catch {}
                 }}
-                title="Paste"
+                title={t('paste')}
               >
                 <IconClipboard className="h-4 w-4" />
               </button>
@@ -835,7 +838,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
                 disabled={scanning}
                 onClick={() => handleAiExtract()}
               >
-                <IconSparkles className="h-3.5 w-3.5 mr-1.5" />Analysieren
+                <IconSparkles className="h-3.5 w-3.5 mr-1.5" />{t('scan_text_analyze')}
               </Button>
             )}
           </div>
@@ -930,7 +933,7 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
             {showErrors && missingRequired.length > 0 && (
               <p className="text-xs text-destructive flex items-center gap-1.5" role="alert">
                 <IconAlertCircle className="h-3.5 w-3.5 shrink-0" />
-                Bitte fülle die markierten Pflichtfelder aus.
+                {t('missing_required')}
               </p>
             )}
             {recordId && (
@@ -946,13 +949,13 @@ export function UnternehmenDialog({ open, onClose, onSubmit, defaultValues, reco
             </div>
           )}
           <DialogFooter className="sticky bottom-0 border-t bg-background/95 backdrop-blur px-6 py-3 gap-2 max-sm:flex-row">
-            <Button type="button" variant="outline" onClick={onClose} className="max-sm:h-12 max-sm:flex-1 max-sm:text-base">Abbrechen</Button>
+            <Button type="button" variant="outline" onClick={onClose} className="max-sm:h-12 max-sm:flex-1 max-sm:text-base">{t('cancel')}</Button>
             <Button
               type="submit"
               className="max-sm:h-12 max-sm:flex-1 max-sm:text-base"
               disabled={saving || !isDirty || (showErrors && missingRequired.length > 0)}
             >
-              {saving ? 'Speichern...' : defaultValues ? 'Speichern' : 'Erstellen'}
+              {saving ? t('saving') : defaultValues ? t('save') : t('create')}
             </Button>
           </DialogFooter>
         </form>

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import PublicFormPage from '@/pages/public/PublicFormPage';
 import { PUBLIC_PAGES } from '@/pages/public/registry';
 import { loadPublicPagesConfig, type PublicPagesConfig } from '@/lib/publicClient';
+import { initPublicLocale } from '@/i18n';
 
 const APP_TITLE = 'BeteiligungsManager';
 
@@ -15,6 +16,13 @@ let configForTitle: Promise<PublicPagesConfig | null> | undefined;
 // takes over. Both read the same runtime config, so upgrading a page never
 // changes its shared link.
 export default function PublicPage() {
+  // Anonymous visitors have no dashboard profile and no stored preference —
+  // public chrome follows the BROWSER language. Synchronous and first in the
+  // body, so every localized string below (and in every child page) already
+  // renders in the visitor's language on the first paint. Never persisted:
+  // a visitor must not pin the owner's dashboard locale.
+  initPublicLocale();
+
   const { slug } = useParams<{ slug: string }>();
 
   // Public pages mount outside <Layout>, so its document.title effect never

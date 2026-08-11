@@ -129,6 +129,7 @@ import { addDays, addMonths, addWeeks, differenceInCalendarDays, differenceInCal
 import { de as dfnsDe } from 'date-fns/locale';
 import { formatCurrency } from '@/lib/formatters';
 import { TONE_TEXT, labelOf, type WidgetTone } from './primitives';
+import { coreLocale as i18nLocale, type CoreLocale as Locale } from '@/i18n';
 
 // Closed tone enum — const array export (family KANBAN_TONES pattern).
 export const CHART_TONES = ['default', 'primary', 'success', 'warning', 'destructive'] as const;
@@ -226,7 +227,7 @@ interface ChartWidgetBaseProps<T> {
   timeEnd?: string;                 // „bis heute" reicht die SEITE herein
   footer?: ReactNode;               // NUR Text/Inline-Kontext — nie Chart/Tabelle
   emptyLabel?: string;
-  locale?: 'de' | 'en';
+  locale?: Locale;
   texts?: Partial<ChartTexts>;
   className?: string;
 }
@@ -241,7 +242,7 @@ export type ChartWidgetProps<T> = ChartWidgetBaseProps<T> & (
 );
 
 // ── built-in strings ─────────────────────────────────────────────────────
-const TEXTS: Record<'de' | 'en', ChartTexts> = {
+const TEXTS: Record<Locale, ChartTexts> = {
   de: {
     countLabel: 'Anzahl', otherLabel: 'Andere', missingLabel: 'Ohne Angabe',
     noValueNotice: '{n} ohne Wert', cappedNotice: '{shown} von {total} Kategorien',
@@ -257,11 +258,18 @@ const TEXTS: Record<'de' | 'en', ChartTexts> = {
     filterRemovedLabel: 'Filter removed', donutNegativeNotice: 'negative values — shown as list',
   },
 };
-const UNIT: Record<'de' | 'en', Record<'day' | 'week' | 'month', string>> = {
+const UNIT: Record<Locale, Record<'day' | 'week' | 'month', string>> = {
   de: { day: 'Tag', week: 'Woche', month: 'Monat' },
   en: { day: 'day', week: 'week', month: 'month' },
 };
-const YESNO: Record<'de' | 'en', [string, string]> = { de: ['Ja', 'Nein'], en: ['Yes', 'No'] };
+const YESNO: Record<Locale, [string, string]> = { de: ['Ja', 'Nein'], en: ['Yes', 'No'] };
+// „pro Tag" / „per day" / „za den" — Präposition der Takt-Notiz.
+const PER: Record<Locale, string> = { de: 'pro', en: 'per' };
+// Kalenderwochen-Präfix der Zeitachse.
+const WEEK_PREFIX: Record<Locale, string> = { de: 'KW', en: 'W' };
+// BCP-47-Tag je Locale (das Widget formatiert gegen seine locale-PROP).
+const TAG: Record<Locale, string> = { de: 'de-DE', en: 'en-US' };
+const DFNS: Record<Locale, typeof dfnsDe | undefined> = { de: dfnsDe, en: undefined };
 const tpl = (s: string, vars: Record<string, string | number>) =>
   s.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? ''));
 
@@ -287,7 +295,7 @@ function hashOf(s: string): string {
 
 /** Normalisiert EIN Kategorie-Item auf sein Label — oder null für "Ohne
  *  Angabe" (Header-Tabelle; ein fremdes Objekt wird NIE still ''). */
-function categoryLabelOf(item: unknown, locale: 'de' | 'en'): string | null {
+function categoryLabelOf(item: unknown, locale: Locale): string | null {
   if (item == null || item === '') return null;
   if (typeof item === 'boolean') return YESNO[locale][item ? 0 : 1];
   if (typeof item === 'number') return String(item);
@@ -321,7 +329,7 @@ function measureOf<T>(measure: ChartMeasure<T> | undefined, row: ChartRow<T>): n
 
 function aggregateCategory<T>(
   rows: ChartRow<T>[], dim: Extract<ChartDimension<T>, { kind: 'category' }>,
-  measure: ChartMeasure<T> | undefined, maxCategories: number, locale: 'de' | 'en', texts: ChartTexts,
+  measure: ChartMeasure<T> | undefined, maxCategories: number, locale: Locale, texts: ChartTexts,
 ): Agg<T> {
   const isCount = !measure || measure.aggregate === undefined || measure.aggregate === 'count';
   const isAvg = measure?.aggregate === 'avg';
@@ -421,7 +429,7 @@ function aggregateCategory<T>(
 function aggregateTime<T>(
   rows: ChartRow<T>[], dim: Extract<ChartDimension<T>, { kind: 'time' }>,
   measure: ChartMeasure<T> | undefined, timeStart: string | undefined, timeEnd: string | undefined,
-  locale: 'de' | 'en',
+  locale: Locale,
 ): Agg<T> {
   const isCount = !measure || measure.aggregate === undefined || measure.aggregate === 'count';
   const isAvg = measure?.aggregate === 'avg';
@@ -466,12 +474,12 @@ function aggregateTime<T>(
   // Achsen-Labels sind MENSCHLICH („Mai“, „5. Mai“, „KW 23“) — erste-Blick-
   // Lesbarkeit ist Widget-Pflicht, keine Agenten-Aufgabe. Das Jahr erscheint
   // nur, wenn die Achse Jahre überspannt (der Kopf-Zeitraum trägt es immer).
-  const dfnsLoc = locale === 'de' ? dfnsDe : undefined;
+  const dfnsLoc = DFNS[locale];
   const spansYears = min.getFullYear() !== max.getFullYear();
   const labelOfBucket = (d: Date) =>
     unit === 'month' ? format(d, spansYears ? 'MMM yy' : 'MMM', { locale: dfnsLoc })
-    : unit === 'week' ? `${locale === 'de' ? 'KW' : 'W'} ${format(d, 'II')}${spansYears ? ` '${format(d, 'RR')}` : ''}`
-    : format(d, spansYears ? (locale === 'de' ? 'd. MMM yy' : 'MMM d yy') : (locale === 'de' ? 'd. MMM' : 'MMM d'), { locale: dfnsLoc });
+    : unit === 'week' ? `${WEEK_PREFIX[locale]} ${format(d, 'II')}${spansYears ? ` '${format(d, 'RR')}` : ''}`
+    : format(d, spansYears ? (locale === 'en' ? 'MMM d yy' : 'd. MMM yy') : (locale === 'en' ? 'MMM d' : 'd. MMM'), { locale: dfnsLoc });
 
   type B = { d: Date; sum: number; n: number; rowIds: string[] };
   const byKey = new Map<string, B>();
@@ -522,10 +530,10 @@ function aggregateTime<T>(
 }
 
 // ── value rendering (head, list values, ticks, focus label) ─────────────
-function formatValue(v: number, fmt: ChartValueFormat | undefined, locale: 'de' | 'en'): string {
+function formatValue(v: number, fmt: ChartValueFormat | undefined, locale: Locale): string {
   if (fmt === 'currency') return formatCurrency(v);
-  if (fmt === 'percent') return `${(v * 100).toLocaleString(locale === 'de' ? 'de-DE' : 'en-US', { maximumFractionDigits: 1 })} %`;
-  return v.toLocaleString(locale === 'de' ? 'de-DE' : 'en-US', { maximumFractionDigits: 2 });
+  if (fmt === 'percent') return `${(v * 100).toLocaleString(TAG[locale], { maximumFractionDigits: 1 })} %`;
+  return v.toLocaleString(TAG[locale], { maximumFractionDigits: 2 });
 }
 
 /** nice max für die y-Achse: kleinste 1/2/2.5/5/10·10^k-Stufe ≥ max
@@ -540,7 +548,7 @@ function niceMax(v: number): number {
 // ── the widget ───────────────────────────────────────────────────────────
 export function ChartWidget<T>({
   title, rows, dimension, measure, interaction, maxCategories = 8, tone,
-  timeStart, timeEnd, footer, emptyLabel, locale = 'de', texts, className,
+  timeStart, timeEnd, footer, emptyLabel, locale = i18nLocale, texts, className,
 }: ChartWidgetProps<T>) {
   const t: ChartTexts = { ...TEXTS[locale], ...texts };
   const [focusKey, setFocusKey] = useState<string | null>(null);
@@ -596,7 +604,7 @@ export function ChartWidget<T>({
     notices.push(tpl(t.mentionsLabel, { n: agg.mentions }));
   }
   if (agg.coarsenedTo) notices.push(tpl(t.coarsenedNotice, { unit: UNIT[locale][agg.coarsenedTo] }));
-  else if (agg.unit) notices.push(`${locale === 'de' ? 'pro' : 'per'} ${UNIT[locale][agg.unit]}`);
+  else if (agg.unit) notices.push(`${PER[locale]} ${UNIT[locale][agg.unit]}`);
   if (agg.partialLast && agg.segments.length) notices.push(tpl(t.partialNotice, { label: agg.segments[agg.segments.length - 1].label }));
   if (donutWish && !donutOk) notices.push(t.donutNegativeNotice);
 
@@ -773,7 +781,7 @@ function DonutMark<T>({ segments, toneOf, selKey }: {
 
 // ── the sparse line (time) — hand-rolled SVG, fixed height, deterministic ──
 function TimeMark<T>({ segments, fmt, locale, clickable, onClick, focusKey, setFocusKey, toneOf, title, partialLast }: {
-  segments: ChartSegment<T>[]; fmt: ChartValueFormat | undefined; locale: 'de' | 'en';
+  segments: ChartSegment<T>[]; fmt: ChartValueFormat | undefined; locale: Locale;
   clickable: boolean; onClick: (seg: ChartSegment<T>) => void;
   focusKey: string | null; setFocusKey: (k: string | null) => void;
   toneOf: (seg: ChartSegment<T>) => ChartTone; title: string; partialLast: boolean;
@@ -884,9 +892,14 @@ export function ChartSkeleton() {
   );
 }
 
+const ERROR_TEXTS: Record<Locale, { title: string; retry: string }> = {
+  de: { title: 'Auswertung konnte nicht geladen werden', retry: 'Erneut versuchen' },
+  en: { title: 'Chart failed to load', retry: 'Try again' },
+};
+
 type ChartErrorProps = {
   error: Error | string;
-  locale?: 'de' | 'en';
+  locale?: Locale;
   title?: ReactNode;
   onRetry?: () => void;
   retryLabel?: string;
@@ -894,10 +907,10 @@ type ChartErrorProps = {
   className?: string;
 };
 
-export function ChartError({ error, locale = 'de', title, onRetry, retryLabel, icon: Icon = IconAlertCircle, className }: ChartErrorProps) {
+export function ChartError({ error, locale = i18nLocale, title, onRetry, retryLabel, icon: Icon = IconAlertCircle, className }: ChartErrorProps) {
   const message = typeof error === 'string' ? error : error.message;
-  const heading = title ?? (locale === 'de' ? 'Auswertung konnte nicht geladen werden' : 'Chart failed to load');
-  const retryText = retryLabel ?? (locale === 'de' ? 'Erneut versuchen' : 'Try again');
+  const heading = title ?? ERROR_TEXTS[locale].title;
+  const retryText = retryLabel ?? ERROR_TEXTS[locale].retry;
   return (
     <div className={`flex flex-col items-center justify-center gap-4 rounded-[27px] bg-card shadow-lg py-16 text-center${className ? ` ${className}` : ''}`}>
       <div className="h-12 w-12 rounded-2xl bg-destructive/10 flex items-center justify-center text-destructive"><Icon size={22} /></div>

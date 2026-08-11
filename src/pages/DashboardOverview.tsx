@@ -47,6 +47,81 @@ import {
   IconBriefcase,
 } from '@tabler/icons-react';
 
+import { makeT } from '@/i18n';
+
+const tt = makeT({
+  de: {
+    termin: 'Termin',
+    stattgefunden: 'Stattgefunden',
+    ueberfaelliger_termine_bei: '{p0} überfälliger Termine bei {p1}.',
+    ueberfaelliger_termin_bei: '{p0} überfälliger Termin bei {p1}.',
+    deinen_beteiligungen: 'deinen Beteiligungen',
+    naechster_termin_bei_am: 'Nächster Termin: {p0} bei {p1} am {p2}.',
+    naechster_termin_am: 'Nächster Termin: {p0} am {p1}.',
+    aktive_beteiligungen: '{p0} aktive Beteiligungen: {p1}.',
+    aktive_beteiligung: '{p0} aktive Beteiligung: {p1}.',
+    willkommen_im_beteiligungsmanage: 'Willkommen im BeteiligungsManager',
+    erfasse_deine_erste_beteiligung: 'Erfasse deine erste Beteiligung und behalte Portfolio, Termine und Dokumente im Blick.',
+    erste_beteiligung_erfassen: 'Erste Beteiligung erfassen',
+    beteiligung: 'Beteiligung',
+    als_erledigt_markieren: 'Als erledigt markieren',
+    termin_war_am: 'Termin „{p0}" war am {p1}.',
+    termine_nicht_als_stattgefunden: '{p0} Termine nicht als stattgefunden markiert.',
+    beteiligungen: 'Beteiligungen',
+    investiert: 'Investiert',
+    portfoliowert: 'Portfoliowert',
+    naechste_7_tage: 'Nächste 7 Tage',
+    termin_verschoben_auf: 'Termin verschoben auf {p0}.',
+    termin_2: '+ Termin',
+    noch_keine_beteiligungen_erfasst: 'Noch keine Beteiligungen erfasst.',
+    erste_beteiligung_anlegen: 'Erste Beteiligung anlegen',
+    anstehende_termine: 'Anstehende Termine',
+    erledigt: 'Erledigt',
+    keine_anstehenden_termine_alles: 'Keine anstehenden Termine — alles im Griff.',
+    noch_keine_termine_geplant: 'Noch keine Termine geplant.',
+    termin_planen: 'Termin planen',
+    bearbeiten: 'Bearbeiten',
+    unternehmenswert: 'Unternehmenswert',
+    beteiligungsquote: 'Beteiligungsquote',
+    als_stattgefunden_markieren: '✓ Als stattgefunden markieren',
+  },
+  en: {
+    termin: 'Appointment',
+    stattgefunden: 'Took Place',
+    ueberfaelliger_termine_bei: '{p0} overdue appointments at {p1}.',
+    ueberfaelliger_termin_bei: '{p0} overdue appointment at {p1}.',
+    deinen_beteiligungen: 'your investments',
+    naechster_termin_bei_am: 'Next appointment: {p0} at {p1} on {p2}.',
+    naechster_termin_am: 'Next appointment: {p0} on {p1}.',
+    aktive_beteiligungen: '{p0} active investments: {p1}.',
+    aktive_beteiligung: '{p0} active investment: {p1}.',
+    willkommen_im_beteiligungsmanage: 'Welcome to BeteiligungsManager',
+    erfasse_deine_erste_beteiligung: 'Add your first investment and keep track of your portfolio, appointments, and documents.',
+    erste_beteiligung_erfassen: 'Add First Investment',
+    beteiligung: 'Investment',
+    als_erledigt_markieren: 'Mark as Done',
+    termin_war_am: 'Appointment "{p0}" was on {p1}.',
+    termine_nicht_als_stattgefunden: '{p0} appointments not marked as took place.',
+    beteiligungen: 'Investments',
+    investiert: 'Invested',
+    portfoliowert: 'Portfolio Value',
+    naechste_7_tage: 'Next 7 Days',
+    termin_verschoben_auf: 'Appointment rescheduled to {p0}.',
+    termin_2: '+ Appointment',
+    noch_keine_beteiligungen_erfasst: 'No investments added yet.',
+    erste_beteiligung_anlegen: 'Add First Investment',
+    anstehende_termine: 'Upcoming Appointments',
+    erledigt: 'Done',
+    keine_anstehenden_termine_alles: 'No upcoming appointments — everything under control.',
+    noch_keine_termine_geplant: 'No appointments scheduled yet.',
+    termin_planen: 'Schedule Appointment',
+    bearbeiten: 'Edit',
+    unternehmenswert: 'Company Value',
+    beteiligungsquote: 'Ownership Stake',
+    als_stattgefunden_markieren: '✓ Mark as Took Place',
+  },
+});
+
 type OverlayItem =
   | { type: 'unternehmen'; record: Unternehmen; ctx?: { addTermin?: boolean; addDokument?: boolean; addNotiz?: boolean } }
   | { type: 'termin'; record: Termine }
@@ -138,7 +213,7 @@ export default function DashboardOverview() {
         return {
           id: t.record_id,
           start: t.fields.datum_uhrzeit!,
-          title: t.fields.terminbezeichnung ?? 'Termin',
+          title: t.fields.terminbezeichnung ?? tt('termin'),
           subtitle: t.unternehmenName || t.fields.terminart?.label,
           tone,
         };
@@ -150,7 +225,7 @@ export default function DashboardOverview() {
     const prev = termin.fields.terminstatus;
     setTermine(ts => ts.map(t =>
       t.record_id === termin.record_id
-        ? { ...t, fields: { ...t.fields, terminstatus: { key: 'stattgefunden', label: 'Stattgefunden' } } }
+        ? { ...t, fields: { ...t.fields, terminstatus: { key: 'stattgefunden', label: tt('stattgefunden') } } }
         : t
     ));
     undoToast(`„${termin.fields.terminbezeichnung}" als stattgefunden markiert.`, async () => {
@@ -173,15 +248,15 @@ export default function DashboardOverview() {
     const naechster = termineNaechste[0];
     if (termineUeberfaellig.length > 0) {
       const firmen = namen(termineUeberfaellig.map(t => enrichedTermine.find(e => e.record_id === t.record_id)?.unternehmenName ?? '').filter(Boolean));
-      return `${termineUeberfaellig.length} überfälliger Termin${termineUeberfaellig.length > 1 ? 'e' : ''} bei ${firmen || 'deinen Beteiligungen'}.`;
+      return (termineUeberfaellig.length > 1 ? tt('ueberfaelliger_termine_bei', { p0: termineUeberfaellig.length, p1: firmen || tt('deinen_beteiligungen') }) : tt('ueberfaelliger_termin_bei', { p0: termineUeberfaellig.length, p1: firmen || tt('deinen_beteiligungen') }));
     }
     if (naechster) {
       const firma = naechster.unternehmenName;
-      return `Nächster Termin: ${naechster.fields.terminbezeichnung}${firma ? ` bei ${firma}` : ''} am ${formatDate(naechster.fields.datum_uhrzeit?.slice(0, 10))}.`;
+      return (firma ? tt('naechster_termin_bei_am', { p0: naechster.fields.terminbezeichnung ?? '', p1: firma, p2: formatDate(naechster.fields.datum_uhrzeit?.slice(0, 10)) }) : tt('naechster_termin_am', { p0: naechster.fields.terminbezeichnung ?? '', p1: formatDate(naechster.fields.datum_uhrzeit?.slice(0, 10)) }));
     }
     if (aktiveUnternehmen.length > 0) {
       const firmenNamen = namen(aktiveUnternehmen.slice(0, 3).map(u => u.fields.name ?? ''));
-      return `${aktiveUnternehmen.length} aktive Beteiligung${aktiveUnternehmen.length > 1 ? 'en' : ''}: ${firmenNamen}.`;
+      return (aktiveUnternehmen.length > 1 ? tt('aktive_beteiligungen', { p0: aktiveUnternehmen.length, p1: firmenNamen }) : tt('aktive_beteiligung', { p0: aktiveUnternehmen.length, p1: firmenNamen }));
     }
     return 'Starte, indem du deine erste Beteiligung erfasst.';
   }, [termineNaechste, termineUeberfaellig, enrichedTermine, aktiveUnternehmen]);
@@ -203,15 +278,15 @@ export default function DashboardOverview() {
           <IconBriefcase size={48} className="text-primary" stroke={1.5} />
         </div>
         <div>
-          <h2 className="text-xl font-semibold text-foreground mb-2">Willkommen im BeteiligungsManager</h2>
-          <p className="text-muted-foreground max-w-sm">Erfasse deine erste Beteiligung und behalte Portfolio, Termine und Dokumente im Blick.</p>
+          <h2 className="text-xl font-semibold text-foreground mb-2">{tt('willkommen_im_beteiligungsmanage')}</h2>
+          <p className="text-muted-foreground max-w-sm">{tt('erfasse_deine_erste_beteiligung')}</p>
         </div>
         <button
           onClick={() => { setEditingUnternehmen(undefined); setUnternehmenDialogOpen(true); }}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
         >
           <IconPlus size={16} />
-          Erste Beteiligung erfassen
+          {tt('erste_beteiligung_erfassen')}
         </button>
         <UnternehmenDialog
           open={unternehmenDialogOpen}
@@ -237,7 +312,7 @@ export default function DashboardOverview() {
           className="shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
         >
           <IconPlus size={15} />
-          <span className="hidden sm:inline">Beteiligung</span>
+          <span className="hidden sm:inline">{tt('beteiligung')}</span>
         </button>
       </div>
 
@@ -247,39 +322,37 @@ export default function DashboardOverview() {
           <HeroBanner
             icon={<IconAlertTriangle size={18} />}
             action={{
-              label: 'Als erledigt markieren',
+              label: tt('als_erledigt_markieren'),
               onClick: () => advanceTermin(termineUeberfaellig[0]),
             }}
           >
             <b>{namen(termineUeberfaellig.map(t => enrichedTermine.find(e => e.record_id === t.record_id)?.unternehmenName ?? t.fields.terminbezeichnung ?? ''))}</b>
-            {' '}— {termineUeberfaellig.length === 1
-              ? `Termin „${termineUeberfaellig[0].fields.terminbezeichnung}" war am ${formatDate(termineUeberfaellig[0].fields.datum_uhrzeit?.slice(0, 10))}.`
-              : `${termineUeberfaellig.length} Termine nicht als stattgefunden markiert.`
+            {' '}— {(termineUeberfaellig.length === 1 ? tt('termin_war_am', { p0: termineUeberfaellig[0].fields.terminbezeichnung ?? '', p1: formatDate(termineUeberfaellig[0].fields.datum_uhrzeit?.slice(0, 10)) }) : tt('termine_nicht_als_stattgefunden', { p0: termineUeberfaellig.length }))
             }
           </HeroBanner>
         )}
         kpis={
           <StatStrip>
             <StatStripItem
-              title="Beteiligungen"
+              title={tt('beteiligungen')}
               value={aktiveUnternehmen.length}
               icon={<IconBuilding size={16} />}
               tone="default"
             />
             <StatStripItem
-              title="Investiert"
+              title={tt('investiert')}
               value={gesamtInvestiert > 0 ? formatCurrency(gesamtInvestiert) : '—'}
               icon={<IconCurrencyEuro size={16} />}
               tone="default"
             />
             <StatStripItem
-              title="Portfoliowert"
+              title={tt('portfoliowert')}
               value={gesamtWert > 0 ? formatCurrency(gesamtWert) : '—'}
               icon={<IconTrendingUp size={16} />}
               tone={gesamtWert > gesamtInvestiert && gesamtInvestiert > 0 ? 'success' : 'default'}
             />
             <StatStripItem
-              title="Nächste 7 Tage"
+              title={tt('naechste_7_tage')}
               value={termineIn7Tagen.length}
               icon={<IconCalendarEvent size={16} />}
               tone={termineIn7Tagen.length > 0 ? 'primary' : 'default'}
@@ -310,7 +383,7 @@ export default function DashboardOverview() {
                   ? { ...r, fields: { ...r.fields, datum_uhrzeit: newStart } }
                   : r
               ));
-              undoToast(`Termin verschoben auf ${formatDate(newStart.slice(0, 10))}.`, async () => {
+              undoToast(tt('termin_verschoben_auf', { p0: formatDate(newStart.slice(0, 10)) }), async () => {
                 setTermine(ts => ts.map(r =>
                   r.record_id === eventId
                     ? { ...r, fields: { ...r.fields, datum_uhrzeit: prev } }
@@ -329,7 +402,7 @@ export default function DashboardOverview() {
         aside={
           <>
             <WorkList
-              title="Beteiligungen"
+              title={tt('beteiligungen')}
               items={unternehmen
                 .filter(u => u.fields.status?.key !== 'exit')
                 .sort((a, b) => (b.fields.aktueller_wert ?? 0) - (a.fields.aktueller_wert ?? 0))
@@ -360,7 +433,7 @@ export default function DashboardOverview() {
                       </>
                     ),
                     action: {
-                      label: '+ Termin',
+                      label: tt('termin_2'),
                       onClick: () => {
                         setTermineDefaults({ unternehmen: u.record_id });
                         setEditingTermin(undefined);
@@ -374,12 +447,12 @@ export default function DashboardOverview() {
                 if (u) overlay.replace({ type: 'unternehmen', record: u });
               }}
               empty={{
-                text: 'Noch keine Beteiligungen erfasst.',
-                action: { label: 'Erste Beteiligung anlegen', onClick: () => { setEditingUnternehmen(undefined); setUnternehmenDialogOpen(true); } },
+                text: tt('noch_keine_beteiligungen_erfasst'),
+                action: { label: tt('erste_beteiligung_anlegen'), onClick: () => { setEditingUnternehmen(undefined); setUnternehmenDialogOpen(true); } },
               }}
             />
             <WorkList
-              title="Anstehende Termine"
+              title={tt('anstehende_termine')}
               items={termineNaechste.slice(0, 6).map(t => ({
                 id: t.record_id,
                 title: t.fields.terminbezeichnung ?? '—',
@@ -395,7 +468,7 @@ export default function DashboardOverview() {
                   </>
                 ),
                 action: {
-                  label: <><IconCheck size={14} className="shrink-0" /> Erledigt</>,
+                  label: <><IconCheck size={14} className="shrink-0" /> {tt('erledigt')}</>,
                   onClick: () => advanceTermin(t),
                 },
               }))}
@@ -404,10 +477,8 @@ export default function DashboardOverview() {
                 if (t) overlay.replace({ type: 'termin', record: t });
               }}
               empty={{
-                text: aktiveUnternehmen.length > 0
-                  ? `Keine anstehenden Termine — alles im Griff.`
-                  : 'Noch keine Termine geplant.',
-                action: { label: 'Termin planen', onClick: () => { setTermineDefaults(undefined); setEditingTermin(undefined); setTermineDialogOpen(true); } },
+                text: (aktiveUnternehmen.length > 0 ? tt('keine_anstehenden_termine_alles') : tt('noch_keine_termine_geplant')),
+                action: { label: tt('termin_planen'), onClick: () => { setTermineDefaults(undefined); setEditingTermin(undefined); setTermineDialogOpen(true); } },
               }}
             />
           </>
@@ -439,15 +510,15 @@ export default function DashboardOverview() {
                       onClick={() => { setEditingUnternehmen(u); setUnternehmenDialogOpen(true); }}
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      Bearbeiten
+                      {tt('bearbeiten')}
                     </button>
                   }
                 />
                 {(u.fields.investiertes_kapital || u.fields.aktueller_wert) && (
                   <RecordKeyFacts items={[
-                    ...(u.fields.investiertes_kapital != null ? [{ label: 'Investiert', value: formatCurrency(u.fields.investiertes_kapital), icon: IconCurrencyEuro }] : []),
-                    ...(u.fields.aktueller_wert != null ? [{ label: 'Unternehmenswert', value: formatCurrency(u.fields.aktueller_wert), icon: IconTrendingUp }] : []),
-                    ...(u.fields.beteiligungsquote != null ? [{ label: 'Beteiligungsquote', value: `${u.fields.beteiligungsquote} %`, icon: IconBriefcase }] : []),
+                    ...(u.fields.investiertes_kapital != null ? [{ label: tt('investiert'), value: formatCurrency(u.fields.investiertes_kapital), icon: IconCurrencyEuro }] : []),
+                    ...(u.fields.aktueller_wert != null ? [{ label: tt('unternehmenswert'), value: formatCurrency(u.fields.aktueller_wert), icon: IconTrendingUp }] : []),
+                    ...(u.fields.beteiligungsquote != null ? [{ label: tt('beteiligungsquote'), value: `${u.fields.beteiligungsquote} %`, icon: IconBriefcase }] : []),
                   ]} />
                 )}
                 <UnternehmenDetails
@@ -490,7 +561,7 @@ export default function DashboardOverview() {
                       onClick={() => { setEditingTermin(t); setTermineDefaults(undefined); setTermineDialogOpen(true); }}
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      Bearbeiten
+                      {tt('bearbeiten')}
                     </button>
                   }
                 />
@@ -514,7 +585,7 @@ export default function DashboardOverview() {
                       onClick={() => { setEditingDokument(d); setDokumenteDefaults(undefined); setDokumenteDialogOpen(true); }}
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      Bearbeiten
+                      {tt('bearbeiten')}
                     </button>
                   }
                 />
@@ -538,7 +609,7 @@ export default function DashboardOverview() {
                       onClick={() => { setEditingNotiz(n); setNotizenDefaults(undefined); setNotizenDialogOpen(true); }}
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      Bearbeiten
+                      {tt('bearbeiten')}
                     </button>
                   }
                 />
@@ -558,7 +629,7 @@ export default function DashboardOverview() {
             const isPending = t.fields.terminstatus?.key === 'geplant' && (t.fields.datum_uhrzeit?.slice(0, 10) ?? '') < todayKey;
             if (isPending) {
               return {
-                label: '✓ Als stattgefunden markieren',
+                label: tt('als_stattgefunden_markieren'),
                 onClick: () => {
                   advanceTermin(t);
                   overlay.close();

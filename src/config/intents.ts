@@ -14,7 +14,7 @@
  *   </custom:intent-imports>
  *   …
  *   <custom:intents>
- *   { path: '/intents/neue-buchung', label: 'Neue Buchung', icon: IconCalendarPlus, description: 'Buchung in 3 Schritten anlegen' },
+ *   { path: '/intents/neue-buchung', label: { de: 'Neue Buchung', en: 'New booking' }, icon: IconCalendarPlus, description: 'Buchung in 3 Schritten anlegen' },
  *   </custom:intents>
  */
 import type { ComponentType } from 'react';
@@ -26,8 +26,12 @@ import { IconBuildingFactory, IconClipboardCheck } from '@tabler/icons-react';
 export interface IntentLink {
   /** Route path as wired in App.tsx (HashRouter), e.g. '/intents/neue-buchung'. */
   path: string;
-  /** Short label shown in the sidebar (German, 1–3 words). */
-  label: string;
+  /**
+   * Short sidebar label (1–3 words). Preferred: both UI languages
+   * ({ de, en } — the runtime switcher picks the active one; cs stays
+   * readable for legacy entries). A plain string stays valid and renders as-is.
+   */
+  label: string | { de?: string; en?: string; cs?: string };
   /** Tabler icon COMPONENT reference (not rendered JSX), e.g. IconCalendarPlus. */
   icon?: ComponentType<{ size?: number | string; className?: string; stroke?: number | string }>;
   /** One-line purpose — shown as tooltip. */
@@ -36,8 +40,8 @@ export interface IntentLink {
 
 export const INTENTS: IntentLink[] = [
   // <custom:intents>
-  { path: '/intents/neue-beteiligung', label: 'Neue Beteiligung', icon: IconBuildingFactory, description: 'Neue Portfolio-Beteiligung in einem Flow anlegen' },
-  { path: '/intents/termin-nachbereiten', label: 'Termin nachbereiten', icon: IconClipboardCheck, description: 'Abgehaltenen Termin abschließen und dokumentieren' },
+  { path: '/intents/neue-beteiligung', label: { de: 'Neue Beteiligung', en: 'New Investment' }, icon: IconBuildingFactory, description: 'Neue Portfolio-Beteiligung in einem Flow anlegen' },
+  { path: '/intents/termin-nachbereiten', label: { de: 'Termin nachbereiten', en: 'Follow Up on Appointment' }, icon: IconClipboardCheck, description: 'Abgehaltenen Termin abschließen und dokumentieren' },
   // </custom:intents>
 ];
 

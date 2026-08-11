@@ -10,17 +10,14 @@ import { PublicPagesNav } from '@/components/PublicPagesNav';
 import { useActions } from '@/context/ActionsContext';
 import { Button } from '@/components/ui/button';
 import { VersionCheck } from '@/components/VersionCheck';
+// Sprachwechsel kommt aus der Plattform-Topnav: sie schreibt <html lang>,
+// src/i18n beobachtet das Attribut und LocaleGate remountet den Baum.
+import { t, appgroupLabel } from '@/i18n';
 
-const APP_TITLE = 'BeteiligungsManager';
 const APP_ID = '6a6aece61fcbb67ed9aeb827';
 const APPGROUP_ID = '6a6aed0b86931b0015008f96';
 
 const IS_EMBED = new URLSearchParams(window.location.search).has('embed') || window.navigator.userAgent.startsWith('LivingAppsMobile');
-
-// Die la-Widgets lesen ihre UI-Sprache aus <html lang>; die statische
-// index.html steht auf "en" — die App-Sprache kennt nur der Generator.
-// Modul-Top-Level, damit es vor dem ersten Widget-Render gesetzt ist.
-document.documentElement.lang = 'de';
 
 export function Layout() {
   const navigate = useNavigate();
@@ -29,7 +26,7 @@ export function Layout() {
   const [authError, setAuthError] = useState(false);
   const drawerRef = useRef<HTMLElement>(null);
   const dashboardLinkRef = useRef<HTMLElement>(null);
-  useEffect(() => { document.title = APP_TITLE; }, []);
+  useEffect(() => { document.title = appgroupLabel(); }, []);
   useEffect(() => {
     const handler = () => setAuthError(true);
     window.addEventListener('auth-error', handler);
@@ -96,7 +93,7 @@ export function Layout() {
     // Area-Zuordnung von Header/Drawer liegt in index.css.
     <div className="contents">
       {!IS_EMBED && (
-        <la-header-bar-widget title={APP_TITLE} app-id={APP_ID}>
+        <la-header-bar-widget title={appgroupLabel()} app-id={APP_ID}>
           {/* app-id auch am Menü selbst: erst mit eigenem App-Kontext zeigt
               es die Einstellungs-Sektion (Benutzerverwaltung, Datenansicht,
               Klar KI, App kopieren, Anleitung, Struktur). */}
@@ -130,11 +127,11 @@ export function Layout() {
           {/* Darstellung-Umschalter — identisch zur Datenverwaltung: der
               Dashboard-Eintrag (la-dashboard-link-widget) und die App-Liste
               der Gruppe (la-app-group-nav-widget → /gateway-Listenseiten). */}
-          <la-nav-section type="secondary" label="Darstellung">
+          <la-nav-section type="secondary" label={t('display_section')}>
             <la-dashboard-link-widget ref={dashboardLinkRef} app-id={APP_ID} />
             {/* dense = kleinere Unterpunkt-Schrift (setzt --la-nav-text-size
                 im Sektions-Shadow) — exakt wie die Datenverwaltung im Gateway. */}
-            <la-nav-section type="primary" label="Datenverwaltung" icon="IconMenu2" dense="">
+            <la-nav-section type="primary" label={t('data_management')} icon="IconMenu2" dense="">
               <la-app-group-nav-widget group-id={APPGROUP_ID} />
             </la-nav-section>
           </la-nav-section>
@@ -144,7 +141,7 @@ export function Layout() {
               (starten zu), Werkzeuge als schlichter Eintrag (öffnet den
               ActionsDrawer), dann die Version als Meta-Zeile. Klar Lab und
               die Entwickler/Beta-Toggles stecken im Versions-Panel. */}
-          <la-nav-section type="secondary" label="Aktionen">
+          <la-nav-section type="secondary" label={t('actions_section')}>
             <IntentsNav />
             <ActionsSidebar />
             <PublicPagesNav />
@@ -156,8 +153,8 @@ export function Layout() {
           {/* Sticky Footer = dünne Meta-Zeile (Figma-Muster). Relative
               Pfade, damit die Plattform-Seiten auf jedem Host stimmen. */}
           <div slot="footer" className="flex flex-wrap gap-x-4 gap-y-1 border-t border-sidebar-border py-3 text-sm font-medium text-muted-foreground">
-            <a href="/impressum.htm" className="hover:text-foreground transition-colors">Impressum</a>
-            <a href="/datenschutz.htm" className="hover:text-foreground transition-colors">Datenschutz</a>
+            <a href="/impressum.htm" className="hover:text-foreground transition-colors">{t('legal_imprint')}</a>
+            <a href="/datenschutz.htm" className="hover:text-foreground transition-colors">{t('legal_privacy')}</a>
             <a href="/apps.htm" className="hover:text-foreground transition-colors">LivingApps</a>
           </div>
         </la-drawer>
@@ -171,11 +168,11 @@ export function Layout() {
                 <IconAlertCircle size={22} className="text-destructive" />
               </div>
               <div className="text-center">
-                <h3 className="font-semibold text-foreground mb-1">Du bist nicht angemeldet.</h3>
+                <h3 className="font-semibold text-foreground mb-1">{t('auth_error_title')}</h3>
               </div>
               <Button variant="outline" size="sm" onClick={() => {
                 window.location.href = `${window.location.origin}/login.htm?cugCoUrl=${encodeURIComponent(window.location.href)}`;
-              }}>Anmelden</Button>
+              }}>{t('auth_login_button')}</Button>
             </div>
           ) : (
             <Outlet />

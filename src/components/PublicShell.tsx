@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { IconLoader2 } from '@tabler/icons-react';
+import { t } from '@/i18n';
 
 // Layout shell for public (anonymous) pages — the public counterpart to
 // IntentWizardShell. Owns the page chrome every public page shares: centered
@@ -37,8 +38,8 @@ export function PublicShell({ title, description, wide, fullBleed, loading, unav
   } else if (unavailable) {
     body = (
       <div className="rounded-[27px] bg-card shadow-lg p-6 sm:p-8 text-center">
-        <h1 className="text-xl font-medium mb-2">Nicht verfügbar</h1>
-        <p className="text-muted-foreground">Diese Seite ist derzeit nicht verfügbar.</p>
+        <h1 className="text-xl font-medium mb-2">{t('pf_unavailable_title')}</h1>
+        <p className="text-muted-foreground">{t('pps_unavailable_message')}</p>
       </div>
     );
   } else {
@@ -64,7 +65,7 @@ export function PublicShell({ title, description, wide, fullBleed, loading, unav
         {body}
       </main>
       <footer className="py-4 text-center text-xs text-muted-foreground">
-        Powered by Klar
+        {t('pf_powered_by_text')}
       </footer>
     </div>
   );

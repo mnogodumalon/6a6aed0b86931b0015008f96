@@ -4,6 +4,7 @@ import { extractRecordId } from '@/services/livingAppsService';
 import {
   RecordSection, RecordField, RecordRelation, RecordAttachments,
 } from '@/components/widgets/RecordView';
+import { t, appLabel, fieldLabel } from '@/i18n';
 import { MediaThumbnail } from '@/components/widgets/MediaViewer';
 
 export interface DokumenteDetailsProps {
@@ -23,25 +24,25 @@ export function DokumenteDetails({
   const unternehmenTarget = unternehmenList.find(r => r.record_id === extractRecordId(record.fields.unternehmen));
   return (
     <>
-      <RecordSection title="Details" cols={2}>
-        <RecordField label="Dokumentenbezeichnung" value={record.fields.dokumentenbezeichnung} format="text" />
-        <RecordField label="Dokumententyp" value={record.fields.dokumententyp} format="pill" />
-        <RecordField label="Beschreibung" value={record.fields.dokumentenbeschreibung} format="longtext" className="md:col-span-2" />
-        <RecordField label="Datum des Dokuments" value={record.fields.dokumentendatum} format="date" />
-        <RecordField label="Dokumentenlink (URL)" value={record.fields.dokumentenlink} format="url" />
-        <RecordField label="Datei-Upload" className="md:col-span-2">
+      <RecordSection title={t('details')} cols={2}>
+        <RecordField label={fieldLabel('dokumente', 'dokumentenbezeichnung')} value={record.fields.dokumentenbezeichnung} format="text" />
+        <RecordField label={fieldLabel('dokumente', 'dokumententyp')} value={record.fields.dokumententyp} format="pill" />
+        <RecordField label={fieldLabel('dokumente', 'dokumentenbeschreibung')} value={record.fields.dokumentenbeschreibung} format="longtext" className="md:col-span-2" />
+        <RecordField label={fieldLabel('dokumente', 'dokumentendatum')} value={record.fields.dokumentendatum} format="date" />
+        <RecordField label={fieldLabel('dokumente', 'dokumentenlink')} value={record.fields.dokumentenlink} format="url" />
+        <RecordField label={fieldLabel('dokumente', 'datei_upload')} className="md:col-span-2">
           {record.fields.datei_upload ? (
             <MediaThumbnail src={record.fields.datei_upload as string} fit="contain" className="max-h-64 w-full rounded-lg" />
           ) : '—'}
         </RecordField>
-        <RecordField label="Bereitgestellt von" value={record.fields.bereitgestellt_von} format="text" />
-        <RecordField label="Notizen zum Dokument" value={record.fields.notizen_dokument} format="longtext" className="md:col-span-2" />
+        <RecordField label={fieldLabel('dokumente', 'bereitgestellt_von')} value={record.fields.bereitgestellt_von} format="text" />
+        <RecordField label={fieldLabel('dokumente', 'notizen_dokument')} value={record.fields.notizen_dokument} format="longtext" className="md:col-span-2" />
       </RecordSection>
 
       {/* N:1 — verknüpfte Records: IMMER klickbar, nie eine Text-Sackgasse. */}
-      <RecordSection title="Verknüpft" cols={1}>
+      <RecordSection title={t('relations')} cols={1}>
         <RecordRelation
-          label="Unternehmen"
+          label={fieldLabel('dokumente', 'unternehmen')}
           name={unternehmenTarget?.fields.name ?? '—'}
           meta={[unternehmenTarget?.fields.ansprechpartner_email, unternehmenTarget?.fields.ansprechpartner_telefon].filter(Boolean).join(' · ') || undefined}
           onClick={unternehmenTarget && onOpenUnternehmen ? () => onOpenUnternehmen!(unternehmenTarget!) : undefined}

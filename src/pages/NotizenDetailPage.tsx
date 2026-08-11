@@ -14,6 +14,7 @@ import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { AI_PHOTO_SCAN, AI_PHOTO_LOCATION } from '@/config/ai-features';
 import { formEnhancements } from '@/config/form-enhancements/Notizen';
 import { evalComputed } from '@/config/form-enhancements/types';
+import { t, appLabel, fieldLabel, localeTag, CURRENCY } from '@/i18n';
 
 export default function NotizenDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -67,11 +68,11 @@ export default function NotizenDetailPage() {
   if (!record) {
     return (
       <RecordViewEmpty
-        title="Eintrag nicht gefunden"
+        title={t('not_found')}
         action={
           <Button variant="ghost" onClick={() => navigate('/notizen')}>
             <IconArrowLeft className="h-4 w-4 mr-1.5" />
-            Zurück
+            {t('back')}
           </Button>
         }
       />
@@ -82,10 +83,10 @@ export default function NotizenDetailPage() {
     <RecordView
       onBack={() => navigate('/notizen')}
       onEdit={() => setEditing(true)}
-      backLabel="Zurück"
-      editLabel="Bearbeiten"
+      backLabel={t('back')}
+      editLabel={t('edit_button')}
     >
-      <RecordHeader title={record.fields.notiz_titel ?? 'Notizen'} />
+      <RecordHeader title={record.fields.notiz_titel ?? appLabel('notizen')} />
 
       {(() => {
         const lookupLists: Record<string, unknown> = {
@@ -93,8 +94,8 @@ export default function NotizenDetailPage() {
         };
         const fmtComputed = (k: string, n: number) =>
           /(?:kosten|preis|betrag|gesamt|netto|brutto|summe|mwst|rabatt|anzahlung|umsatz|saldo)/i.test(k)
-            ? n.toLocaleString('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 })
-            : n.toLocaleString('de-DE', { maximumFractionDigits: 2 });
+            ? n.toLocaleString(localeTag(), { style: 'currency', currency: CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            : n.toLocaleString(localeTag(), { maximumFractionDigits: 2 });
         const computedFacts = Object.entries(formEnhancements.computed)
           .map(([key, formula]) => {
             const v = evalComputed(formula, record!.fields as Record<string, unknown>, { lookupLists });
@@ -106,14 +107,14 @@ export default function NotizenDetailPage() {
         return computedFacts.length > 0 ? <RecordKeyFacts items={computedFacts} /> : null;
       })()}
 
-      <RecordSection title="Details" cols={2}>
-        <RecordField label="Unternehmen" value={getUnternehmenDisplayName(record.fields.unternehmen)} format="text" />
-        <RecordField label="Titel der Notiz" value={record.fields.notiz_titel} format="text" />
-        <RecordField label="Notizinhalt" value={record.fields.notiz_inhalt} format="longtext" className="md:col-span-2" />
-        <RecordField label="Datum der Notiz" value={record.fields.notiz_datum} format="date" />
-        <RecordField label="Kategorie" value={record.fields.kategorie} format="pill" />
-        <RecordField label="Priorität" value={record.fields.prioritaet} format="pill" />
-        <RecordField label="Schlagwörter / Tags" value={record.fields.schlagwoerter} format="text" />
+      <RecordSection title={t('details')} cols={2}>
+        <RecordField label={fieldLabel('notizen', 'unternehmen')} value={getUnternehmenDisplayName(record.fields.unternehmen)} format="text" />
+        <RecordField label={fieldLabel('notizen', 'notiz_titel')} value={record.fields.notiz_titel} format="text" />
+        <RecordField label={fieldLabel('notizen', 'notiz_inhalt')} value={record.fields.notiz_inhalt} format="longtext" className="md:col-span-2" />
+        <RecordField label={fieldLabel('notizen', 'notiz_datum')} value={record.fields.notiz_datum} format="date" />
+        <RecordField label={fieldLabel('notizen', 'kategorie')} value={record.fields.kategorie} format="pill" />
+        <RecordField label={fieldLabel('notizen', 'prioritaet')} value={record.fields.prioritaet} format="pill" />
+        <RecordField label={fieldLabel('notizen', 'schlagwoerter')} value={record.fields.schlagwoerter} format="text" />
       </RecordSection>
 
       <RecordAttachments appId={APP_IDS.NOTIZEN} recordId={record.record_id} />
@@ -121,7 +122,7 @@ export default function NotizenDetailPage() {
       <div className="flex justify-end pt-2">
         <Button variant="ghost" onClick={() => setDeleteOpen(true)} className="text-destructive hover:text-destructive">
           <IconTrash className="h-4 w-4 mr-1.5" />
-          Löschen
+          {t('delete')}
         </Button>
       </div>
 
@@ -140,8 +141,8 @@ export default function NotizenDetailPage() {
         open={deleteOpen}
         onClose={() => setDeleteOpen(false)}
         onConfirm={handleDelete}
-        title="Notizen löschen"
-        description="Soll dieser Eintrag wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden."
+        title={t('delete_entity', { entity: appLabel('notizen') })}
+        description={t('confirm_delete_desc')}
       />
     </RecordView>
   );

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo, type ReactNode } from 'react';
 import type { Action, ActionCodeChangedEvent, ChatSessionAction, ChatSessionMeta, FileAttachment, StoredChatMessage } from '@/lib/actions-agent';
 import { fetchActionsAndFiles, executeAction, deleteAction as deleteActionApi, deleteAppAttachment as deleteAppAttachmentApi, agentChat, fixAction, revertAction as revertActionApi, downloadFile, fetchChatSessions, fetchChatTranscript, saveChatTranscript, deleteChatSession as deleteChatSessionApi } from '@/lib/actions-agent';
+import { t } from '@/i18n';
 
 export type ExecErrorContext = {
   actionName: string;
@@ -154,7 +155,7 @@ function execErrorUpdate(
 ): Pick<Message, 'content' | 'fixContext' | 'runId'> {
   const name = action.title || action.identifier;
   return {
-    content: `**Etwas klappte nicht bei der Ausführung von \`${name}\`:**\n\`\`\`\n${errorText}\n\`\`\``,
+    content: `**${t('fix_error_heading')} \`${name}\`:**\n\`\`\`\n${errorText}\n\`\`\``,
     runId: runId ?? undefined,
     fixContext: {
       actionName: name,
@@ -515,8 +516,8 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
     if (!silent) {
       setMessages(prev => [
         ...prev,
-        { id: crypto.randomUUID(), role: 'user', kind: 'action', content: `Aktion: ${action.title || action.identifier}${version != null ? ` (v${version})` : ''}` },
-        { id: placeholderId, role: 'assistant', content: 'In Arbeit...' },
+        { id: crypto.randomUUID(), role: 'user', kind: 'action', content: `${t('ctx_action_label')}: ${action.title || action.identifier}${version != null ? ` (v${version})` : ''}` },
+        { id: placeholderId, role: 'assistant', content: t('busy') },
       ]);
     }
 
@@ -576,7 +577,7 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
         setMessages(prev =>
           prev.map(m =>
             m.id === placeholderId
-              ? { ...m, content: `Fehler bei der Ausführung: ${msg}` }
+              ? { ...m, content: `${t('ctx_error_text')}: ${msg}` }
               : m,
           )
         );
@@ -617,7 +618,7 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
       if (!silent) {
         setMessages(prev => [
           ...prev,
-          { id: placeholderId, role: 'assistant', content: 'Wird vorbereitet...' },
+          { id: placeholderId, role: 'assistant', content: t('preparing') },
         ]);
       }
 
@@ -686,7 +687,7 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
           focusChatOnError();
           setMessages(prev => [
             ...prev,
-            { id: crypto.randomUUID(), role: 'assistant', content: `Fehler bei der Ausführung: ${msg}` },
+            { id: crypto.randomUUID(), role: 'assistant', content: `${t('ctx_error_text')}: ${msg}` },
           ]);
         })
         .finally(() => {
@@ -809,7 +810,7 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
       setChatOpen(true);
       setMessages(prev => [
         ...prev,
-        { id: crypto.randomUUID(), role: 'assistant', content: `**Wiederherstellen fehlgeschlagen:** ${result.error ?? ''}` },
+        { id: crypto.randomUUID(), role: 'assistant', content: `**${t('code_restore_failed')}:** ${result.error ?? ''}` },
       ]);
       return;
     }
@@ -817,7 +818,7 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
       appId,
       actionIdentifier: identifier,
       version: result.version.v,
-      summary: `Zurückgesetzt auf Version ${to}`,
+      summary: `${t('code_restored_to')} ${to}`,
       origin: 'revert',
     });
     void refreshActions();
@@ -828,33 +829,33 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
   }, [appendVersionCard, refreshActions]);
 
   const deleteActionFn = useCallback(async (action: Action) => {
-    const confirmed = window.confirm(`Aktion löschen "${action.identifier}" (aus "${action.app_name}")?`);
+    const confirmed = window.confirm(`${t('delete_confirm')} "${action.identifier}" (${t('delete_confirm_from')} "${action.app_name}")?`);
     if (!confirmed) return;
     const result = await deleteActionApi(action.app_id, action.identifier);
     setChatOpen(true);
     if (result.error) {
       setMessages(prev => [
         ...prev,
-        { id: crypto.randomUUID(), role: 'assistant', content: `**Fehler bei der Ausführung:** ${result.error}` },
+        { id: crypto.randomUUID(), role: 'assistant', content: `**${t('ctx_error_text')}:** ${result.error}` },
       ]);
     } else {
       setMessages(prev => [
         ...prev,
-        { id: crypto.randomUUID(), role: 'assistant', content: `Aktion gelöscht: \`${action.identifier}\` (aus \`${action.app_name}\`).` },
+        { id: crypto.randomUUID(), role: 'assistant', content: `${t('action_deleted')} \`${action.identifier}\` (${t('delete_confirm_from')} \`${action.app_name}\`).` },
       ]);
       await refreshActions();
     }
   }, [refreshActions]);
 
   const deleteAppAttachmentFn = useCallback(async (file: FileAttachment) => {
-    const confirmed = window.confirm(`Datei löschen "${file.filename}"?`);
+    const confirmed = window.confirm(`${t('delete_file_confirm')} "${file.filename}"?`);
     if (!confirmed) return;
     const result = await deleteAppAttachmentApi(file.app_id, file.identifier);
     if (result.error) {
       setChatOpen(true);
       setMessages(prev => [
         ...prev,
-        { id: crypto.randomUUID(), role: 'assistant', content: `**Fehler bei der Ausführung:** ${result.error}` },
+        { id: crypto.randomUUID(), role: 'assistant', content: `**${t('ctx_error_text')}:** ${result.error}` },
       ]);
     } else {
       await refreshActions();
@@ -938,7 +939,7 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
       setMessages(prev =>
         prev.map(m =>
           m.id === assistantId
-            ? { ...m, content: `Fehler bei der Ausführung: ${err instanceof Error ? err.message : String(err)}` }
+            ? { ...m, content: `${t('ctx_error_text')}: ${err instanceof Error ? err.message : String(err)}` }
             : m,
         )
       );
@@ -976,7 +977,7 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
       {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: `**Korrektur für \`${ctx.actionName}\`** — neue Chat-Sitzung für diese Korrektur gestartet.\n\`\`\`\n${ctx.errorText}\n\`\`\``,
+        content: `**${t('fix_intro_prefix')} \`${ctx.actionName}\`** — ${t('fix_intro_suffix')}\n\`\`\`\n${ctx.errorText}\n\`\`\``,
       },
       { id: answerId, role: 'assistant', content: '' },
     ]);
@@ -1014,8 +1015,8 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
           id: crypto.randomUUID(),
           role: 'assistant',
           content: result?.error
-            ? `**Die Aktion schlägt weiterhin fehl:**\n\`\`\`\n${result.error}\n\`\`\``
-            : '*Die Korrektur ist noch nicht bestätigt — deine ursprüngliche Eingabe bleibt erhalten.*',
+            ? `**${t('fix_still_fails')}:**\n\`\`\`\n${result.error}\n\`\`\``
+            : `*${t('fix_not_confirmed')}*`,
           ...(answerText ? {} : { fixContext: ctx }),
         };
         setMessages(prev => {
@@ -1033,7 +1034,7 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
         {
           id: crypto.randomUUID(),
           role: 'assistant',
-          content: `**Korrektur-Anfrage fehlgeschlagen:** ${err instanceof Error ? err.message : String(err)}\n\n*Deine ursprüngliche Eingabe bleibt erhalten — du kannst es erneut versuchen.*`,
+          content: `**${t('fix_request_failed')}:** ${err instanceof Error ? err.message : String(err)}\n\n*${t('fix_retry_hint')}*`,
           fixContext: ctx,
         },
       ]);

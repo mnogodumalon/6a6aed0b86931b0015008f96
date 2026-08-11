@@ -3,18 +3,24 @@ import { IconPlayerPlay, IconCode, IconTrash, IconFile, IconFileTypePdf, IconPho
 import { useActions } from '@/context/ActionsContext';
 import type { Action, FileAttachment } from '@/lib/actions-agent';
 import { format, formatDistanceToNow, parseISO } from 'date-fns';
-import { de } from 'date-fns/locale';
+import { t, dateFnsLocale, dateTimeFormat } from '@/i18n';
 
-const ORIGIN_LABELS: Record<string, string> = {
-  fix: 'Auto-Fix',
-  chat: 'Chat',
-  initial: 'Erstellt',
-  revert: 'Wiederhergestellt',
+const ORIGIN_KEYS: Record<string, string> = {
+  fix: 'code_origin_fix',
+  chat: 'code_origin_chat',
+  initial: 'code_origin_initial',
+  revert: 'code_origin_revert',
 };
+
+// Resolved per render — the catalog lookup must follow the active locale
+function originLabel(origin: string): string {
+  const key = ORIGIN_KEYS[origin];
+  return key ? t(key) : origin;
+}
 
 function relTime(d?: string) {
   if (!d) return '';
-  try { return formatDistanceToNow(parseISO(d), { addSuffix: true, locale: de }); } catch { return d; }
+  try { return formatDistanceToNow(parseISO(d), { addSuffix: true, locale: dateFnsLocale() }); } catch { return d; }
 }
 
 function FileIcon({ mimeType }: { mimeType: string }) {
@@ -25,15 +31,15 @@ function FileIcon({ mimeType }: { mimeType: string }) {
 
 function formatDateTime(d?: string) {
   if (!d) return '';
-  try { return format(parseISO(d), 'dd.MM.yyyy, HH:mm', { locale: de }); } catch { return d; }
+  try { return format(parseISO(d), dateTimeFormat(), { locale: dateFnsLocale() }); } catch { return d; }
 }
 
 type FileSortMode = 'newest' | 'oldest' | 'az' | 'za';
-const FILE_SORT_LABELS: Record<FileSortMode, string> = {
-  newest: 'Neuste zuerst',
-  oldest: 'Älteste zuerst',
-  az: 'Name A→Z',
-  za: 'Name Z→A',
+const FILE_SORT_KEYS: Record<FileSortMode, string> = {
+  newest: 'sort_newest',
+  oldest: 'sort_oldest',
+  az: 'sort_name_az',
+  za: 'sort_name_za',
 };
 
 const PAGE_SIZE = 6;
@@ -96,7 +102,7 @@ function FileList({ files, onDownload, onDelete }: { files: FileAttachment[]; on
                         fileSort === mode ? 'text-primary font-medium bg-primary/5' : 'text-muted-foreground hover:bg-accent'
                       }`}
                     >
-                      {FILE_SORT_LABELS[mode]}
+                      {t(FILE_SORT_KEYS[mode])}
                     </button>
                   ))}
                 </div>
@@ -130,12 +136,12 @@ function FileList({ files, onDownload, onDelete }: { files: FileAttachment[]; on
                       className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                     >
                       <IconDownload size={13} />
-                      Herunterladen
+                      {t('download')}
                     </button>
                     <button
                       onClick={() => onDelete(f)}
                       className="flex items-center justify-center w-7 h-7 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"
-                      title="Löschen"
+                      title={t('delete')}
                     >
                       <IconTrash size={14} />
                     </button>
@@ -219,22 +225,22 @@ function ActionWidget({ action, files, onRun, onShowCode, onShowChanges, onDelet
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-primary"
               >
                 {running ? <IconLoader2 size={14} className="animate-spin" /> : <IconPlayerPlay size={14} />}
-                {running ? 'In Arbeit...' : 'Ausführen'}
+                {running ? t('busy') : t('run')}
               </button>
               {devMode && (
                 <button
                   onClick={() => onShowCode(action)}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium border border-primary/30 bg-primary/5 text-primary hover:bg-primary/10 transition-colors"
-                  title="Quellcode"
+                  title={t('source_code')}
                 >
                   <IconCode size={14} />
-                  Code
+                  {t('code_tab_code')}
                 </button>
               )}
               <button
                 onClick={() => { void onDelete(action); }}
                 className="flex items-center justify-center w-9 h-9 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"
-                title="Löschen"
+                title={t('delete')}
               >
                 <IconTrash size={16} />
               </button>
@@ -243,10 +249,10 @@ function ActionWidget({ action, files, onRun, onShowCode, onShowChanges, onDelet
               <button
                 onClick={() => onShowChanges(action)}
                 className="mt-2 block w-full truncate text-left text-[11px] text-muted-foreground hover:text-foreground hover:underline underline-offset-2 transition-colors"
-                title="Änderungen ansehen"
+                title={t('version_card_view_changes')}
               >
                 <span className="font-semibold text-foreground">v{action.current_version}</span>
-                {' · '}{ORIGIN_LABELS[latest.origin] || latest.origin}{' · '}{relTime(latest.ts)}
+                {' · '}{originLabel(latest.origin)}{' · '}{relTime(latest.ts)}
                 {latest.summary ? ` — ${latest.summary}` : ''}
               </button>
             )}
@@ -330,7 +336,7 @@ export default function ActionsBar() {
           files={unassignedFiles}
           onDownload={(url, filename) => { void downloadFile(url, filename); }}
           onDeleteFile={(f) => { void deleteAppAttachment(f); }}
-          label="Dateien"
+          label={t('files_label')}
         />
       )}
     </div>
